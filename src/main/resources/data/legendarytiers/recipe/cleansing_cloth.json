@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SFS",
+    "FGF",
+    "SFS"
+  ],
+  "key": {
+    "G": { "item": "minecraft:ghast_tear" },
+    "F": { "item": "minecraft:blaze_powder" },
+    "S": { "item": "minecraft:string" }
+  },
+  "result": {
+    "id": "legendarytiers:cleansing_cloth",
+    "count": 1
+  }
+}

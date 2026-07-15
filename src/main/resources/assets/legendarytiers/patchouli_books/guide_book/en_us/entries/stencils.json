@@ -1,0 +1,11 @@
+{
+  "name": "Stencils",
+  "category": "legendarytiers:items",
+  "icon": "legendarytiers:tool_stencil",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Stencils are required for reforging. They can be purchased from expert-level Toolsmith, Weaponsmith, or Armorer villagers.$(br)They can also be rarely found in dungeon chests."
+    }
+  ]
+}

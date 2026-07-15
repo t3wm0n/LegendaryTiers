@@ -1,0 +1,54 @@
+{
+  "itemGroup.legendarytiers": "Legendary Tiers",
+
+  "rarity.legendarytiers.common": "Обычный",
+  "rarity.legendarytiers.rare": "Редкий",
+  "rarity.legendarytiers.epic": "Эпический",
+  "rarity.legendarytiers.legendary": "Легендарный",
+  "rarity.legendarytiers.mythic": "Мифический",
+  "rarity.legendarytiers.divine": "Божественный",
+
+  "item.legendarytiers.broken_item": "Сломанный предмет",
+  "item.legendarytiers.runic_ink": "Рунные чернила",
+  "item.legendarytiers.nether_ink": "Адские чернила",
+  "item.legendarytiers.ender_ink": "Чернила Края",
+  "item.legendarytiers.weapon_stencil": "Трафарет оружия",
+  "item.legendarytiers.ranged_stencil": "Трафарет дальнего боя",
+  "item.legendarytiers.armor_stencil": "Трафарет брони",
+  "item.legendarytiers.tool_stencil": "Трафарет инструментов",
+  "item.legendarytiers.shield_stencil": "Трафарет щита",
+  "item.legendarytiers.cleansing_cloth": "Очищающий платок",
+
+  "block.legendarytiers.runic_table": "Рунный стол",
+
+  "attribute.name.generic.durability": "Прочность %s%%",
+
+  "tooltip.legendarytiers.level": "⬆ Уровень: %s",
+  "tooltip.legendarytiers.exp": "🔋 Опыт: %s/%s (%s%%)",
+  "tooltip.legendarytiers.broken": "⚠ Сломан ⚠",
+  "tooltip.legendarytiers.was": "♻ ",
+  "tooltip.legendarytiers.repair": "Починка: %s ед. материала",
+  "tooltip.legendarytiers.repair_hint": "Почините на наковальне с подходящим материалом",
+  "tooltip.legendarytiers.reforge_attempts": "Попыток перековки: %s/3",
+  "tooltip.legendarytiers.reforge_button": "Перековать предмет",
+
+  "tooltip.legendarytiers.slot_item": "Инструмент / броня / оружие",
+  "tooltip.legendarytiers.slot_ink": "Чернила",
+  "tooltip.legendarytiers.slot_stencil": "Трафарет",
+  "tooltip.legendarytiers.slot_catalyst": "Катализатор",
+
+  "tooltip.legendarytiers.catalyst_rabbit_hide": "Кроличья шкурка: +10% к шансу успеха",
+  "tooltip.legendarytiers.catalyst_ghast_tear": "Слеза гаста: +20% к шансу успеха",
+  "tooltip.legendarytiers.catalyst_ender_eye": "Око Края: +30% к шансу успеха",
+  "tooltip.legendarytiers.catalyst_heart_of_the_sea": "Сердце моря: 100% успех для брони и щита",
+  "tooltip.legendarytiers.catalyst_echo_shard": "Эхо-осколок: 100% успех для оружия",
+  "tooltip.legendarytiers.catalyst_cooked_chorus_fruit": "Приготовленный плод хоруса: 100% успех для инструментов",
+  "tooltip.legendarytiers.catalyst_nether_star": "Звезда Нижнего мира: +2 уровня редкости при успехе",
+
+  "message.legendarytiers.reforge_success": "Редкость предмета повышена!",
+  "message.legendarytiers.reforge_fail": "Неудача! Редкость не изменилась.",
+
+  "item.legendarytiers.guide_book": "Гайд по Legendary Tiers",
+  "legendarytiers.guide_book.name": "Гайд Legendary Tiers",
+  "legendarytiers.guide_book.landing": "Руководство по рунной перековке и тайнам мира."
+}

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#c:is_snowy",
+    "#c:is_plains",
+    "#c:is_jungle"
+  ]
+}

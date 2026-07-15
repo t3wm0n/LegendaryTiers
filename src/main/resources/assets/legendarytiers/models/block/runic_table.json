@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "legendarytiers:block/runic_table_side",
+    "down": "legendarytiers:block/runic_table_bottom",
+    "up": "legendarytiers:block/runic_table_top",
+    "north": "legendarytiers:block/runic_table_front",
+    "south": "legendarytiers:block/runic_table_side",
+    "west": "legendarytiers:block/runic_table_side",
+    "east": "legendarytiers:block/runic_table_back"
+  }
+}

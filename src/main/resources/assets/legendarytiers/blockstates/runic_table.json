@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "legendarytiers:block/runic_table",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "legendarytiers:block/runic_table",
+      "y": 0
+    },
+    "facing=south": {
+      "model": "legendarytiers:block/runic_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "legendarytiers:block/runic_table",
+      "y": 270
+    }
+  }
+}

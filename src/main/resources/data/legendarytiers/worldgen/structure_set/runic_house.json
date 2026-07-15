@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "legendarytiers:runic_house",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spread_type": "triangular",
+    "spacing": 32,
+    "separation": 16,
+    "salt": 9172374
+  }
+}

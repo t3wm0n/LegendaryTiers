@@ -1,0 +1,44 @@
+{
+  "variants": {
+    "common": [
+      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":-0.05}]},
+      {"weight":2,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.05}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":-0.2}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":-0.02}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.03},{"target":"durability","operation":"multiply_total","value":0.03}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":0.3}]}
+    ],
+    "rare": [
+      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.06},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.03}]},
+      {"weight":2,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.1},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":0.5}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.04},{"target":"durability","operation":"multiply_total","value":0.08},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.02}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":0.8},{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.05}]},
+      {"weight":1,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.12},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.04}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.07},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":0.4},{"target":"durability","operation":"multiply_total","value":0.05}]}
+    ],
+    "epic": [
+      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":1},{"target":"attribute","attribute":"minecraft:player.block_break_speed","operation":"multiply_total","value":0.1},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.05}]},
+      {"weight":2,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.18},{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.08},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":1}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.07},{"target":"attribute","attribute":"minecraft:player.block_break_speed","operation":"multiply_total","value":0.12},{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.06}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":1.5},{"target":"durability","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.04}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.1},{"target":"attribute","attribute":"minecraft:player.block_break_speed","operation":"multiply_total","value":0.08},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":1.2}]}
+    ],
+    "legendary": [
+      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":2},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":1}]},
+      {"weight":2,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.22},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":2},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":1}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.12},{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":2},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.05}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":2.5},{"target":"durability","operation":"multiply_total","value":0.2},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":2}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":3},{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.1},{"target":"durability","operation":"multiply_total","value":0.15}]}
+    ],
+    "mythic": [
+      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.18},{"target":"durability","operation":"multiply_total","value":0.25},{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":4},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":3},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":2}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":4},{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":5},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":3}]},
+      {"weight":1,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.3},{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.08}]}
+    ],
+    "divine": [
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.25},{"target":"durability","operation":"multiply_total","value":0.35},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":5},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":5},{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":6},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.1}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":6},{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":8},{"target":"durability","operation":"multiply_total","value":0.4},{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.2},{"target":"attribute","attribute":"minecraft:player.block_break_speed","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":4}]},
+      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.3},{"target":"durability","operation":"multiply_total","value":0.3},{"target":"attribute","attribute":"minecraft:generic.armor_toughness","operation":"addition","value":4},{"target":"attribute","attribute":"minecraft:generic.max_health","operation":"addition","value":6},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.12},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":5}]}
+    ]
+  }
+}

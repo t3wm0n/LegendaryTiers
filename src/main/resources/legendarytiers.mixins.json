@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.example.legendarytiers.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "legendarytiers.mixins.refmap.json",
+  "mixins": [
+    "SlotMixin",
+    "CraftingResultSlotMixin",
+    "CraftingMenuQuickMoveMixin",
+    "MerchantResultSlotMixin",
+    "MerchantMenuQuickMoveMixin",
+    "GenericContainerMenuQuickMoveMixin",
+    "ItemMaxDamageMixin",
+    "LootTableFillMixin",
+    "AnvilMenuMixin",
+    "ItemBreakMixin"
+  ],
+  "client": [],
+  "server": []
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Runic Table",
+  "category": "legendarytiers:getting_started",
+  "icon": "legendarytiers:runic_table",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Runic Table is a mystical block that allows you to reforge your tools, armor, and weapons to increase their rarity.$(br)It can be found in $(thing)Viking Houses$() generated in snowy biomes."
+    },
+    {
+      "type": "patchouli:image",
+      "images": ["legendarytiers:textures/gui/runic_table.png"],
+      "text": "The Runic Table interface."
+    }
+  ]
+}

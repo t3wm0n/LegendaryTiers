@@ -1,0 +1,22 @@
+{
+  "name": "Inks",
+  "category": "legendarytiers:items",
+  "icon": "legendarytiers:runic_ink",
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "legendarytiers:runic_ink",
+      "text": "Runic Ink is made from diamonds, ink sacs, and glowstone dust. It can upgrade items up to $(legendary)Legendary$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "legendarytiers:nether_ink",
+      "text": "Nether Ink is made from quartz, nether wart, and Runic Ink. It can upgrade items up to $(mythic)Mythic$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "legendarytiers:ender_ink",
+      "text": "Ender Ink is made from ender pearls, purpur rods, and Nether Ink. It can upgrade items up to $(divine)Divine$()."
+    }
+  ]
+}

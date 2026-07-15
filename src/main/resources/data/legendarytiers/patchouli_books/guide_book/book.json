@@ -1,0 +1,9 @@
+{
+  "name": "legendarytiers.guide_book.name",
+  "landing_text": "legendarytiers.guide_book.landing",
+  "version": "1",
+  "use_resource_pack": true,
+  "model": "legendarytiers:guide_book",
+  "book_texture": "patchouli:textures/gui/book_blue.png",
+  "creative_tab": "legendarytiers:legendary_tiers_tab"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Catalysts",
+  "category": "legendarytiers:items",
+  "icon": "minecraft:ghast_tear",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Catalysts are optional items that boost your reforge chance or guarantee success for certain item types.$(br)Here are all available catalysts:"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Rabbit Hide$(): +10% success chance$(li)$(item)Ghast Tear$(): +20% success chance$(li)$(item)Eye of Ender$(): +30% success chance$(li)$(item)Heart of the Sea$(): 100% success for armor and shield"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Echo Shard$(): 100% success for weapons$(li)$(item)Cooked Chorus Fruit$(): 100% success for tools$(li)$(item)Nether Star$(): +2 rarity levels on success"
+    }
+  ]
+}

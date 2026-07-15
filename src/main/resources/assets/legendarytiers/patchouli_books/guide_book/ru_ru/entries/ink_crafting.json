@@ -1,0 +1,22 @@
+{
+  "name": "Чернила",
+  "category": "legendarytiers:items",
+  "icon": "legendarytiers:runic_ink",
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "legendarytiers:runic_ink",
+      "text": "Рунные чернила создаются из алмаза, чернильного мешка и светопыли. Повышают редкость до $(legendary)Легендарной$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "legendarytiers:nether_ink",
+      "text": "Адские чернила создаются из кварца, адского нароста и рунных чернил. Повышают редкость до $(mythic)Мифической$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "legendarytiers:ender_ink",
+      "text": "Чернила Края создаются из эндер-жемчуга, пурпурного стержня и адских чернил. Повышают редкость до $(divine)Божественной$()."
+    }
+  ]
+}

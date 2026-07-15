@@ -1,0 +1,54 @@
+{
+  "itemGroup.legendarytiers": "Legendary Tiers",
+
+  "rarity.legendarytiers.common": "Common",
+  "rarity.legendarytiers.rare": "Rare",
+  "rarity.legendarytiers.epic": "Epic",
+  "rarity.legendarytiers.legendary": "Legendary",
+  "rarity.legendarytiers.mythic": "Mythic",
+  "rarity.legendarytiers.divine": "Divine",
+
+  "item.legendarytiers.broken_item": "Broken Item",
+  "item.legendarytiers.runic_ink": "Runic Ink",
+  "item.legendarytiers.nether_ink": "Nether Ink",
+  "item.legendarytiers.ender_ink": "Ender Ink",
+  "item.legendarytiers.weapon_stencil": "Weapon Stencil",
+  "item.legendarytiers.ranged_stencil": "Ranged Stencil",
+  "item.legendarytiers.armor_stencil": "Armor Stencil",
+  "item.legendarytiers.tool_stencil": "Tool Stencil",
+  "item.legendarytiers.shield_stencil": "Shield Stencil",
+  "item.legendarytiers.cleansing_cloth": "Cleansing Cloth",
+
+  "block.legendarytiers.runic_table": "Runic Table",
+
+  "attribute.name.generic.durability": "Durability %s%%",
+
+  "tooltip.legendarytiers.level": "⬆ Level: %s",
+  "tooltip.legendarytiers.exp": "🔋 Exp: %s/%s (%s%%)",
+  "tooltip.legendarytiers.broken": "⚠ Broken ⚠",
+  "tooltip.legendarytiers.was": "♻ ",
+  "tooltip.legendarytiers.repair": "Repair: %s units of material",
+  "tooltip.legendarytiers.repair_hint": "Repair on an anvil with the appropriate material",
+  "tooltip.legendarytiers.reforge_attempts": "Reforge attempts: %s/3",
+  "tooltip.legendarytiers.reforge_button": "Reforge Item",
+
+  "tooltip.legendarytiers.slot_item": "Tool / Armor / Weapon",
+  "tooltip.legendarytiers.slot_ink": "Ink",
+  "tooltip.legendarytiers.slot_stencil": "Stencil",
+  "tooltip.legendarytiers.slot_catalyst": "Catalyst",
+
+  "tooltip.legendarytiers.catalyst_rabbit_hide": "Rabbit Hide: +10% success chance",
+  "tooltip.legendarytiers.catalyst_ghast_tear": "Ghast Tear: +20% success chance",
+  "tooltip.legendarytiers.catalyst_ender_eye": "Eye of Ender: +30% success chance",
+  "tooltip.legendarytiers.catalyst_heart_of_the_sea": "Heart of the Sea: 100% success for armor and shield",
+  "tooltip.legendarytiers.catalyst_echo_shard": "Echo Shard: 100% success for weapons",
+  "tooltip.legendarytiers.catalyst_cooked_chorus_fruit": "Cooked Chorus Fruit: 100% success for tools",
+  "tooltip.legendarytiers.catalyst_nether_star": "Nether Star: +2 rarity levels on success",
+
+  "message.legendarytiers.reforge_success": "Item rarity increased!",
+  "message.legendarytiers.reforge_fail": "Failure! Rarity unchanged.",
+
+  "item.legendarytiers.guide_book": "Tiered Guide",
+  "legendarytiers.guide_book.name": "Legendary Tiers Guide",
+  "legendarytiers.guide_book.landing": "A guide to the art of runic reforging."
+}

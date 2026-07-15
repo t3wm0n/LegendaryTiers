@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "minecraft:book" },
+    { "item": "legendarytiers:runic_ink" }
+  ],
+  "result": {
+    "id": "legendarytiers:guide_book",
+    "count": 1
+  }
+}

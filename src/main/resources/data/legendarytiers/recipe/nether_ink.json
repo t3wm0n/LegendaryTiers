@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "minecraft:quartz" },
+    { "item": "minecraft:nether_wart" },
+    { "item": "legendarytiers:runic_ink" }
+  ],
+  "result": {
+    "id": "legendarytiers:nether_ink",
+    "count": 1
+  }
+}
