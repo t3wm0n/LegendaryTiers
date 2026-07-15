@@ -13,7 +13,7 @@ Tools, weapons, and armor get random rarities, gain levels through use, and can 
 
 ## Installation
 1. Install **NeoForge** for Minecraft 1.21.1.
-2. Download the `.jar` from [Releases](https://github.com/ВАШ_ЛОГИН/LegendaryTiers/releases).
+2. Download the `.jar` from Modrinth or CurseForge.
 3. Place it in the `mods` folder.
 4. Optional: install **Patchouli** for the in-game guide.
 
@@ -22,4 +22,4 @@ Tools, weapons, and armor get random rarities, gain levels through use, and can 
 - [Modrinth](ссылка)
 
 ## Reporting Issues
-Use the [Issues](https://github.com/ВАШ_ЛОГИН/LegendaryTiers/issues) tab.
+Use the [Issues](https://github.com/t3wm0n/LegendaryTiers/issues) tab.
