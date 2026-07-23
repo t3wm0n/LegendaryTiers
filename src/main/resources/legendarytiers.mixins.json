@@ -14,7 +14,10 @@
     "ItemMaxDamageMixin",
     "LootTableFillMixin",
     "AnvilMenuMixin",
-    "ItemBreakMixin"
+    "ItemBreakMixin",
+    "ArrowMixin",
+    "BowItemMixin",
+    "CrossbowItemMixin"
   ],
   "client": [],
   "server": []

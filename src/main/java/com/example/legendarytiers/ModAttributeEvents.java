@@ -7,7 +7,6 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
@@ -25,15 +24,18 @@ public class ModAttributeEvents {
         int level = exp / 100;
         double levelMultiplier = 1.0 + (level * 0.005);
 
-        EquipmentSlotGroup slotGroup = EquipmentSlotGroup.ANY;
+        // Определяем группу слотов по типу предмета
+        EquipmentSlotGroup slotGroup = getSlotGroupForItem(stack);
 
         for (ModifierEntry entry : tier.modifiers()) {
             if (entry.target().equals("durability")) {
+                // Прочность обрабатывается в ItemMaxDamageMixin, здесь не добавляем
                 continue;
             }
             if (entry.target().equals("attribute") && entry.attribute().isPresent()) {
                 ResourceLocation attrId = ResourceLocation.parse(entry.attribute().get());
 
+                // Фильтр block_break_speed: только для инструментов и брони
                 if (attrId.getPath().contains("block_break_speed") &&
                         !(stack.getItem() instanceof DiggerItem) &&
                         !(stack.getItem() instanceof ArmorItem)) {
@@ -60,5 +62,17 @@ public class ModAttributeEvents {
                         slotGroup);
             }
         }
+    }
+
+    private static EquipmentSlotGroup getSlotGroupForItem(ItemStack stack) {
+        if (stack.is(ModTags.ARMOR)) {
+            return EquipmentSlotGroup.ARMOR;
+        } else if (stack.is(ModTags.WEAPON) || stack.is(ModTags.TOOL) || stack.is(ModTags.RANGED_WEAPON)) {
+            return EquipmentSlotGroup.MAINHAND;
+        } else if (stack.is(ModTags.SHIELD)) {
+            return EquipmentSlotGroup.OFFHAND;
+        }
+        // Для остальных предметов (например, элитры) используем ANY
+        return EquipmentSlotGroup.ANY;
     }
 }

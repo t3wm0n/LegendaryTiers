@@ -1,44 +1,62 @@
 {
-  "variants": {
-    "common": [
-      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":-0.1}]},
-      {"weight":2,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.1}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":-0.02}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.05}]},
-      {"weight":1,"modifiers":[{"target":"durability","operation":"multiply_total","value":-0.05}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.03},{"target":"durability","operation":"multiply_total","value":0.03}]}
+  "common": {
+    "attributes": [
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": -0.15, "max": 0.05, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.arrow_damage",     "weight": 3, "min": -0.10, "max": 0.05, "operation": "multiply_total" },
+      { "id": "durability",                              "weight": 2, "min": -0.10, "max": 0.10, "operation": "multiply_total" },
+      { "id": "minecraft:generic.movement_speed",        "weight": 1, "min": -0.05, "max": 0.03, "operation": "multiply_total" },
+      { "id": "minecraft:generic.luck",                  "weight": 1, "min": -2,    "max": 1,    "operation": "addition" }
     ],
-    "rare": [
-      {"weight":2,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.12},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.05}]},
-      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.08},{"target":"durability","operation":"multiply_total","value":0.08}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.02},{"target":"durability","operation":"multiply_total","value":0.1}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.1},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.02}]},
-      {"weight":1,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.02}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.07},{"target":"durability","operation":"multiply_total","value":0.07},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.01}]}
+    "min_attrs": 1, "max_attrs": 2
+  },
+  "rare": {
+    "attributes": [
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": -0.05, "max": 0.10, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": -0.05, "max": 0.10, "operation": "multiply_total" },
+      { "id": "durability",                            "weight": 2, "min": 0.05, "max": 0.15, "operation": "multiply_total" },
+      { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": -0.02, "max": 0.05, "operation": "multiply_total" },
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 0,     "max": 1,    "operation": "addition" }
     ],
-    "epic": [
-      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.05},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.12}]},
-      {"weight":2,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.2},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.05}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.05},{"target":"durability","operation":"multiply_total","value":0.1}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.07},{"target":"durability","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.08}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.18},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.05}]}
+    "min_attrs": 2, "max_attrs": 3
+  },
+  "epic": {
+    "attributes": [
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.05, "max": 0.15, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.05, "max": 0.15, "operation": "multiply_total" },
+      { "id": "durability",                            "weight": 2, "min": 0.07, "max": 0.20, "operation": "multiply_total" },
+      { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.00, "max": 0.08, "operation": "multiply_total" },
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 1,    "max": 2,    "operation": "addition" }
     ],
-    "legendary": [
-      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.22},{"target":"durability","operation":"multiply_total","value":0.22},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.08}]},
-      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.18},{"target":"durability","operation":"multiply_total","value":0.25},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.06}]},
-      {"weight":1,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.3},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.1},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.1}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.25},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.05},{"target":"durability","operation":"multiply_total","value":0.18}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.09},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.15},{"target":"durability","operation":"multiply_total","value":0.2}]}
+    "min_attrs": 2, "max_attrs": 4
+  },
+  "legendary": {
+    "attributes": [
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.08, "max": 0.20, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.10, "max": 0.20, "operation": "multiply_total" },
+      { "id": "durability",                            "weight": 2, "min": 0.05, "max": 0.25, "operation": "multiply_total" },
+      { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.02, "max": 0.10, "operation": "multiply_total" },
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 1,    "max": 3,    "operation": "addition" }
     ],
-    "mythic": [
-      {"weight":2,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.3},{"target":"durability","operation":"multiply_total","value":0.3},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.12}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.35},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.1}]},
-      {"weight":1,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.35},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.2},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.12}]}
+    "min_attrs": 3, "max_attrs": 4
+  },
+  "mythic": {
+    "attributes": [
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.15, "max": 0.25, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.15, "max": 0.30, "operation": "multiply_total" },
+      { "id": "durability",                            "weight": 2, "min": 0.15, "max": 0.35, "operation": "multiply_total" },
+      { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.05, "max": 0.12, "operation": "multiply_total" },
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 2,    "max": 4,    "operation": "addition" }
     ],
-    "divine": [
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.45},{"target":"durability","operation":"multiply_total","value":0.35},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.attack_speed","operation":"multiply_total","value":0.1},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":3},{"target":"attribute","attribute":"minecraft:generic.knockback_resistance","operation":"addition","value":0.1}]},
-      {"weight":1,"modifiers":[{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.5},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.18},{"target":"durability","operation":"multiply_total","value":0.3},{"target":"attribute","attribute":"minecraft:generic.attack_speed","operation":"multiply_total","value":0.08},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":4},{"target":"attribute","attribute":"minecraft:generic.armor","operation":"multiply_total","value":0.05}]},
-      {"weight":1,"modifiers":[{"target":"durability","operation":"multiply_total","value":0.4},{"target":"attribute","attribute":"minecraft:generic.attack_damage","operation":"multiply_total","value":0.35},{"target":"attribute","attribute":"minecraft:generic.movement_speed","operation":"multiply_total","value":0.15},{"target":"attribute","attribute":"minecraft:generic.attack_speed","operation":"multiply_total","value":0.12},{"target":"attribute","attribute":"minecraft:generic.luck","operation":"addition","value":5},{"target":"attribute","attribute":"minecraft:generic.knockback_resistance","operation":"addition","value":0.2}]}
-    ]
+    "min_attrs": 3, "max_attrs": 5
+  },
+  "divine": {
+    "attributes": [
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.25, "max": 0.50, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.25, "max": 0.50, "operation": "multiply_total" },
+      { "id": "durability",                            "weight": 2, "min": 0.20, "max": 0.50, "operation": "multiply_total" },
+      { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.15, "max": 0.25, "operation": "multiply_total" },
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 3,    "max": 5,    "operation": "addition" }
+    ],
+    "min_attrs": 4, "max_attrs": 6
   }
 }

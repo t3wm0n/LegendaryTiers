@@ -50,5 +50,8 @@
 
   "item.legendarytiers.guide_book": "Гайд по Legendary Tiers",
   "legendarytiers.guide_book.name": "Гайд Legendary Tiers",
-  "legendarytiers.guide_book.landing": "Руководство по рунной перековке и тайнам мира."
+  "legendarytiers.guide_book.landing": "Руководство по рунной перековке и тайнам мира.",
+
+  "attribute.name.generic.bow_draw_speed": "Скорость натяжения лука",
+  "attribute.name.generic.arrow_damage": "Урон стрелы"
 }

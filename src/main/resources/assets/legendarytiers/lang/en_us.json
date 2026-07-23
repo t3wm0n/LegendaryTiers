@@ -50,5 +50,8 @@
 
   "item.legendarytiers.guide_book": "Tiered Guide",
   "legendarytiers.guide_book.name": "Legendary Tiers Guide",
-  "legendarytiers.guide_book.landing": "A guide to the art of runic reforging."
+  "legendarytiers.guide_book.landing": "A guide to the art of runic reforging.",
+
+  "attribute.name.generic.bow_draw_speed": "Bow draw speed",
+  "attribute.name.generic.arrow_damage": "Arrow damage"
 }

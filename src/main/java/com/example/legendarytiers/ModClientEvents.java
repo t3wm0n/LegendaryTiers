@@ -25,7 +25,13 @@ public class ModClientEvents {
         if (tier != null) {
             Rarity rarity = tier.rarity();
             event.getToolTip().add(rarity.getDisplayName());
-
+            double quality = tier.quality();
+            if (quality >= 0) {
+                int stars = (int) Math.round(quality * 5);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < 5; i++) sb.append(i < stars ? "★" : "☆");
+                event.getToolTip().add(Component.literal(sb.toString()).withStyle(ChatFormatting.GOLD));
+            }
             // Бонусы
             for (ModifierEntry entry : tier.modifiers()) {
                 if (entry.target().equals("durability")) {
