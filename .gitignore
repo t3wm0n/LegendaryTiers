@@ -39,3 +39,4 @@ run/
 repo/
 !**/src/**/repo/
 /src/main/resources/data/legendarytiers/tier_modifiers1/
+/src/main/resources/data/legendarytiers/tags/item2/

@@ -25,7 +25,9 @@
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.05, "max": 0.15, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.07, "max": 0.20, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.00, "max": 0.08, "operation": "multiply_total" },
-      { "id": "minecraft:generic.luck",                "weight": 1, "min": 1,    "max": 2,    "operation": "addition" }
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 1,    "max": 2,    "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.05, "max": 0.15, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.30, "max": 0.55, "operation": "addition" }
     ],
     "min_attrs": 2, "max_attrs": 4
   },
@@ -35,7 +37,9 @@
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.10, "max": 0.20, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.05, "max": 0.25, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.02, "max": 0.10, "operation": "multiply_total" },
-      { "id": "minecraft:generic.luck",                "weight": 1, "min": 1,    "max": 3,    "operation": "addition" }
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 1,    "max": 3,    "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.15, "max": 0.30, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.40, "max": 0.70, "operation": "addition" }
     ],
     "min_attrs": 3, "max_attrs": 4
   },
@@ -45,7 +49,9 @@
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.15, "max": 0.30, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.15, "max": 0.35, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.05, "max": 0.12, "operation": "multiply_total" },
-      { "id": "minecraft:generic.luck",                "weight": 1, "min": 2,    "max": 4,    "operation": "addition" }
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 2,    "max": 4,    "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.30, "max": 0.45, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.65, "max": 1.00, "operation": "addition" }
     ],
     "min_attrs": 3, "max_attrs": 5
   },
@@ -55,7 +61,9 @@
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.25, "max": 0.50, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.20, "max": 0.50, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.15, "max": 0.25, "operation": "multiply_total" },
-      { "id": "minecraft:generic.luck",                "weight": 1, "min": 3,    "max": 5,    "operation": "addition" }
+      { "id": "minecraft:generic.luck",                "weight": 1, "min": 3,    "max": 5,    "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.45, "max": 0.65, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.85, "max": 1.50, "operation": "addition" }
     ],
     "min_attrs": 4, "max_attrs": 6
   }
