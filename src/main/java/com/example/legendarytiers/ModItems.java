@@ -28,15 +28,15 @@ public class ModItems {
 
     // Трафареты
     public static final Supplier<Item> WEAPON_STENCIL = ITEMS.register("weapon_stencil",
-            () -> new Item(new Item.Properties().stacksTo(1)));
+            () -> new Item(new Item.Properties().stacksTo(3)));
     public static final Supplier<Item> RANGED_STENCIL = ITEMS.register("ranged_stencil",
-            () -> new Item(new Item.Properties().stacksTo(1)));
+            () -> new Item(new Item.Properties().stacksTo(3)));
     public static final Supplier<Item> ARMOR_STENCIL = ITEMS.register("armor_stencil",
-            () -> new Item(new Item.Properties().stacksTo(1)));
+            () -> new Item(new Item.Properties().stacksTo(3)));
     public static final Supplier<Item> TOOL_STENCIL = ITEMS.register("tool_stencil",
-            () -> new Item(new Item.Properties().stacksTo(1)));
+            () -> new Item(new Item.Properties().stacksTo(3)));
     public static final Supplier<Item> SHIELD_STENCIL = ITEMS.register("shield_stencil",
-            () -> new Item(new Item.Properties().stacksTo(1)));
+            () -> new Item(new Item.Properties().stacksTo(3)));
 
     // Очищающий платок
     public static final Supplier<Item> CLEANSING_CLOTH = ITEMS.register("cleansing_cloth",

@@ -26,21 +26,21 @@ public class RunicTableMenu extends AbstractContainerMenu {
         //this.player = playerInv.player; // <-- запоминаем игрока
 
         // Слот 0: инструмент/броня
-        addSlot(new Slot(container, 0, 88, 36) {
+        addSlot(new Slot(container, 0, 120, 39) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ModTags.TIERABLE_ITEMS) && stack.has(ModDataComponents.TIER_DATA);
             }
         });
         // Слот 1: чернила
-        addSlot(new Slot(container, 1, 44, 78) {
+        addSlot(new Slot(container, 1, 66, 83) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ModItems.RUNIC_INK.get()) || stack.is(ModItems.NETHER_INK.get()) || stack.is(ModItems.ENDER_INK.get());
             }
         });
         // Слот 2: трафарет
-        addSlot(new Slot(container, 2, 132, 77) {
+        addSlot(new Slot(container, 2, 174, 83) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() == ModItems.WEAPON_STENCIL.get() ||
@@ -51,31 +51,61 @@ public class RunicTableMenu extends AbstractContainerMenu {
             }
         });
         // Слот 3: катализатор
-        addSlot(new Slot(container, 3, 88, 118) {
+        addSlot(new Slot(container, 3, 120, 128) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return isCatalyst(stack);
             }
         });
+        // Слот 4: инструмент для реролла бонусов
+        addSlot(new Slot(container, 4, 39, 178) { // Y подобран примерно, подгоните под свою текстуру
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(ModTags.TIERABLE_ITEMS) && stack.has(ModDataComponents.TIER_DATA);
+            }
+        });
+        // Слот 5: чернила для реролла
+        addSlot(new Slot(container, 5, 92, 178) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(ModItems.RUNIC_INK.get()) || stack.is(ModItems.NETHER_INK.get()) || stack.is(ModItems.ENDER_INK.get());
+            }
+        });
 
         // Инвентарь игрока
-        final int playerInvStartX = 15;   // левый верхний угол первого слота (по X)
-        final int playerInvStartY = 165;  // левый верхний угол первого слота (по Y)
-        final int slotSpacing = 18;      // расстояние между слотами (можно уменьшить до 17)
+        final int playerInvStartX = 24;   // левый верхний угол первого слота (по X)
+        final int playerInvStartY = 210;  // левый верхний угол первого слота (по Y)
+        final int slotSpacing = 24;      // расстояние между слотами (можно уменьшить до 17)
+        final int slotSpacingY = 21;      // расстояние между слотами (можно уменьшить до 17)
 
 // 3 ряда инвентаря
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                addSlot(new Slot(playerInv, col + row * 9 + 9,
-                        playerInvStartX + col * slotSpacing,
-                        playerInvStartY + row * (slotSpacing + 1 )));
+                if (col > 3) {
+                    addSlot(new Slot(playerInv, col + row * 9 + 9,
+                            playerInvStartX - 1 + col * slotSpacing,
+                            playerInvStartY + row * slotSpacingY));
+                }
+                else{
+                    addSlot(new Slot(playerInv, col + row * 9 + 9,
+                            playerInvStartX + col * slotSpacing,
+                            playerInvStartY + row * slotSpacingY));
+                }
+
             }
         }
 // Горячий ряд (нижний)
         for (int col = 0; col < 9; ++col) {
-            addSlot(new Slot(playerInv, col,
-                    playerInvStartX + col * slotSpacing,
-                    playerInvStartY + 60));
+            if (col > 3) {
+                addSlot(new Slot(playerInv, col,
+                        playerInvStartX - 1 + col * slotSpacing,
+                        playerInvStartY + 73));
+            }
+            else {
+                addSlot(new Slot(playerInv, col,
+                        playerInvStartX + col * slotSpacing,
+                        playerInvStartY + 73));
+            }
         }
     }
 
@@ -93,6 +123,10 @@ public class RunicTableMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player player, int id) {
         if (id == 0) {
             performReforge(player);
+            return true;
+        }
+        if (id == 1) {
+            performReforgeBonus(player);
             return true;
         }
         return super.clickMenuButton(player, id);
@@ -243,6 +277,47 @@ public class RunicTableMenu extends AbstractContainerMenu {
         }
 
         return itemstack;
+    }
+
+    private void performReforgeBonus(Player player) {
+        if (player.level().isClientSide()) return;
+
+        ItemStack toolStack = container.getItem(4);
+        ItemStack inkStack = container.getItem(5);
+
+        if (toolStack.isEmpty() || inkStack.isEmpty()) return;
+
+        TierData tier = toolStack.get(ModDataComponents.TIER_DATA);
+        if (tier == null) return;
+
+        if (!canRerollWithInk(tier.rarity(), inkStack)) return; // не подходящие чернила
+
+        int exp = toolStack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
+        int level = exp / 100;
+
+        TierData newTier = TierModifierLoader.generate(toolStack, tier.rarity(), player.level().random);
+        toolStack.set(ModDataComponents.TIER_DATA, newTier);
+
+        inkStack.shrink(1);
+
+        player.level().playSound(null, player.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+        container.setChanged();
+        if (container instanceof RunicTableBlockEntity be) {
+            be.setChanged();
+            be.getLevel().sendBlockUpdated(be.getBlockPos(), be.getBlockState(), be.getBlockState(), 3);
+        }
+    }
+
+    private boolean canRerollWithInk(Rarity rarity, ItemStack ink) {
+        if (ink.is(ModItems.RUNIC_INK.get())) {
+            return rarity.ordinal() <= Rarity.EPIC.ordinal(); // Common,Rare,Epic
+        } else if (ink.is(ModItems.NETHER_INK.get())) {
+            return rarity == Rarity.LEGENDARY || rarity == Rarity.MYTHIC;
+        } else if (ink.is(ModItems.ENDER_INK.get())) {
+            return rarity == Rarity.DIVINE;
+        }
+        return false;
     }
 
     @Override

@@ -31,6 +31,7 @@
   "tooltip.legendarytiers.repair_hint": "Repair on an anvil with the appropriate material",
   "tooltip.legendarytiers.reforge_attempts": "Reforge attempts: %s/3",
   "tooltip.legendarytiers.reforge_button": "Reforge Item",
+  "tooltip.legendarytiers.reroll_button": "Reroll attributes (Random)",
 
   "tooltip.legendarytiers.slot_item": "Tool / Armor / Weapon",
   "tooltip.legendarytiers.slot_ink": "Ink",
@@ -53,5 +54,7 @@
   "legendarytiers.guide_book.landing": "A guide to the art of runic reforging.",
 
   "attribute.name.generic.bow_draw_speed": "Bow draw speed",
-  "attribute.name.generic.arrow_damage": "Arrow damage"
+  "attribute.name.generic.arrow_damage": "Arrow damage",
+  "attribute.name.generic.crit_chance": "Critical Chance",
+  "attribute.name.generic.crit_damage": "Critical Damage"
 }

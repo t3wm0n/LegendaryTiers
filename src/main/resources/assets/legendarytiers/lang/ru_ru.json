@@ -31,6 +31,7 @@
   "tooltip.legendarytiers.repair_hint": "Почините на наковальне с подходящим материалом",
   "tooltip.legendarytiers.reforge_attempts": "Попыток перековки: %s/3",
   "tooltip.legendarytiers.reforge_button": "Перековать предмет",
+  "tooltip.legendarytiers.reroll_button": "Сменить бонусы (случайно)",
 
   "tooltip.legendarytiers.slot_item": "Инструмент / броня / оружие",
   "tooltip.legendarytiers.slot_ink": "Чернила",
@@ -53,5 +54,7 @@
   "legendarytiers.guide_book.landing": "Руководство по рунной перековке и тайнам мира.",
 
   "attribute.name.generic.bow_draw_speed": "Скорость натяжения лука",
-  "attribute.name.generic.arrow_damage": "Урон стрелы"
+  "attribute.name.generic.arrow_damage": "Урон стрелы",
+  "attribute.name.generic.crit_chance": "Шанс критического удара",
+  "attribute.name.generic.crit_damage": "Критический урон"
 }

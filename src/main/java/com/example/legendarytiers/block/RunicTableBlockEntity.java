@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class RunicTableBlockEntity extends BlockEntity implements MenuProvider, Container {
 
-    private NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
+    private NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
 
     public RunicTableBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.RUNIC_TABLE.get(), pos, state);

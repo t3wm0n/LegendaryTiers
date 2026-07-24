@@ -96,6 +96,11 @@ public class TierModifierLoader {
         int maxAttrs = minMax[1];
         int count = minAttrs + random.nextInt(maxAttrs - minAttrs + 1);
 
+        int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
+        int level = exp / 100;
+        double levelBonusPct = level * 0.001;   // +0.1% к максимуму за каждый уровень
+        double levelBonusAbs = level * 0.01;
+
         List<ModifierEntry> modifiers = new ArrayList<>();
         float totalQuality = 0;
 
@@ -112,13 +117,23 @@ public class TierModifierLoader {
         while (modifiers.size() < count && attempts < weightedList.size() * 2) {
             AttributeDef def = weightedList.get(attempts % weightedList.size());
             if (usedIds.add(def.id)) {
-                double value = def.min + random.nextDouble() * (def.max - def.min);
+                double min = def.min;
+                double max = def.max;
+
+                // Увеличиваем максимум за счёт уровня
+                if (ABSOLUTE_ATTRIBUTES.contains(def.id)) {
+                    max += levelBonusAbs;
+                } else {
+                    max += levelBonusPct;
+                }
+
+                double value = min + random.nextDouble() * (max - min);
                 value = Math.round(value * 100.0) / 100.0;
+
                 if (ABSOLUTE_ATTRIBUTES.contains(def.id)) {
                     value = Math.round(value); // округляем до целого
                 }
-                if (value == 0.0 && !def.id.equals("durability")) {
-                    // Для не-прочности пропускаем нулевые значения
+                if (value == 0.0) {
                     attempts++;
                     continue;
                 }
@@ -126,13 +141,7 @@ public class TierModifierLoader {
                 Optional<String> attr = target.equals("attribute") ? Optional.of(def.id) : Optional.empty();
                 modifiers.add(new ModifierEntry(target, attr, def.operation, value));
 
-                // Качество: для атрибутов, где меньше = лучше (например, bow_draw_speed с идеалом min)
-                double normalized;
-                if (def.id.equals("legendarytiers:generic.bow_draw_speed")) {
-                    normalized = (def.max - value) / (def.max - def.min);
-                } else {
-                    normalized = (value - def.min) / (def.max - def.min);
-                }
+                double normalized = (value - def.min) / (def.max - def.min);
                 totalQuality += Math.max(0, Math.min(1, normalized));
             }
             attempts++;
@@ -141,7 +150,7 @@ public class TierModifierLoader {
         if (modifiers.isEmpty()) {
             AttributeDef def = availableAttrs.get(0);
             double value = def.min;
-            if (value == 0.0) value = 0.01; // чуть-чуть выше нуля, чтобы не было пусто
+            if (value == 0.0) value = 0.01;
             String target = def.id.equals("durability") ? "durability" : "attribute";
             Optional<String> attr = target.equals("attribute") ? Optional.of(def.id) : Optional.empty();
             modifiers.add(new ModifierEntry(target, attr, def.operation, value));
