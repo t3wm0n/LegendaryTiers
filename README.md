@@ -1,25 +1,29 @@
+# RPG Items Tiers
 
-Installation information
-=======
+A Minecraft mod for NeoForge 1.21.1 that adds a deep rarity/tier/quality system.  
+Tools, weapons, and armor get random rarities, gain levels through use, and can be reforged at a Runic Table.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+## Features
+- 6 rarities: Common, Rare, Epic, Legendary, Mythic, Divine
+- 4 new attributes: draw speed, arrow damage, crit chance and crit damage
+- Item leveling with bonuses to damage, speed, armor, and durability
+- Unbreakable items (turn into Broken Item at 0 durability)
+- Runic Table with inks, stencils, catalysts
+- Reforge and reroll tiers and attributes
+- ALL tiers and attributes RANDOM (You won't be able to find two identical items)
+- Configurable XP gain for mining, killing, farming
+- Highly configurable by datapacks
+- Patchouli guide book support
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+## Installation
+1. Install **NeoForge** for Minecraft 1.21.1.
+2. Download the `.jar` from Modrinth or CurseForge.
+3. Place it in the `mods` folder.
+4. Optional: install **Patchouli** for the in-game guide.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+## Links
+- [CurseForge](https://curseforge.com/minecraft/mc-mods/rpg-items-tiers)
+- [Modrinth](https://modrinth.com/mod/rpg-items-tiers)
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
-
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+## Reporting Issues
+Use the [Issues](https://github.com/t3wm0n/LegendaryTiers/issues) tab.
