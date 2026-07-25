@@ -1,14 +1,18 @@
-# Legendary Tiers
+# RPG Items Tiers
 
-A Minecraft mod for NeoForge 1.21.1 that adds a deep rarity/tier system inspired by games like Terraria.  
+A Minecraft mod for NeoForge 1.21.1 that adds a deep rarity/tier/quality system.  
 Tools, weapons, and armor get random rarities, gain levels through use, and can be reforged at a Runic Table.
 
 ## Features
 - 6 rarities: Common, Rare, Epic, Legendary, Mythic, Divine
+- 4 new attributes: draw speed, arrow damage, crit chance and crit damage
 - Item leveling with bonuses to damage, speed, armor, and durability
 - Unbreakable items (turn into Broken Item at 0 durability)
 - Runic Table with inks, stencils, catalysts
+- Reforge and reroll tiers and attributes
+- ALL tiers and attributes RANDOM (You won't be able to find two identical items)
 - Configurable XP gain for mining, killing, farming
+- Highly configurable by datapacks
 - Patchouli guide book support
 
 ## Installation
