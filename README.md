@@ -22,8 +22,8 @@ Tools, weapons, and armor get random rarities, gain levels through use, and can 
 4. Optional: install **Patchouli** for the in-game guide.
 
 ## Links
-- [CurseForge](www.curseforge.com/minecraft/mc-mods/legendary-tiers)
-- [Modrinth](https://modrinth.com/mod/legendary-tiers)
+- [CurseForge](www.curseforge.com/minecraft/mc-mods/rpg-items-tiers)
+- [Modrinth](https://modrinth.com/mod/rpg-items-tiers)
 
 ## Reporting Issues
 Use the [Issues](https://github.com/t3wm0n/LegendaryTiers/issues) tab.
