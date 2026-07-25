@@ -10,12 +10,14 @@ structures = "legendarytiers:runic_house"
 
 [[mods]]
 modId = "legendarytiers"
-version = "1.0.0"
-displayName = "Legendary Tiers"
+version = "2.0.0"
+displayName = "RPG Items Tiers (RIT)"
 
 
 description='''
-Tiers mod for RPG gameplay
+Tiers mod for RPG gaming.
+Add new structure, attributes.
+Add tiers, quiality and bonuses to tools, weapons, armor.
 '''
 
 [[mixins]]

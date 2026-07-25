@@ -16,7 +16,6 @@ public class GenericContainerMenuQuickMoveMixin {
     @Inject(method = "quickMoveStack", at = @At("RETURN"))
     private void onQuickMoveStack(Player player, int index, CallbackInfoReturnable<ItemStack> cir) {
         if (player.level().isClientSide()) return;
-        System.out.println("AbstractContainerMenu.quickMoveStack");
         // Не обрабатываем верстак и торговлю, у них свои миксины
         if ((Object) this instanceof CraftingMenu || (Object) this instanceof MerchantMenu) return;
         for (int i = 0; i < 36; i++) {

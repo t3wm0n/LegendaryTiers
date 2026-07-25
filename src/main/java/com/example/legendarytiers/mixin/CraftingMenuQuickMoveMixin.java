@@ -14,7 +14,6 @@ public class CraftingMenuQuickMoveMixin {
     @Inject(method = "quickMoveStack", at = @At("RETURN"))
     private void onQuickMoveStack(Player player, int index, CallbackInfoReturnable<ItemStack> cir) {
         if (player.level().isClientSide()) return;
-        System.out.println("CraftingMenu.quickMoveStack");
         // После перемещения проверяем все слоты инвентаря игрока (слоты 0-35)
         for (int i = 0; i < 36; i++) {
             ItemStack stack = player.getInventory().getItem(i);

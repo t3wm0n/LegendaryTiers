@@ -14,7 +14,6 @@ public class MerchantResultSlotMixin {
     @Inject(method = "onTake", at = @At("HEAD"))
     private void onTake(Player player, ItemStack stack, CallbackInfo ci) {
         if (player.level().isClientSide()) return;
-        System.out.println("MerchantResultSlotMixin.onTake: " + stack);
         if (stack.is(ModTags.TIERABLE_ITEMS) && !stack.has(ModDataComponents.TIER_DATA)) {
             Rarity rarity = Rarity.getRandomRarity(player, player.level().random);
             TierData data = TierModifierLoader.generate(stack, rarity, player.level().random);

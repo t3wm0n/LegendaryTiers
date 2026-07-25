@@ -14,7 +14,6 @@ public class MerchantMenuQuickMoveMixin {
     @Inject(method = "quickMoveStack", at = @At("RETURN"))
     private void onQuickMoveStack(Player player, int index, CallbackInfoReturnable<ItemStack> cir) {
         if (player.level().isClientSide()) return;
-        System.out.println("MerchantMenu.quickMoveStack");
         for (int i = 0; i < 36; i++) {
             ItemStack stack = player.getInventory().getItem(i);
             if (stack.is(ModTags.TIERABLE_ITEMS) && !stack.has(ModDataComponents.TIER_DATA)) {

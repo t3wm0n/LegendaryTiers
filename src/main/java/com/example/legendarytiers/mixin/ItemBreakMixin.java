@@ -25,15 +25,12 @@ public class ItemBreakMixin {
         if (entity == null || entity.level().isClientSide()) return;
 
         ItemStack original = (ItemStack) (Object) this;
-        System.out.println("ItemBreakMixin called! Item: " + original.getItem() +
-                ", damage=" + damage + ", current durability=" + (original.getMaxDamage() - original.getDamageValue()));
         if (original.getMaxDamage() == 0) return;
 
         // Проверяем, сломается ли предмет после этого урона
         if (original.getDamageValue() + damage >= original.getMaxDamage()) {
             // Работаем только если entity – игрок (для нежити сломанные предметы не нужны)
             if (entity instanceof ServerPlayer player) {
-                System.out.println("ItemBreakMixin: item is about to break, creating broken item...");
                 // Создаём сломанный предмет
                 ItemStack broken = new ItemStack(ModItems.BROKEN_ITEM.get());
                 broken.applyComponents(original.getComponents());

@@ -54,7 +54,6 @@ public class LootTableFillMixin {
                     default -> new ItemStack(ModItems.SHIELD_STENCIL.get());
                 };
                 container.setItem(freeSlot, stencil);
-                System.out.println("Added stencil " + stencil.getItem() + " to container");
             }
         }
     }
