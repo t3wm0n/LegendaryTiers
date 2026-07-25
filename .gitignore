@@ -39,6 +39,3 @@ run/
 repo/
 !**/src/**/repo/
 /src/main/resources/data/legendarytiers/tier_modifiers1/
-/src/main/java/com/example/legendarytiers/client/tooltip/
-!/src/main/java/com/example/legendarytiers/client/tooltip/render
-!/src/main/java/com/example/legendarytiers/client/tooltip/section
