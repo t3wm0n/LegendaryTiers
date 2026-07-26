@@ -1,5 +1,5 @@
 {
-  "itemGroup.legendarytiers": "Legendary Tiers",
+  "itemGroup.legendarytiers": "RPG Items Tiers",
 
   "rarity.legendarytiers.common": "Обычный",
   "rarity.legendarytiers.rare": "Редкий",
@@ -21,7 +21,6 @@
 
   "block.legendarytiers.runic_table": "Рунный стол",
 
-  "attribute.name.generic.durability": "Прочность %s%%",
 
   "tooltip.legendarytiers.level": "⬆ Уровень: %s",
   "tooltip.legendarytiers.exp": "🔋 Опыт: %s/%s (%s%%)",
@@ -53,6 +52,10 @@
   "legendarytiers.guide_book.name": "Гайд Legendary Tiers",
   "legendarytiers.guide_book.landing": "Руководство по рунной перековке и тайнам мира.",
 
+  "attribute.name.player.block_break_speed": "Скорость добычи",
+  "attribute.name.player.block_interaction_range": "Дальность взаимодействия",
+  "attribute.name.player.entity_interaction_range": "Дальность атаки",
+  "attribute.name.generic.durability": "Прочность",
   "attribute.name.generic.bow_draw_speed": "Скорость натяжения лука",
   "attribute.name.generic.arrow_damage": "Урон стрелы",
   "attribute.name.generic.crit_chance": "Шанс критического удара",

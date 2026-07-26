@@ -1,6 +1,7 @@
 package com.example.legendarytiers.mixin;
 
 import com.example.legendarytiers.*;
+import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +21,7 @@ public class ItemMaxDamageMixin {
         if (tier == null) return;
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int level = exp / 100;
+        int level = ExperienceUtil.getLevel(exp);
         double levelMultiplier = 1.0 + (level * 0.005);
 
         double durabilityMult = 1.0;

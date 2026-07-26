@@ -1,5 +1,6 @@
 package com.example.legendarytiers;
 
+import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +22,7 @@ public class ModAttributeEvents {
         if (tier == null) return;
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int level = exp / 100;
+        int level = ExperienceUtil.getLevel(exp);
         double levelMultiplier = 1.0 + (level * 0.005);
 
         // Определяем группу слотов по типу предмета

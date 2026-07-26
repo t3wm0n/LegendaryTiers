@@ -1,13 +1,18 @@
 package com.example.legendarytiers.client.tooltip;
 
 import com.example.legendarytiers.ModDataComponents;
+import com.example.legendarytiers.ModItems;
 import com.example.legendarytiers.ModifierEntry;
 import com.example.legendarytiers.Rarity;
 import com.example.legendarytiers.TierData;
+import com.example.legendarytiers.util.ExperienceUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Collections;
 import java.util.List;
 
 public final class LegendaryTooltipBuilder {
@@ -15,27 +20,18 @@ public final class LegendaryTooltipBuilder {
     private LegendaryTooltipBuilder() {
     }
 
-
     public static LegendaryTooltipContext build(ItemStack stack) {
 
-        TierData tier = stack.get(ModDataComponents.TIER_DATA);
+        Minecraft minecraft = Minecraft.getInstance();
 
-        if (tier == null) {
+        LocalPlayer player = minecraft.player;
+
+        TierData tierData =
+                stack.get(ModDataComponents.TIER_DATA);
+
+        if (tierData == null) {
             return null;
         }
-
-
-        String itemName =
-                stack.getHoverName().getString();
-
-
-        Rarity rarity =
-                tier.rarity();
-
-
-        double quality =
-                tier.quality();
-
 
         int experience =
                 stack.getOrDefault(
@@ -43,30 +39,14 @@ public final class LegendaryTooltipBuilder {
                         0
                 );
 
-
         int level =
-                experience / 100;
+                ExperienceUtil.getLevel(experience);
 
+        int currentLevelExperience =
+                ExperienceUtil.getCurrentLevelExperience(experience);
 
         int experienceToNextLevel =
-                100;
-
-
-        List<ModifierEntry> modifiers =
-                tier.modifiers();
-
-
-        boolean broken =
-                stack.is(ModDataComponents.BROKEN_ITEM.get());
-
-
-        String originalItemName =
-                getOriginalItemName(stack);
-
-
-        int repairCost =
-                getRepairCost(stack);
-
+                ExperienceUtil.getExperienceToNextLevel();
 
         int reforgeAttempts =
                 stack.getOrDefault(
@@ -74,57 +54,82 @@ public final class LegendaryTooltipBuilder {
                         0
                 );
 
+        boolean broken =
+                stack.is(ModItems.BROKEN_ITEM.get());
+
+        String originalItemName = "";
+
+        ResourceLocation originalItemId =
+                stack.get(ModDataComponents.ORIGINAL_ITEM_ID);
+
+        if (originalItemId != null) {
+
+            var item =
+                    BuiltInRegistries.ITEM.getOptional(originalItemId);
+
+            if (item.isPresent()) {
+                originalItemName =
+                        item.get().getDescription().getString();
+            }
+
+        }
+
+        List<ModifierEntry> modifiers =
+                tierData.modifiers() == null
+                        ? Collections.emptyList()
+                        : tierData.modifiers();
 
         return new LegendaryTooltipContext(
+
+                player,
+
                 stack,
-                itemName,
-                rarity,
-                quality,
+
+                stack.getHoverName().getString(),
+
+                tierData.rarity(),
+
+                tierData.quality(),
+
                 level,
-                experience % experienceToNextLevel,
+
+                currentLevelExperience,
+
                 experienceToNextLevel,
+
                 modifiers,
+
                 broken,
+
                 originalItemName,
-                repairCost,
+
+                calculateRepairCost(tierData.rarity()),
+
                 reforgeAttempts
         );
     }
 
+    /**
+     * Пока используется временная формула.
+     * Позже будет заменена на настоящую систему ремонта.
+     */
+    private static int calculateRepairCost(Rarity rarity) {
 
-    private static String getOriginalItemName(ItemStack stack) {
+        return switch (rarity) {
 
-        var id =
-                stack.get(ModDataComponents.ORIGINAL_ITEM_ID);
+            case COMMON -> 1;
 
+            case RARE -> 2;
 
-        if (id == null) {
-            return "";
-        }
+            case EPIC -> 3;
 
+            case LEGENDARY -> 4;
 
-        Item item =
-                BuiltInRegistries.ITEM.get(id);
+            case MYTHIC -> 5;
 
+            case DIVINE -> 6;
+        };
 
-        if (item == null) {
-            return "";
-        }
-
-
-        return item.getDescription()
-                .getString();
-    }
-
-
-    private static int getRepairCost(ItemStack stack) {
-
-        if (!stack.has(ModDataComponents.ORIGINAL_ITEM_ID)) {
-            return 0;
-        }
-
-
-        return 0;
     }
 
 }

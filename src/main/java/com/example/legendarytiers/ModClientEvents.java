@@ -1,6 +1,7 @@
 package com.example.legendarytiers;
 
 import com.example.legendarytiers.screen.RunicTableScreen;
+import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+
+import static com.example.legendarytiers.util.ExperienceUtil.EXPERIENCE_PER_LEVEL;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = LegendaryTiers.MOD_ID)
 public class ModClientEvents {
@@ -62,9 +65,9 @@ public class ModClientEvents {
         // Опыт и уровень
         Integer exp = stack.get(ModDataComponents.EXPERIENCE);
         if (exp != null) {
-            int level = exp / 100;
-            int currentLevelExp = exp % 100;
-            int nextLevelExp = 100;
+            int level = ExperienceUtil.getLevel(exp);
+            int currentLevelExp = ExperienceUtil.getCurrentLevelExperience(exp);
+            int nextLevelExp = EXPERIENCE_PER_LEVEL;
             double progressPercent = (currentLevelExp / (double) nextLevelExp) * 100.0;
             String progressStr = String.format("%.1f", progressPercent);
 

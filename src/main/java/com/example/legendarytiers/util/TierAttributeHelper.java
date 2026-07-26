@@ -14,7 +14,7 @@ public class TierAttributeHelper {
             return baseValue;
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int level = exp / 100;
+        int level = ExperienceUtil.getLevel(exp);
         double levelMultiplier = 1.0 + level * 0.005;
 
         double value = baseValue;

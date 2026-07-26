@@ -1,5 +1,5 @@
 {
-  "itemGroup.legendarytiers": "Legendary Tiers",
+  "itemGroup.legendarytiers": "RPG Items Tiers",
 
   "rarity.legendarytiers.common": "Common",
   "rarity.legendarytiers.rare": "Rare",
@@ -21,7 +21,6 @@
 
   "block.legendarytiers.runic_table": "Runic Table",
 
-  "attribute.name.generic.durability": "Durability %s%%",
 
   "tooltip.legendarytiers.level": "⬆ Level: %s",
   "tooltip.legendarytiers.exp": "🔋 Exp: %s/%s (%s%%)",
@@ -53,6 +52,10 @@
   "legendarytiers.guide_book.name": "Legendary Tiers Guide",
   "legendarytiers.guide_book.landing": "A guide to the art of runic reforging.",
 
+  "attribute.name.player.block_break_speed": "Mining Speed",
+  "attribute.name.player.block_interaction_range": "Block Interaction Range",
+  "attribute.name.player.entity_interaction_range": "Entity Interaction Range",
+  "attribute.name.generic.durability": "Durability",
   "attribute.name.generic.bow_draw_speed": "Bow draw speed",
   "attribute.name.generic.arrow_damage": "Arrow damage",
   "attribute.name.generic.crit_chance": "Critical Chance",

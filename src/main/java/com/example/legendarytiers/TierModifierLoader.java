@@ -1,5 +1,6 @@
 package com.example.legendarytiers;
 
+import com.example.legendarytiers.util.ExperienceUtil;
 import com.google.gson.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -97,7 +98,7 @@ public class TierModifierLoader {
         int count = minAttrs + random.nextInt(maxAttrs - minAttrs + 1);
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int level = exp / 100;
+        int level = ExperienceUtil.getLevel(exp);
         double levelBonusPct = level * 0.001;   // +0.1% к максимуму за каждый уровень
         double levelBonusAbs = level * 0.01;
 

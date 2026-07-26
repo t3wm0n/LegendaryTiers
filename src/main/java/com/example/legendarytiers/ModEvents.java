@@ -1,10 +1,15 @@
 package com.example.legendarytiers;
 
+import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -22,6 +27,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.sound.SoundEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -34,11 +40,18 @@ import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
 @EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
 public class ModEvents {
-    // Вспомогательный метод
-    public static void addExperience(ItemStack stack, int amount) {
+    // Вспомогательный метод: LVL UP, ADD EXP
+    public static void addExperience(ItemStack stack, int amount, Player player) {
         if (!stack.is(ModTags.TIERABLE_ITEMS)) return;
         int current = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        stack.set(ModDataComponents.EXPERIENCE, current + amount);
+        int oldLevel = current / 100;
+        int newExp = current + amount;
+        int newLevel = newExp / 100;
+        stack.set(ModDataComponents.EXPERIENCE, newExp);
+        if (newLevel > oldLevel && player != null) {
+            player.level().playSound(null, player.blockPosition(),
+                    SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.5F, 1.5F);
+        }
     }
 
     // Опыт за добычу блоков
@@ -51,13 +64,13 @@ public class ModEvents {
         BlockState state = event.getState();
         if (tool.getItem() instanceof PickaxeItem && tool.isCorrectToolForDrops(state)) {
             int xp = getOreXpFromConfig(state);
-            if (xp > 0) addExperience(tool, xp);
+            if (xp > 0) addExperience(tool, xp, player);
         }
         else if (state.is(BlockTags.LOGS) && tool.isCorrectToolForDrops(state)) {
-            addExperience(tool, Config.INSTANCE.getAxeXp());
+            addExperience(tool, Config.INSTANCE.getAxeXp(), player);
         }
         else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL) && tool.isCorrectToolForDrops(state)) {
-            addExperience(tool, Config.INSTANCE.getShovelXp());
+            addExperience(tool, Config.INSTANCE.getShovelXp(), player);
         }
     }
 
@@ -72,7 +85,7 @@ public class ModEvents {
             int baseXp = (int) (event.getEntity().getMaxHealth() * Config.INSTANCE.getMobXpMultiplier());
             if (baseXp < Config.INSTANCE.getMobXpMin()) baseXp = Config.INSTANCE.getMobXpMin();
             if (weapon.getItem() instanceof AxeItem) baseXp = Math.max(1, baseXp / 2);
-            addExperience(weapon, baseXp);
+            addExperience(weapon, baseXp, player);
         }
     }
 
@@ -86,7 +99,7 @@ public class ModEvents {
             BlockState state = level.getBlockState(pos);
             if (state.is(Blocks.DIRT) || state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT_PATH)
                     || state.is(Blocks.COARSE_DIRT) || state.is(Blocks.ROOTED_DIRT)) {
-                addExperience(stack, Config.INSTANCE.getHoeXp());
+                addExperience(stack, Config.INSTANCE.getHoeXp(), event.getEntity());
             }
         }
     }
@@ -101,7 +114,7 @@ public class ModEvents {
             EquipmentSlot[] armorSlots = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
             for (EquipmentSlot slot : armorSlots) {
                 ItemStack armor = player.getItemBySlot(slot);
-                if (!armor.isEmpty()) addExperience(armor, xpPerPiece);
+                if (!armor.isEmpty()) addExperience(armor, xpPerPiece, player);
             }
         }
     }
@@ -222,6 +235,27 @@ public class ModEvents {
                 target.set(ModDataComponents.REFORGE_ATTEMPTS, 0);
                 cloth.shrink(1);
                 event.setCanceled(true);
+                player.level().playSound(
+                        null,
+                        player.blockPosition(),
+                        SoundEvents.BRUSH_GENERIC,
+                        SoundSource.PLAYERS,
+                        1.50F,
+                        1.2F
+                );
+                if (player.level() instanceof ServerLevel level) {
+                    level.sendParticles(
+                            ParticleTypes.ENCHANT,
+                            player.getX(),
+                            player.getY() + player.getBbHeight() * 0.5,
+                            player.getZ(),
+                            18,
+                            0.25,
+                            0.35,
+                            0.25,
+                            0.02
+                    );
+                }
             }
         }
     }

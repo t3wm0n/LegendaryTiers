@@ -41,7 +41,4 @@ public class ModItems {
     // Очищающий платок
     public static final Supplier<Item> CLEANSING_CLOTH = ITEMS.register("cleansing_cloth",
             () -> new Item(new Item.Properties().stacksTo(1)));
-
-    //public static final Supplier<Item> GUIDE_BOOK = ITEMS.register("guide_book",
-    //        () -> new Item(new Item.Properties().stacksTo(1)));
 }
