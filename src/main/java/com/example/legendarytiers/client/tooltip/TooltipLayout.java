@@ -5,8 +5,11 @@ public final class TooltipLayout {
     private TooltipLayout() {
     }
 
-    // Общая ширина tooltip
-    public static final int WIDTH = 260;
+    //подсказка на шифт
+    public static final int HINT_HEIGHT = 18;
+
+    //мин ширина подсказки
+    public static final int MIN_WIDTH = 260;
 
     // Внутренний отступ от рамки
     public static final int PADDING = 16;
@@ -23,6 +26,9 @@ public final class TooltipLayout {
     // Полоса опыта
     public static final int EXPERIENCE_HEIGHT = 42;
 
+    // Прочность
+    public static final int DURABILITY_HEIGHT = 28;
+
     // Одна строка атрибута
     public static final int ATTRIBUTE_LINE_HEIGHT = 22;
 
@@ -30,16 +36,22 @@ public final class TooltipLayout {
     public static final int DIVIDER_HEIGHT = 10;
 
     // Блок Broken Item
-    public static final int BROKEN_HEIGHT = 70;
+    public static final int BROKEN_HEIGHT = 86;
 
     // Блок перековки
     public static final int REFORGE_HEIGHT = 24;
 
+    // Зачарования
+    public static final int ENCHANTMENT_LINE_HEIGHT = 18;
+
     public static int calculateHeight(
-            int itemStats,
-            int attributes,
+            int enchantmentCount,
+            int attributeCount,
             boolean broken,
-            boolean reforges
+            boolean durability,
+            boolean reforge,
+            boolean showHint,
+            boolean showEnchantments
     ) {
 
         int height = 0;
@@ -47,38 +59,64 @@ public final class TooltipLayout {
         height += HEADER_HEIGHT;
         height += RARITY_HEIGHT;
         height += QUALITY_HEIGHT;
+
+        if (durability) {
+            height += DURABILITY_HEIGHT;
+        }
+
+        if (attributeCount > 0) {
+            height += DIVIDER_HEIGHT;
+            height += attributeCount * ATTRIBUTE_LINE_HEIGHT;
+        }
+
+        if (showEnchantments && enchantmentCount > 0) {
+
+            height += 14;
+            height += enchantmentCount * ENCHANTMENT_LINE_HEIGHT;
+
+        }
+
+        height += DIVIDER_HEIGHT;
         height += EXPERIENCE_HEIGHT;
 
-        if (itemStats > 0) {
-
-            height += DIVIDER_HEIGHT;
-            height += itemStats * ATTRIBUTE_LINE_HEIGHT;
-
-        }
-
-        if (attributes > 0) {
-
-            height += DIVIDER_HEIGHT;
-            height += attributes * ATTRIBUTE_LINE_HEIGHT;
-
-        }
-
         if (broken) {
-
             height += DIVIDER_HEIGHT;
             height += BROKEN_HEIGHT;
-
         }
 
-        if (reforges) {
-
+        if (reforge) {
             height += DIVIDER_HEIGHT;
             height += REFORGE_HEIGHT;
+        }
+
+        if (showHint) {
+
+            height += DIVIDER_HEIGHT;
+            height += HINT_HEIGHT;
 
         }
 
         height += PADDING * 2;
 
         return height;
+    }
+
+    public static int calculateWidth(
+            int longestLineWidth
+    ) {
+
+        return Math.max(
+                MIN_WIDTH,
+                longestLineWidth + PADDING * 2 + 24
+        );
+
+    }
+
+    public static int enchantmentHeight(
+            int count
+    ) {
+
+        return count * ENCHANTMENT_LINE_HEIGHT;
+
     }
 }

@@ -1,5 +1,7 @@
 package com.example.legendarytiers;
 
+import com.example.legendarytiers.util.RepairCostHelper;
+import com.example.legendarytiers.util.RepairEntry;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -32,11 +34,15 @@ import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+
+import java.util.Optional;
 
 @EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
 public class ModEvents {
@@ -106,15 +112,18 @@ public class ModEvents {
 
     // Опыт для брони
     @SubscribeEvent
-    public static void onLivingDamage(LivingDamageEvent.Post event) {
+    public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
-            float damage = event.getNewDamage();
+            float damage = event.getAmount();
             if (damage <= 0) return;
-            int xpPerPiece = Math.round(damage * Config.INSTANCE.getArmorXpPerDamage());
+            int xpPerPiece = Math.round(damage * Config.INSTANCE.getArmorXpPerDamage() / 2);
+            if (xpPerPiece <= 0) return;
             EquipmentSlot[] armorSlots = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
             for (EquipmentSlot slot : armorSlots) {
                 ItemStack armor = player.getItemBySlot(slot);
-                if (!armor.isEmpty()) addExperience(armor, xpPerPiece, player);
+                if (!armor.isEmpty() && armor.is(ModTags.TIERABLE_ITEMS)) {
+                    addExperience(armor, xpPerPiece, player);
+                }
             }
         }
     }
@@ -155,73 +164,109 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
+
         ItemStack left = event.getLeft();
         ItemStack right = event.getRight();
-        if (left.is(ModItems.BROKEN_ITEM.get())) {
-            ResourceLocation originalId = left.get(ModDataComponents.ORIGINAL_ITEM_ID);
-            if (originalId != null) {
-                Item originalItem = BuiltInRegistries.ITEM.get(originalId);
-                if (originalItem != null && originalItem.isValidRepairItem(new ItemStack(originalItem), right)) {
-                    int requiredAmount = getMaterialCost(originalItem);
-                    if (right.getCount() != requiredAmount) {
-                        return;
-                    }
 
-                    ItemStack result = new ItemStack(originalItem);
-                    result.applyComponents(left.getComponents());
-                    result.remove(ModDataComponents.ORIGINAL_ITEM_ID);
-                    result.setDamageValue(0);
+        if (!left.is(ModItems.BROKEN_ITEM.get())) {
+            return;
+        }
 
-                    TierData tier = left.get(ModDataComponents.TIER_DATA);
-                    int rarityCost = tier != null ? tier.rarity().ordinal() : 0;
-                    int materialCost = getMaterialCost(originalItem);
-                    int enchantmentCost = 0;
-                    ItemEnchantments enchantments = left.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
-                    for (var entry : enchantments.entrySet()) {
-                        enchantmentCost += entry.getIntValue();
-                    }
-                    int enchantmentSurcharge = (int) Math.ceil(enchantmentCost * 1.2);
-                    int cost = materialCost + rarityCost + enchantmentSurcharge;
-                    event.setCost(Math.max(1, cost));
-                    event.setOutput(result);
-                }
-            }
-        }
-    }
+        ResourceLocation originalId =
+                left.get(ModDataComponents.ORIGINAL_ITEM_ID);
 
-    public static int getMaterialCost(Item item) {
-        int baseCost = getBaseRepairCost(item);
-        if (baseCost <= 0) {
-            int maxDurability = new ItemStack(item).getMaxDamage();
-            if (maxDurability < 100) return 1;
-            else if (maxDurability < 300) return 2;
-            else if (maxDurability < 800) return 3;
-            else if (maxDurability < 2000) return 4;
-            else return 5;
+        if (originalId == null) {
+            return;
         }
-        return baseCost + 1;
-    }
 
-    private static int getBaseRepairCost(Item item) {
-        // Для инструментов и оружия (TieredItem) определяем по типу предмета
-        if (item instanceof TieredItem tiered) {
-            if (item instanceof PickaxeItem || item instanceof AxeItem) return 3;
-            if (item instanceof ShovelItem) return 1;
-            if (item instanceof HoeItem) return 2;
-            if (item instanceof SwordItem || item instanceof MaceItem) return 2;
-            return 0;
+        Item originalItem =
+                BuiltInRegistries.ITEM.get(originalId);
+
+        if (originalItem == null) {
+            return;
         }
-        // Для брони
-        else if (item instanceof ArmorItem armor) {
-            return switch (armor.getEquipmentSlot()) {
-                case HEAD -> 5;
-                case CHEST -> 8;
-                case LEGS -> 7;
-                case FEET -> 4;
-                default -> 4; // BODY (лошади)
-            };
+
+        Optional<RepairEntry> repair =
+                RepairCostHelper.get(originalItem);
+
+        if (repair.isEmpty()) {
+            return;
         }
-        return 0;
+
+        RepairEntry info = repair.get();
+
+        /*
+         * Проверяем материал ремонта.
+         */
+
+        if (!info.ingredient().test(right)) {
+            return;
+        }
+
+        /*
+         * Проверяем количество материала.
+         */
+
+        if (right.getCount() < info.amount()) {
+            return;
+        }
+
+        /*
+         * Создаём восстановленный предмет.
+         */
+
+        ItemStack result =
+                new ItemStack(originalItem);
+
+        result.applyComponents(left.getComponents());
+
+        result.remove(ModDataComponents.ORIGINAL_ITEM_ID);
+
+        result.setDamageValue(0);
+
+        /*
+         * Стоимость ремонта.
+         */
+
+        TierData tier =
+                left.get(ModDataComponents.TIER_DATA);
+
+        int rarityCost =
+                tier != null
+                        ? tier.rarity().ordinal()
+                        : 0;
+
+        int enchantmentCost = 0;
+
+        ItemEnchantments enchantments =
+                left.getOrDefault(
+                        DataComponents.ENCHANTMENTS,
+                        ItemEnchantments.EMPTY
+                );
+
+        for (var entry : enchantments.entrySet()) {
+
+            enchantmentCost += entry.getIntValue();
+
+        }
+
+        int enchantmentSurcharge =
+                (int) Math.ceil(enchantmentCost * 1.2);
+
+        int totalCost =
+                info.amount()
+                        + rarityCost
+                        + enchantmentSurcharge;
+
+        event.setCost(
+                Math.max(
+                        1,
+                        totalCost
+                )
+        );
+
+        event.setOutput(result);
+
     }
 
     @SubscribeEvent
@@ -324,5 +369,14 @@ public class ModEvents {
             return Config.INSTANCE.getStoneXp();
         }
         return 0;
+    }
+
+    @SubscribeEvent
+    public static void onServerStarting(ServerStartingEvent event) {
+
+        RepairCostHelper.buildCache(
+                event.getServer().overworld()
+        );
+
     }
 }

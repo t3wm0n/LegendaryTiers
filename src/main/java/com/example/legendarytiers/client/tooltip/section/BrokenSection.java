@@ -9,6 +9,15 @@ import com.example.legendarytiers.client.tooltip.render.TextRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import com.example.legendarytiers.ModDataComponents;
+import com.example.legendarytiers.util.RepairCostHelper;
+import com.example.legendarytiers.util.RepairEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.Optional;
 
 public final class BrokenSection {
 
@@ -30,8 +39,9 @@ public final class BrokenSection {
             int width
     ) {
 
-        if (context == null || !context.broken())
+        if (context == null || !context.broken()) {
             return;
+        }
 
         graphics.fill(
                 x + TooltipLayout.PADDING,
@@ -51,17 +61,17 @@ public final class BrokenSection {
 
         int currentY = y;
 
-
-        // Иконка сломанного предмета
+        /*
+         * Заголовок
+         */
 
         IconRenderer.draw(
                 graphics,
-                x + TooltipLayout.PADDING,
-                currentY + 4,
+                x + TooltipLayout.PADDING + 2,
+                currentY,
                 TooltipIcons.BROKEN_X,
                 TooltipIcons.BROKEN_Y
         );
-
 
         TextRenderer.drawShadow(
                 graphics,
@@ -69,44 +79,67 @@ public final class BrokenSection {
                 Component.translatable(
                         "tooltip.legendarytiers.broken"
                 ).getString(),
-                x + TooltipLayout.PADDING + 22,
+                x + TooltipLayout.PADDING + 26,
                 currentY + 6,
                 TooltipColors.TEXT_NEGATIVE
         );
 
+        currentY += 22;
+
+        /*
+         * Оригинальный предмет
+         */
+
+        ResourceLocation originalId =
+                context.stack().get(
+                        ModDataComponents.ORIGINAL_ITEM_ID
+                );
+
+        if (originalId == null) {
+            return;
+        }
+
+        Item originalItem =
+                BuiltInRegistries.ITEM.get(originalId);
+
+        ItemStack originalStack =
+                new ItemStack(originalItem);
+
+        graphics.renderItem(
+                originalStack,
+                x + TooltipLayout.PADDING + 2,
+                currentY
+        );
+
+        TextRenderer.draw(
+                graphics,
+                font,
+                originalStack.getHoverName().getString(),
+                x + TooltipLayout.PADDING + 26,
+                currentY + 5,
+                TooltipColors.TEXT_SECONDARY
+        );
 
         currentY += 22;
 
+        /*
+         * Информация о ремонте
+         */
 
-        // Оригинальный предмет
+        Optional<RepairEntry> repair =
+                RepairCostHelper.get(originalItem);
 
-        String original =
-                context.originalItemName();
-
-
-        if (original != null && !original.isEmpty()) {
-
-            TextRenderer.draw(
-                    graphics,
-                    font,
-                    Component.translatable(
-                            "tooltip.legendarytiers.was"
-                    ).getString()
-                            + original,
-                    x + TooltipLayout.PADDING,
-                    currentY,
-                    TooltipColors.TEXT_SECONDARY
-            );
-
-            currentY += 18;
+        if (repair.isEmpty()) {
+            return;
         }
 
+        RepairEntry info =
+                repair.get();
 
-        // Стоимость ремонта
         IconRenderer.draw(
                 graphics,
-                x + TooltipLayout.PADDING,
-                currentY - 2,
+                x + TooltipLayout.PADDING + 2,
+                currentY,
                 TooltipIcons.REPAIR_X,
                 TooltipIcons.REPAIR_Y
         );
@@ -114,39 +147,32 @@ public final class BrokenSection {
         TextRenderer.draw(
                 graphics,
                 font,
-                Component.translatable(
-                        "tooltip.legendarytiers.repair",
-                        context.repairCost()
-                ).getString(),
-                x + TooltipLayout.PADDING + 22,
-                currentY,
+                Component.translatable("tooltip.legendarytiers.repair_hint").getString(),
+                x + TooltipLayout.PADDING + 26,
+                currentY + 5,
                 TooltipColors.TEXT_NORMAL
         );
 
+        currentY += 22;
 
-        currentY += 18;
+        /*
+         * Материал
+         */
 
-
-        // Подсказка
-
-        var lines = font.split(
-                Component.translatable("tooltip.legendarytiers.repair_hint"),
-                width - TooltipLayout.PADDING * 2
+        graphics.renderItem(
+                info.displayStack(),
+                x + TooltipLayout.PADDING + 4,
+                currentY
         );
 
-        for (var line : lines) {
-
-            graphics.drawString(
-                    font,
-                    line,
-                    x + TooltipLayout.PADDING,
-                    currentY,
-                    TooltipColors.TEXT_TITLE,
-                    false
-            );
-
-            currentY += 10;
-        }
+        TextRenderer.draw(
+                graphics,
+                font,
+                info.displayStack().getHoverName().getString() + "×" + info.amount(),
+                x + TooltipLayout.PADDING + 26,
+                currentY + 5,
+                TooltipColors.TEXT_POSITIVE
+        );
 
     }
 

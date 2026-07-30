@@ -18,7 +18,7 @@ public final class TooltipIcons {
     */
 
     public static final int ICON_SIZE = 64;
-    public static final int DRAW_SIZE = 16;
+    public static final int DRAW_SIZE = 20;
 
     /*
         Атлас иконок.
@@ -118,12 +118,20 @@ public final class TooltipIcons {
     public static final int REFORGE_X = 448;
     public static final int REFORGE_Y = 128;
 
+    // Стрелки
+
+    public static final int BONUS_UP_X = 0;
+    public static final int BONUS_UP_Y = 256;
+
+    public static final int BONUS_DOWN_X = 64;
+    public static final int BONUS_DOWN_Y = 256;
+
     public static int getIconX(String descriptionId) {
 
         return switch (descriptionId) {
 
-            case "attribute.name.attack_damage" -> ATTACK_X;
-            case "attribute.name.attack_speed" -> ATTACK_SPEED_X;
+            case "attribute.name.generic.attack_damage" -> ATTACK_X;
+            case "attribute.name.generic.attack_speed" -> ATTACK_SPEED_X;
 
             case "attribute.name.generic.armor" -> ARMOR_X;
             case "attribute.name.generic.armor_toughness" -> ARMOR_TOUGHNESS_X;
@@ -132,9 +140,9 @@ public final class TooltipIcons {
             case "attribute.name.generic.luck" -> LUCK_X;
 
             case "attribute.name.generic.movement_speed" -> MOVEMENT_SPEED_X;
-            case "attribute.name.generic.block_break_speed" -> BLOCK_BREAK_SPEED_X;
-            case "attribute.name.generic.block_interaction_range" -> BLOCK_INTERACTION_RANGE_X;
-            case "attribute.name.generic.entity_interaction_range" -> ENTITY_INTERACTION_RANGE_X;
+            case "attribute.name.player.block_break_speed" -> BLOCK_BREAK_SPEED_X;
+            case "attribute.name.player.block_interaction_range" -> BLOCK_INTERACTION_RANGE_X;
+            case "attribute.name.player.entity_interaction_range" -> ENTITY_INTERACTION_RANGE_X;
 
             case "attribute.name.generic.crit_chance" -> CRIT_CHANCE_X;
             case "attribute.name.generic.crit_damage" -> CRIT_DAMAGE_X;
@@ -150,8 +158,8 @@ public final class TooltipIcons {
 
         return switch (descriptionId) {
 
-            case "attribute.name.attack_damage" -> ATTACK_Y;
-            case "attribute.name.attack_speed" -> ATTACK_SPEED_Y;
+            case "attribute.name.generic.attack_damage" -> ATTACK_Y;
+            case "attribute.name.generic.attack_speed" -> ATTACK_SPEED_Y;
 
             case "attribute.name.generic.armor" -> ARMOR_Y;
             case "attribute.name.generic.armor_toughness" -> ARMOR_TOUGHNESS_Y;

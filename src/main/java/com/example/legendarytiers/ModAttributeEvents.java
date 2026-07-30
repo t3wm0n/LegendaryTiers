@@ -23,7 +23,7 @@ public class ModAttributeEvents {
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
         int level = ExperienceUtil.getLevel(exp);
-        double levelMultiplier = 1.0 + (level * 0.005);
+        double levelMultiplier = 1.0 + (level * 0.01);
 
         // Определяем группу слотов по типу предмета
         EquipmentSlotGroup slotGroup = getSlotGroupForItem(stack);

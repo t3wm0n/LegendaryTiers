@@ -34,16 +34,19 @@ public final class ReforgeSection {
             return;
 
 
-        int attempts = context.reforgeAttempts();
+        int maxAttempts = 3;
 
+        int usedAttempts = context.reforgeAttempts();
 
-        int color;
+        int remainingAttempts = Math.max(
+                0,
+                maxAttempts - usedAttempts
+        );
 
-        if (attempts >= 3) {
-            color = TooltipColors.TEXT_NEGATIVE;
-        } else {
-            color = TooltipColors.TEXT_POSITIVE;
-        }
+        int color =
+                remainingAttempts > 0
+                        ? TooltipColors.TEXT_POSITIVE
+                        : TooltipColors.TEXT_NEGATIVE;
 
 
         IconRenderer.draw(
@@ -60,7 +63,9 @@ public final class ReforgeSection {
                 font,
                 Component.translatable(
                         "tooltip.legendarytiers.reforge_attempts",
-                        attempts
+                        remainingAttempts,
+                        maxAttempts
+
                 ).getString(),
                 x + TooltipLayout.PADDING + TooltipIcons.DRAW_SIZE + 6,
                 y + 7,

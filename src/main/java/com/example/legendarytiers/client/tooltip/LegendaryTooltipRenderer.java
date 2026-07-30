@@ -4,6 +4,8 @@ import com.example.legendarytiers.client.tooltip.render.TooltipRenderUtil;
 import com.example.legendarytiers.client.tooltip.section.*;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public final class LegendaryTooltipRenderer {
 
@@ -17,23 +19,31 @@ public final class LegendaryTooltipRenderer {
             int x,
             int y
     ) {
-
-        int attributeCount = context.modifiers().size();
-
-        int itemStatCount = ItemStatsSection.count(context.stack());
-
+        int width = context.tooltipWidth();
+        int attributeCount =
+                AttributeSection.visibleCount(context);
+        int enchantmentCount =
+                context.stack()
+                        .getOrDefault(
+                                DataComponents.ENCHANTMENTS,
+                                ItemEnchantments.EMPTY
+                        )
+                        .size();
         int height = TooltipLayout.calculateHeight(
-                itemStatCount,
+                enchantmentCount,
                 attributeCount,
                 context.broken(),
-                true
+                context.maxDurability() > 0,
+                true,
+                !context.showAdvancedAttributes(),
+                context.showEnchantments()
         );
 
         TooltipRenderUtil.drawBackground(
                 graphics,
                 x,
                 y,
-                TooltipLayout.WIDTH,
+                width,
                 height
         );
 
@@ -55,7 +65,7 @@ public final class LegendaryTooltipRenderer {
                 context,
                 x,
                 currentY,
-                TooltipLayout.WIDTH
+                width
         );
 
         currentY += RaritySection.getHeight();
@@ -66,10 +76,34 @@ public final class LegendaryTooltipRenderer {
                 context,
                 x,
                 currentY,
-                TooltipLayout.WIDTH
+                width
         );
 
         currentY += QualitySection.getHeight();
+
+        if (context.maxDurability() > 0) {
+
+            DurabilitySection.render(
+                    graphics,
+                    font,
+                    context,
+                    x,
+                    currentY,
+                    width
+            );
+
+            currentY += DurabilitySection.getHeight();
+
+        }
+
+        TooltipRenderUtil.drawDivider(
+                graphics,
+                x,
+                currentY,
+                width
+        );
+
+        currentY += TooltipLayout.DIVIDER_HEIGHT;
 
         ExperienceSection.render(
                 graphics,
@@ -77,36 +111,10 @@ public final class LegendaryTooltipRenderer {
                 context,
                 x,
                 currentY,
-                TooltipLayout.WIDTH
+                width
         );
 
         currentY += ExperienceSection.getHeight();
-
-        if (itemStatCount > 0) {
-
-            TooltipRenderUtil.drawDivider(
-                    graphics,
-                    x,
-                    currentY,
-                    TooltipLayout.WIDTH
-            );
-
-            currentY += TooltipLayout.DIVIDER_HEIGHT;
-
-            ItemStatsSection.render(
-                    graphics,
-                    font,
-                    context,
-                    x,
-                    currentY,
-                    TooltipLayout.WIDTH
-            );
-
-            currentY += ItemStatsSection.getHeight(itemStatCount);
-        }
-        // =========================
-        // Attribute modifiers
-        // =========================
 
         if (attributeCount > 0) {
 
@@ -114,7 +122,7 @@ public final class LegendaryTooltipRenderer {
                     graphics,
                     x,
                     currentY,
-                    TooltipLayout.WIDTH
+                    width
             );
 
             currentY += TooltipLayout.DIVIDER_HEIGHT;
@@ -125,15 +133,40 @@ public final class LegendaryTooltipRenderer {
                     context,
                     x,
                     currentY,
-                    TooltipLayout.WIDTH
+                    width
             );
 
             currentY += AttributeSection.getHeight(attributeCount);
+
         }
 
-        // =========================
-        // Broken item
-        // =========================
+        int enchantHeight =
+                EnchantmentSection.getHeight(context);
+
+        if (enchantHeight > 0) {
+
+            currentY += 6;
+
+            TooltipRenderUtil.drawDivider(
+                    graphics,
+                    x,
+                    currentY,
+                    width
+            );
+
+            currentY += 8;
+
+            EnchantmentSection.render(
+                    graphics,
+                    font,
+                    context,
+                    x,
+                    currentY,
+                    width
+            );
+
+            currentY += enchantHeight;
+        }
 
         if (context.broken()) {
 
@@ -141,7 +174,7 @@ public final class LegendaryTooltipRenderer {
                     graphics,
                     x,
                     currentY,
-                    TooltipLayout.WIDTH
+                    width
             );
 
             currentY += TooltipLayout.DIVIDER_HEIGHT;
@@ -152,21 +185,18 @@ public final class LegendaryTooltipRenderer {
                     context,
                     x,
                     currentY,
-                    TooltipLayout.WIDTH
+                    width
             );
 
             currentY += BrokenSection.getHeight();
-        }
 
-        // =========================
-        // Reforge
-        // =========================
+        }
 
         TooltipRenderUtil.drawDivider(
                 graphics,
                 x,
                 currentY,
-                TooltipLayout.WIDTH
+                width
         );
 
         currentY += TooltipLayout.DIVIDER_HEIGHT;
@@ -177,8 +207,34 @@ public final class LegendaryTooltipRenderer {
                 context,
                 x,
                 currentY,
-                TooltipLayout.WIDTH
+                width
         );
+
+        currentY += ReforgeSection.getHeight();
+
+        if (!context.showAdvancedAttributes()) {
+
+            TooltipRenderUtil.drawDivider(
+                    graphics,
+                    x,
+                    currentY,
+                    width
+            );
+
+            currentY += TooltipLayout.DIVIDER_HEIGHT;
+
+            HintSection.render(
+                    graphics,
+                    font,
+                    context,
+                    x,
+                    currentY,
+                    width
+            );
+
+            //currentY += HintSection.getHeight();
+
+        }
 
     }
 

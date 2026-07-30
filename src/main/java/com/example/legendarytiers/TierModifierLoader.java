@@ -66,9 +66,6 @@ public class TierModifierLoader {
                 }
             }
             attributeCache.put(type, map);
-            // Для количества атрибутов: сохраним строку с мин/макс для каждой редкости в отдельную карту
-            // Лучше сохранять прямо в Map<String, int[][]> или вычислять при загрузке.
-            // Пока сохраним только min_attrs, max_attrs будем брать из JSON при генерации (см. generate)
         } catch (Exception e) {
             System.err.println("Failed to load tier modifiers for type: " + type);
             e.printStackTrace();
@@ -99,8 +96,8 @@ public class TierModifierLoader {
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
         int level = ExperienceUtil.getLevel(exp);
-        double levelBonusPct = level * 0.001;   // +0.1% к максимуму за каждый уровень
-        double levelBonusAbs = level * 0.01;
+        double levelBonusPct = level * 0.01;   // +1% к максимуму за каждый уровень
+        double levelBonusAbs = level * 0.1;
 
         List<ModifierEntry> modifiers = new ArrayList<>();
         float totalQuality = 0;

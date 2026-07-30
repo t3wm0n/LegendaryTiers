@@ -7,13 +7,17 @@ import com.example.legendarytiers.Rarity;
 import com.example.legendarytiers.TierData;
 import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
+
 
 public final class LegendaryTooltipBuilder {
 
@@ -57,6 +61,35 @@ public final class LegendaryTooltipBuilder {
         boolean broken =
                 stack.is(ModItems.BROKEN_ITEM.get());
 
+        List<ModifierEntry> modifiers =
+                tierData.modifiers() == null
+                        ? Collections.emptyList()
+                        : tierData.modifiers();
+
+        int durability =
+                stack.getMaxDamage() - stack.getDamageValue();
+
+        int maxDurability =
+                stack.getMaxDamage();
+
+        boolean showAdvanced =
+                Screen.hasShiftDown();
+
+        boolean showEnchantments =
+                Screen.hasControlDown();
+
+        double durabilityBonus = 0.0;
+
+        for (ModifierEntry modifier : modifiers) {
+
+            if ("durability".equals(modifier.target())) {
+
+                durabilityBonus += modifier.value();
+
+            }
+
+        }
+
         String originalItemName = "";
 
         ResourceLocation originalItemId =
@@ -74,10 +107,81 @@ public final class LegendaryTooltipBuilder {
 
         }
 
-        List<ModifierEntry> modifiers =
-                tierData.modifiers() == null
-                        ? Collections.emptyList()
-                        : tierData.modifiers();
+        List<TooltipAttributeEntry> attributes =
+                TooltipAttributeCollector.collect(
+                        stack,
+                        player,
+                        modifiers
+                );
+
+        Font font = minecraft.font;
+
+        int longestLine = font.width(stack.getHoverName());
+
+        for (ModifierEntry modifier : modifiers) {
+
+            if (modifier.attribute().isEmpty()) {
+                continue;
+            }
+
+            String attributeId = modifier.attribute().get();
+
+            String key = attributeId;
+
+            int separator = key.indexOf(':');
+
+            if (separator >= 0) {
+                key = key.substring(separator + 1);
+            }
+
+            key = key.replace(':', '.');
+
+            String name =
+                    Component.translatable(
+                            "attribute.name." + key
+                    ).getString();
+
+            AttributeFormat format =
+                    AttributeFormatRegistry.get(attributeId);
+
+            String bonus;
+
+            switch (format) {
+
+                case INTEGER ->
+                        bonus = String.format("%+d",
+                                (int)Math.round(modifier.value()));
+
+                case DECIMAL ->
+                        bonus = String.format("%+.2f",
+                                modifier.value());
+
+                case PERCENT ->
+                        bonus = String.format("%+d%%",
+                                (int)Math.round(modifier.value() * 100));
+
+                default ->
+                        bonus = "";
+
+            }
+
+            /*
+             * Полная строка:
+             * Название + итог + бонус
+             */
+
+            int lineWidth =
+                    font.width(name)
+                            + 90
+                            + font.width(bonus);
+
+            longestLine =
+                    Math.max(longestLine, lineWidth);
+
+        }
+
+        int tooltipWidth =
+                TooltipLayout.calculateWidth(longestLine);
 
         return new LegendaryTooltipContext(
 
@@ -99,37 +203,26 @@ public final class LegendaryTooltipBuilder {
 
                 modifiers,
 
+                attributes,
+
                 broken,
 
                 originalItemName,
 
-                calculateRepairCost(tierData.rarity()),
+                durability,
 
-                reforgeAttempts
+                maxDurability,
+
+                durabilityBonus,
+
+                tooltipWidth,
+
+                reforgeAttempts,
+
+                showAdvanced,
+
+                showEnchantments
         );
-    }
-
-    /**
-     * Пока используется временная формула.
-     * Позже будет заменена на настоящую систему ремонта.
-     */
-    private static int calculateRepairCost(Rarity rarity) {
-
-        return switch (rarity) {
-
-            case COMMON -> 1;
-
-            case RARE -> 2;
-
-            case EPIC -> 3;
-
-            case LEGENDARY -> 4;
-
-            case MYTHIC -> 5;
-
-            case DIVINE -> 6;
-        };
-
     }
 
 }

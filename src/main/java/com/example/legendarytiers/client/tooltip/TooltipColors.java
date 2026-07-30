@@ -19,6 +19,9 @@ public final class TooltipColors {
 
     public static final int TEXT_TITLE = 0xFFFFFFFF;
 
+    public static final int TEXT_DISABLED = 0xFFB8B8B8;
+
+    public static final int TEXT_ENCHANTMENT = 0x55FFFF;
     /*
      * Опыт
      */

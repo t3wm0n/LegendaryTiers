@@ -5,20 +5,19 @@ import com.example.legendarytiers.client.tooltip.TooltipColors;
 import com.example.legendarytiers.client.tooltip.TooltipIcons;
 import com.example.legendarytiers.client.tooltip.TooltipLayout;
 import com.example.legendarytiers.client.tooltip.render.IconRenderer;
+import com.example.legendarytiers.client.tooltip.render.ProgressBarRenderer;
 import com.example.legendarytiers.client.tooltip.render.TextRenderer;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 
 public final class ExperienceSection {
 
     private ExperienceSection() {
     }
 
-
     public static int getHeight() {
         return TooltipLayout.EXPERIENCE_HEIGHT;
     }
-
 
     public static void render(
             GuiGraphics graphics,
@@ -29,29 +28,32 @@ public final class ExperienceSection {
             int width
     ) {
 
-        if (context == null)
+        if (context == null) {
             return;
-
+        }
 
         int current = context.experience();
         int max = context.experienceToNextLevel();
 
-        if (max <= 0)
+        if (max <= 0) {
             max = 1;
+        }
 
-
-        // Иконка опыта
+        //------------------------------------------
+        // Иконка уровня
+        //------------------------------------------
 
         IconRenderer.draw(
                 graphics,
                 x + TooltipLayout.PADDING,
-                y + 4,
+                y + 2,
                 TooltipIcons.LEVEL_X,
                 TooltipIcons.LEVEL_Y
         );
 
-
+        //------------------------------------------
         // Уровень
+        //------------------------------------------
 
         TextRenderer.drawCenteredShadow(
                 graphics,
@@ -62,70 +64,50 @@ public final class ExperienceSection {
                 TooltipColors.TEXT_TITLE
         );
 
-
+        //------------------------------------------
         // Полоса опыта
-
-        int barX = x + TooltipLayout.PADDING;
-        int barY = y + 22;
-
-        int barWidth = width - TooltipLayout.PADDING * 4;
-        barX += TooltipLayout.PADDING;
-        int barHeight = 8;
-
-
-        // фон
-
-        graphics.fill(
-                barX,
-                barY,
-                barX + barWidth,
-                barY + barHeight,
-                0x66000000
-        );
-
-        graphics.renderOutline(
-                barX,
-                barY,
-                barWidth,
-                barHeight,
-                0xFFAAAAAA
-        );
-
-
-        // заполнение
+        //------------------------------------------
 
         float progress =
                 Math.min(1.0F, current / (float) max);
 
+        int barX = x + 20;
+        int barY = y + 22;
 
-        graphics.fill(
+        int barWidth = width - 40;
+        int barHeight = 12;
+
+        ProgressBarRenderer.draw(
+                graphics,
                 barX,
                 barY,
-                barX + (int)(barWidth * progress),
-                barY + barHeight,
-                0xFF4FA8FF
+                barWidth,
+                barHeight,
+                progress,
+                ProgressBarRenderer.ProgressBarType.EXPERIENCE
         );
 
-
+        //------------------------------------------
         // Текст опыта
+        //------------------------------------------
 
-        int percent = Math.round(progress * 100);
+        int percent =
+                Math.round(progress * 100);
 
         String expText =
-                current +
-                        " / " +
-                        max +
-                        " XP (" +
-                        percent +
-                        "%)";
-
+                current
+                        + " / "
+                        + max
+                        + " XP ("
+                        + percent
+                        + "%)";
 
         TextRenderer.drawCenteredShadow(
                 graphics,
                 font,
                 expText,
                 x + width / 2,
-                barY + 10,
+                y + 36,
                 TooltipColors.XP_TEXT
         );
 

@@ -22,7 +22,7 @@ public class ItemMaxDamageMixin {
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
         int level = ExperienceUtil.getLevel(exp);
-        double levelMultiplier = 1.0 + (level * 0.005);
+        double levelMultiplier = 1.0 + (level * 0.01);
 
         double durabilityMult = 1.0;
         int durabilityAdd = 0;

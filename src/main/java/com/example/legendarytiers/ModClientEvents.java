@@ -56,7 +56,7 @@ public class ModClientEvents {
                 if (originalItem != null) {
                     String originalName = originalItem.getDescription().getString();
                     event.getToolTip().add(Component.translatable("tooltip.legendarytiers.was").append(Component.literal(originalName)).withStyle(ChatFormatting.GRAY));
-                    int repairAmount = ModEvents.getMaterialCost(originalItem);
+                    int repairAmount = 2;
                     event.getToolTip().add(Component.translatable("tooltip.legendarytiers.repair", repairAmount).withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY));
                 }
             }
