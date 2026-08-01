@@ -1,20 +1,12 @@
 package com.example.legendarytiers.client.tooltip.render;
 
-import com.example.legendarytiers.client.tooltip.TooltipColors;
+import com.example.legendarytiers.client.tooltip.TooltipTheme;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.Mth;
 
 public final class ProgressBarRenderer {
 
-    public enum ProgressBarType {
-        EXPERIENCE,
-        DURABILITY
+    private ProgressBarRenderer() {
     }
-
-    private ProgressBarRenderer() {}
-
-    private static float displayedXp = 0.0F;
-    private static float displayedDurability = 0.0F;
 
     public static void draw(
             GuiGraphics graphics,
@@ -23,153 +15,156 @@ public final class ProgressBarRenderer {
             int width,
             int height,
             float progress,
-            ProgressBarType type
+            TooltipTheme theme
     ) {
 
-        progress = Mth.clamp(progress, 0.0F, 1.0F);
+        progress = Math.max(0f, Math.min(1f, progress));
 
-        float displayed;
+        int fillWidth =
+                (int) ((width - 2) * progress);
 
-        if (type == ProgressBarType.EXPERIENCE) {
-            displayedXp += (progress - displayedXp) * 0.15F;
-            displayed = displayedXp;
-        } else {
-            displayedDurability += (progress - displayedDurability) * 0.15F;
-            displayed = displayedDurability;
-        }
+        /*
+         * Тень
+         */
 
-        displayed = Mth.clamp(displayed, 0.0F, 1.0F);
+        graphics.fill(
+                x,
+                y,
+                x + width,
+                y + height,
+                0x99000000
+        );
 
-        int fill = Math.round((width - 2) * displayed);
-
-        //------------------------------------
-        // Outer border
-        //------------------------------------
+        /*
+         * Рамка
+         */
 
         graphics.renderOutline(
                 x,
                 y,
                 width,
                 height,
-                0xFF707070
+                theme.borderColor()
         );
 
-        //------------------------------------
-        // Inner background
-        //------------------------------------
+        /*
+         * Фон полосы
+         */
 
         graphics.fill(
                 x + 1,
                 y + 1,
                 x + width - 1,
                 y + height - 1,
-                0xFF1A1A1A
+                theme.backgroundDark()
         );
 
-        if (fill <= 0)
-            return;
+        if (fillWidth > 0) {
 
-        //------------------------------------
-        // Colors
-        //------------------------------------
+            /*
+             * Основная заливка
+             */
 
-        int colorTop;
-        int colorBottom;
+            drawHorizontalGradient(
+                    graphics,
+                    x + 1,
+                    y + 1,
+                    fillWidth,
+                    height - 2,
+                    theme.backgroundDark(),
+                    theme.backgroundLight()
+            );
 
-        if (type == ProgressBarType.EXPERIENCE) {
+            /*
+             * Верхний блик
+             */
 
-            colorTop = 0xFF7FD8FF;
-            colorBottom = 0xFF1E84FF;
+            graphics.fill(
+                    x + 1,
+                    y + 1,
+                    x + 1 + fillWidth,
+                    y + 3,
+                    theme.backgroundLight()
+            );
 
-        } else {
+            /*
+             * Внутреннее свечение
+             */
 
-            if (displayed > 0.66F) {
+            graphics.fill(
+                    x + 1,
+                    y + 3,
+                    x + 1 + fillWidth,
+                    y + height - 3,
+                    theme.borderGlow()
+            );
 
-                colorTop = 0xFF95F77F;
-                colorBottom = 0xFF2FA82A;
+            /*
+             * Нижняя тень
+             */
 
-            } else if (displayed > 0.33F) {
-
-                colorTop = 0xFFFFD65A;
-                colorBottom = 0xFFE79A00;
-
-            } else {
-
-                // ------------------------------
-                // Пульсация красной зоны (<33%)
-                // Чем меньше прочность, тем сильнее.
-                // Максимальный эффект начинается после 10%.
-                // ------------------------------
-
-                float pulseStrength = 0.0F;
-
-                if (displayed <= 0.10F) {
-
-                    float time = System.currentTimeMillis() / 220.0F;
-
-                    pulseStrength =
-                            (float)((Math.sin(time) + 1.0) * 0.5);
-
-                }
-
-                int topGreen = (int)(124 - pulseStrength * 55);
-                int topBlue  = (int)(124 - pulseStrength * 55);
-
-                int bottomGreen = (int)(42 - pulseStrength * 22);
-                int bottomBlue  = (int)(42 - pulseStrength * 22);
-
-                colorTop =
-                        0xFF000000 |
-                                (255 << 16) |
-                                (topGreen << 8) |
-                                topBlue;
-
-                colorBottom =
-                        0xFF000000 |
-                                (210 << 16) |
-                                (bottomGreen << 8) |
-                                bottomBlue;
-
-            }
+            graphics.fill(
+                    x + 1,
+                    y + height - 2,
+                    x + 1 + fillWidth,
+                    y + height - 1,
+                    0x44000000
+            );
 
         }
 
-        //------------------------------------
-        // Gradient fill
-        //------------------------------------
-
-        graphics.fillGradient(
-                x + 1,
-                y + 1,
-                x + 1 + fill,
-                y + height - 1,
-                colorTop,
-                colorBottom
-        );
-
-        //------------------------------------
-        // Highlight
-        //------------------------------------
-
-        graphics.fill(
-                x + 2,
-                y + 2,
-                x + 1 + fill,
-                y + height / 2,
-                0x33FFFFFF
-        );
-
-        //------------------------------------
-        // Small glow
-        //------------------------------------
-
-        graphics.fillGradient(
-                x + 1,
-                y + 1,
-                x + 1 + fill,
-                y + height - 1,
-                0x10FFFFFF,
-                0x00000000
-        );
     }
+
+    public static void drawHorizontalGradient(
+            GuiGraphics graphics,
+            int x,
+            int y,
+            int width,
+            int height,
+            int leftColor,
+            int rightColor
+    ) {
+
+        if (width <= 0)
+            return;
+
+        int a1 = (leftColor >> 24) & 255;
+        int r1 = (leftColor >> 16) & 255;
+        int g1 = (leftColor >> 8) & 255;
+        int b1 = leftColor & 255;
+
+        int a2 = (rightColor >> 24) & 255;
+        int r2 = (rightColor >> 16) & 255;
+        int g2 = (rightColor >> 8) & 255;
+        int b2 = rightColor & 255;
+
+        for (int i = 0; i < width; i++) {
+
+            float t = width <= 1
+                    ? 0f
+                    : (float) i / (width - 1);
+
+            int a = (int) (a1 + (a2 - a1) * t);
+            int r = (int) (r1 + (r2 - r1) * t);
+            int g = (int) (g1 + (g2 - g1) * t);
+            int b = (int) (b1 + (b2 - b1) * t);
+
+            int color =
+                    (a << 24)
+                            | (r << 16)
+                            | (g << 8)
+                            | b;
+
+            graphics.fill(
+                    x + i,
+                    y,
+                    x + i + 1,
+                    y + height,
+                    color
+            );
+
+        }
+
+    }
+
 }

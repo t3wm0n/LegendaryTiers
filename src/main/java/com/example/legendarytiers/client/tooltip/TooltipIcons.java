@@ -1,40 +1,14 @@
 package com.example.legendarytiers.client.tooltip;
 
+import com.example.legendarytiers.LegendaryTiers;
+import net.minecraft.resources.ResourceLocation;
+
 public final class TooltipIcons {
 
     private TooltipIcons() {
     }
-    /*
-        Размер одной иконки в атласе.
-
-        Используем:
-        64x64 источник
-
-        Отображение:
-        16x16
-
-        Это дает хорошее качество
-        и сохраняет четкость в Minecraft GUI.
-    */
-
     public static final int ICON_SIZE = 64;
     public static final int DRAW_SIZE = 20;
-
-    /*
-        Атлас иконок.
-
-        Сетка:
-
-        0   1   2   3   4   5
-
-        ┌───┬───┬───┬───┬───┬───┐
-        │   │   │   │   │   │   │
-        ├───┼───┼───┼───┼───┼───┤
-        │   │   │   │   │   │   │
-        └───┴───┴───┴───┴───┴───┘
-
-        Каждая ячейка 64x64
-    */
 
     // ===== Атрибуты =====
 
@@ -180,5 +154,41 @@ public final class TooltipIcons {
 
             default -> ATTACK_Y;
         };
+    }
+
+    public static ResourceLocation levelTexture(int level) {
+
+        level = Math.clamp(level, 1, 100);
+
+        int page = (level - 1) / 10 + 1;
+
+        System.out.println(
+                "Level = " + level +
+                        " page = " + page +
+                        " u = " + ((level - 1) % 10) * 64
+        );
+
+        return ResourceLocation.fromNamespaceAndPath(
+                LegendaryTiers.MOD_ID,
+                String.format(
+                        "textures/gui/tooltip/icons/level_icons_%02d.png",
+                        page
+                )
+        );
+
+    }
+
+    public static int levelU(int level) {
+
+        level = Math.clamp(level, 1, 100);
+
+        int iconIndex = (level - 1) % 10;
+
+        return iconIndex * 64;
+
+    }
+
+    public static int levelV() {
+        return 0;
     }
 }

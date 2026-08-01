@@ -55,21 +55,6 @@ public final class EnchantmentSection {
                         DataComponents.ENCHANTMENTS,
                         ItemEnchantments.EMPTY
                 );
-        System.out.println(
-                "Enchantments: "
-                        + enchantments.entrySet().size()
-        );
-        for (var entry : enchantments.entrySet()) {
-
-            System.out.println(
-                    entry.getKey().unwrapKey()
-                            .map(k -> k.location().toString())
-                            .orElse("unknown")
-                            + " lvl "
-                            + entry.getIntValue()
-            );
-
-        }
         if (enchantments.isEmpty()) {
             return;
         }

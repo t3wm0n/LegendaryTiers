@@ -16,7 +16,7 @@ public final class ExperienceUtil {
      */
     public static int getLevel(int experience) {
 
-        return Math.max(0, experience / EXPERIENCE_PER_LEVEL);
+        return Math.max(0, 1 + experience / EXPERIENCE_PER_LEVEL);
 
     }
 
@@ -50,6 +50,10 @@ public final class ExperienceUtil {
 
         return getCurrentLevelExperience(experience) / (float) EXPERIENCE_PER_LEVEL;
 
+    }
+
+    public static int getExperienceForLevel(int level) {
+        return Math.max(0, (level - 1) * EXPERIENCE_PER_LEVEL);
     }
 
 }

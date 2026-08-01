@@ -61,6 +61,6 @@
   "attribute.name.generic.crit_chance": "Шанс критического удара",
   "attribute.name.generic.crit_damage": "Критический урон",
 
-  "legendarytiers.tooltip.hold_shift": "Зажмите Shift, чтобы показать все характеристики",
-  "legendarytiers.tooltip.hold_ctrl": "Нажмите Ctrl, чтобы показать зачарования"
+  "legendarytiers.tooltip.hold_shift": "Зажмите Shift, чтобы показать бонусы",
+  "legendarytiers.tooltip.hold_ctrl": "Зажмите Ctrl, чтобы показать чары"
 }

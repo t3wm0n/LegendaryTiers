@@ -1,122 +1,67 @@
 package com.example.legendarytiers.client.tooltip;
 
+import com.example.legendarytiers.LegendaryTiers;
+import net.minecraft.resources.ResourceLocation;
+
 public final class TooltipTextures {
 
     private TooltipTextures() {
     }
 
 
-    /*
-        Размер одного элемента 9-slice.
+    public static final ResourceLocation BACKGROUND =
+            rl(
+                    "textures/gui/tooltip/background/tooltip_background.png"
+            );
 
-        В атласе каждая часть:
-        64x64
+    public static final ResourceLocation GLOW =
+            rl(
+                    "textures/gui/tooltip/glow.png"
+            );
 
-        При выводе:
-        16x16
+    public static final ResourceLocation FRAME_CORNER =
+            rl(
+                    "textures/gui/tooltip/frame/frame_corner.png"
+            );
 
-        Масштабирование:
-        4:1
-     */
+    public static final ResourceLocation FRAME_EDGE_H =
+            rl(
+                    "textures/gui/tooltip/frame/frame_edge_h.png"
+            );
 
-    public static final int ATLAS_SIZE = 512;
+    public static final ResourceLocation FRAME_EDGE_V =
+            rl(
+                    "textures/gui/tooltip/frame/frame_edge_v.png"
+            );
 
-    public static final int SOURCE_SIZE = 64;
+    public static final ResourceLocation FRAME_SHINE =
+            rl(
+                    "textures/gui/tooltip/frame/frame_shine.png"
+            );
 
-    public static final int BORDER_SIZE = 16;
+    public static final ResourceLocation HEADER_LEFT =
+            rl(
+                    "textures/gui/tooltip/header/header_left.png"
+            );
 
+    public static final ResourceLocation HEADER_CENTER =
+            rl(
+                    "textures/gui/tooltip/header/header_center.png"
+            );
 
+    public static final ResourceLocation HEADER_RIGHT =
+            rl(
+                    "textures/gui/tooltip/header/header_right.png"
+            );
 
-    /*
-        Атлас:
+    public static final int BACKGROUND_FRAME_SIZE = 256;
 
-        ┌────┬────┬────┐
-        │ TL │ T  │ TR │
-        ├────┼────┼────┤
-        │ L  │ C  │ R  │
-        ├────┼────┼────┤
-        │ BL │ B  │ BR │
-        └────┴────┴────┘
+    public static final int BACKGROUND_FRAMES = 16;
 
-
-        Каждый блок 64x64
-     */
-
-
-    // Верхний левый угол
-    public static final int TOP_LEFT_X = 0;
-    public static final int TOP_LEFT_Y = 0;
-
-
-    // Верхняя грань
-    public static final int TOP_X = 64;
-    public static final int TOP_Y = 0;
-
-
-    // Верхний правый угол
-    public static final int TOP_RIGHT_X = 128;
-    public static final int TOP_RIGHT_Y = 0;
-
-
-
-    // Левая грань
-    public static final int LEFT_X = 0;
-    public static final int LEFT_Y = 64;
-
-
-    // Центр
-    public static final int CENTER_X = 64;
-    public static final int CENTER_Y = 64;
-
-
-    // Правая грань
-    public static final int RIGHT_X = 128;
-    public static final int RIGHT_Y = 64;
-
-
-
-    // Нижний левый угол
-    public static final int BOTTOM_LEFT_X = 0;
-    public static final int BOTTOM_LEFT_Y = 128;
-
-
-    // Нижняя грань
-    public static final int BOTTOM_X = 64;
-    public static final int BOTTOM_Y = 128;
-
-
-    // Нижний правый угол
-    public static final int BOTTOM_RIGHT_X = 128;
-    public static final int BOTTOM_RIGHT_Y = 128;
-
-
-
-    /*
-        Дополнительные элементы атласа
-
-        Пока только зарезервированы.
-        Координаты добавим после создания UI элементов.
-    */
-
-
-    // Header
-    public static int HEADER_X = 192;
-    public static int HEADER_Y = 0;
-
-
-    // Divider
-    public static int DIVIDER_X = 192;
-    public static int DIVIDER_Y = 64;
-
-
-    // XP bar background
-    public static int XP_BAR_BG_X = 192;
-    public static int XP_BAR_BG_Y = 128;
-
-
-    // XP bar fill
-    public static int XP_BAR_FILL_X = 192;
-    public static int XP_BAR_FILL_Y = 192;
-
-
+    private static ResourceLocation rl(String path){
+        return ResourceLocation.fromNamespaceAndPath(
+                LegendaryTiers.MOD_ID,
+                path
+        );
+    }
 }

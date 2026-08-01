@@ -2,7 +2,7 @@ package com.example.legendarytiers.client.tooltip.render;
 
 import com.example.legendarytiers.client.tooltip.TooltipColors;
 import com.example.legendarytiers.client.tooltip.TooltipLayout;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.example.legendarytiers.client.tooltip.TooltipTheme;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -12,9 +12,12 @@ public final class TooltipRenderUtil {
     private TooltipRenderUtil() {
     }
 
-    /**
-     * Рисование части текстуры.
+    /*
+     * ============================================
+     * TEXTURES
+     * ============================================
      */
+
     public static void drawTexture(
             GuiGraphics graphics,
             ResourceLocation texture,
@@ -42,9 +45,6 @@ public final class TooltipRenderUtil {
 
     }
 
-    /**
-     * Рисование части текстуры с масштабированием.
-     */
     public static void drawTextureScaled(
             GuiGraphics graphics,
             ResourceLocation texture,
@@ -76,9 +76,12 @@ public final class TooltipRenderUtil {
 
     }
 
-    /**
-     * Рисование строки.
+    /*
+     * ============================================
+     * TEXT
+     * ============================================
      */
+
     public static void drawText(
             GuiGraphics graphics,
             Font font,
@@ -99,9 +102,26 @@ public final class TooltipRenderUtil {
 
     }
 
-    /**
-     * Центрированный текст.
-     */
+    public static void drawShadowText(
+            GuiGraphics graphics,
+            Font font,
+            String text,
+            int x,
+            int y,
+            int color
+    ) {
+
+        graphics.drawString(
+                font,
+                text,
+                x,
+                y,
+                color,
+                true
+        );
+
+    }
+
     public static void drawCenteredText(
             GuiGraphics graphics,
             Font font,
@@ -124,67 +144,194 @@ public final class TooltipRenderUtil {
 
     }
 
-    /**
-     * Текст с тенью.
+    /*
+     * ============================================
+     * DIVIDER
+     * ============================================
      */
-    public static void drawShadowText(
-            GuiGraphics graphics,
-            Font font,
-            String text,
-            int x,
-            int y,
-            int color
-    ) {
-
-        graphics.drawString(
-                font,
-                text,
-                x,
-                y,
-                color,
-                true
-        );
-
-    }
 
     public static void drawDivider(
             GuiGraphics graphics,
             int x,
             int y,
-            int width
+            int width,
+            TooltipTheme theme
     ) {
 
-        int dividerWidth = width - TooltipLayout.PADDING * 2;
+        int dividerWidth =
+                width - TooltipLayout.PADDING * 2;
 
-        int dividerX = x + TooltipLayout.PADDING;
+        int dividerX =
+                x + TooltipLayout.PADDING;
 
-        int dividerY = y + (TooltipLayout.DIVIDER_HEIGHT / 2);
+        int dividerY =
+                y + TooltipLayout.DIVIDER_HEIGHT / 2;
+
+        int color =
+                (theme.backgroundDark() & 0x00FFFFFF)
+                        | 0x44000000;
 
         graphics.fill(
                 dividerX,
                 dividerY,
                 dividerX + dividerWidth,
                 dividerY + 1,
-                TooltipColors.DIVIDER
+                color
         );
 
     }
+
+    /*
+     * ============================================
+     * BACKGROUND
+     * ============================================
+     */
 
     public static void drawBackground(
             GuiGraphics graphics,
             int x,
             int y,
             int width,
-            int height
+            int height,
+            TooltipTheme theme
     ) {
+
+        BackgroundRenderer.render(
+                graphics,
+                x,
+                y,
+                width,
+                height,
+                theme
+        );
+
+        graphics.renderOutline(
+                x,
+                y,
+                width,
+                height,
+                theme.borderColor()
+        );
+
+    }
+
+    public static void drawFrame(
+            GuiGraphics graphics,
+            int x,
+            int y,
+            int width,
+            int height,
+            TooltipTheme theme
+    ) {
+
+        /*
+         * Внешняя линия
+         */
 
         graphics.fill(
                 x,
                 y,
                 x + width,
+                y + 1,
+                theme.borderDark()
+        );
+
+        graphics.fill(
+                x,
+                y + height - 1,
+                x + width,
                 y + height,
-                0xCC101010
+                theme.borderDark()
+        );
+
+        graphics.fill(
+                x,
+                y,
+                x + 1,
+                y + height,
+                theme.borderDark()
+        );
+
+        graphics.fill(
+                x + width - 1,
+                y,
+                x + width,
+                y + height,
+                theme.borderDark()
+        );
+
+        /*
+         * Центральная линия
+         */
+
+        graphics.fill(
+                x + 1,
+                y + 1,
+                x + width - 1,
+                y + 3,
+                theme.border()
+        );
+
+        graphics.fill(
+                x + 1,
+                y + height - 3,
+                x + width - 1,
+                y + height - 1,
+                theme.border()
+        );
+
+        graphics.fill(
+                x + 1,
+                y + 1,
+                x + 3,
+                y + height - 1,
+                theme.border()
+        );
+
+        graphics.fill(
+                x + width - 3,
+                y + 1,
+                x + width - 1,
+                y + height - 1,
+                theme.border()
+        );
+
+        /*
+         * Внутренняя линия
+         */
+
+        graphics.fill(
+                x + 3,
+                y + 3,
+                x + width - 3,
+                y + 4,
+                theme.borderLight()
+        );
+
+        graphics.fill(
+                x + 3,
+                y + height - 4,
+                x + width - 3,
+                y + height - 3,
+                theme.borderLight()
+        );
+
+        graphics.fill(
+                x + 3,
+                y + 3,
+                x + 4,
+                y + height - 3,
+                theme.borderLight()
+        );
+
+        graphics.fill(
+                x + width - 4,
+                y + 3,
+                x + width - 3,
+                y + height - 3,
+                theme.borderLight()
         );
 
     }
+
 }

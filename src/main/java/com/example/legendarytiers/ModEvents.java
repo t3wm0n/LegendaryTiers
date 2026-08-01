@@ -1,5 +1,6 @@
 package com.example.legendarytiers;
 
+import com.example.legendarytiers.command.LegendaryCommand;
 import com.example.legendarytiers.util.RepairCostHelper;
 import com.example.legendarytiers.util.RepairEntry;
 import net.minecraft.client.resources.sounds.Sound;
@@ -32,6 +33,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.sound.SoundEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -46,6 +48,15 @@ import java.util.Optional;
 
 @EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
 public class ModEvents {
+
+    @SubscribeEvent
+    public static void registerCommands(RegisterCommandsEvent event) {
+
+        LegendaryCommand.register(event);
+
+    }
+
+
     // Вспомогательный метод: LVL UP, ADD EXP
     public static void addExperience(ItemStack stack, int amount, Player player) {
         if (!stack.is(ModTags.TIERABLE_ITEMS)) return;

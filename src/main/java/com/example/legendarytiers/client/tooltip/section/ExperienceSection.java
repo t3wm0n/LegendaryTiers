@@ -1,9 +1,6 @@
 package com.example.legendarytiers.client.tooltip.section;
 
-import com.example.legendarytiers.client.tooltip.LegendaryTooltipContext;
-import com.example.legendarytiers.client.tooltip.TooltipColors;
-import com.example.legendarytiers.client.tooltip.TooltipIcons;
-import com.example.legendarytiers.client.tooltip.TooltipLayout;
+import com.example.legendarytiers.client.tooltip.*;
 import com.example.legendarytiers.client.tooltip.render.IconRenderer;
 import com.example.legendarytiers.client.tooltip.render.ProgressBarRenderer;
 import com.example.legendarytiers.client.tooltip.render.TextRenderer;
@@ -16,7 +13,7 @@ public final class ExperienceSection {
     }
 
     public static int getHeight() {
-        return TooltipLayout.EXPERIENCE_HEIGHT;
+        return 30;
     }
 
     public static void render(
@@ -28,87 +25,59 @@ public final class ExperienceSection {
             int width
     ) {
 
-        if (context == null) {
-            return;
-        }
-
-        int current = context.experience();
-        int max = context.experienceToNextLevel();
-
-        if (max <= 0) {
-            max = 1;
-        }
-
-        //------------------------------------------
-        // Иконка уровня
-        //------------------------------------------
-
-        IconRenderer.draw(
+        IconRenderer.drawLevelIcon(
                 graphics,
+                context.level(),
                 x + TooltipLayout.PADDING,
-                y + 2,
-                TooltipIcons.LEVEL_X,
-                TooltipIcons.LEVEL_Y
+                y,
+                32
         );
 
-        //------------------------------------------
-        // Уровень
-        //------------------------------------------
+        int barX =
+                x
+                        + TooltipLayout.PADDING
+                        + 31;
+        int barY = y + 8;
 
-        TextRenderer.drawCenteredShadow(
-                graphics,
-                font,
-                "Level " + context.level(),
-                x + width / 2,
-                y + 6,
-                TooltipColors.TEXT_TITLE
-        );
-
-        //------------------------------------------
-        // Полоса опыта
-        //------------------------------------------
+        int barWidth =
+                width
+                        - 34
+                        - TooltipLayout.PADDING * 2;
 
         float progress =
-                Math.min(1.0F, current / (float) max);
+                context.experienceToNextLevel() <= 0
+                        ? 1f
+                        : (float) context.experience()
+                          / context.experienceToNextLevel();
 
-        int barX = x + 20;
-        int barY = y + 22;
-
-        int barWidth = width - 40;
-        int barHeight = 12;
+        TooltipTheme theme =
+                TooltipThemes.get(context.rarity());
 
         ProgressBarRenderer.draw(
                 graphics,
                 barX,
                 barY,
                 barWidth,
-                barHeight,
+                14,
                 progress,
-                ProgressBarRenderer.ProgressBarType.EXPERIENCE
+                theme
         );
 
-        //------------------------------------------
-        // Текст опыта
-        //------------------------------------------
-
-        int percent =
-                Math.round(progress * 100);
-
-        String expText =
-                current
+        String text =
+                context.experience()
                         + " / "
-                        + max
-                        + " XP ("
-                        + percent
-                        + "%)";
+                        + context.experienceToNextLevel()
+                        + " XP";
 
-        TextRenderer.drawCenteredShadow(
+        int textWidth = font.width(text);
+
+        TextRenderer.drawShadow(
                 graphics,
                 font,
-                expText,
-                x + width / 2,
-                y + 36,
-                TooltipColors.XP_TEXT
+                text,
+                barX + (barWidth - textWidth) / 2,
+                barY + 3,
+                0xFFFFFFFF
         );
 
     }

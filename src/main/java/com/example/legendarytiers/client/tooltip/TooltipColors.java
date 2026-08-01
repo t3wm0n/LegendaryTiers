@@ -40,6 +40,10 @@ public final class TooltipColors {
 
     public static final int DIVIDER = 0x55FFFFFF;
 
+    //PROGRESS BAR
+    public static final int PROGRESS_BACKGROUND = 0x55000000;
+    public static final int PROGRESS_FILL = 0xFF55FF55;
+
     /*
      * Цвета редкости
      */

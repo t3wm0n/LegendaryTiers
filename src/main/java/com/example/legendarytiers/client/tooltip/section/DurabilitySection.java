@@ -1,10 +1,6 @@
 package com.example.legendarytiers.client.tooltip.section;
 
-import com.example.legendarytiers.client.tooltip.LegendaryTooltipContext;
-import com.example.legendarytiers.client.tooltip.TooltipColors;
-import com.example.legendarytiers.client.tooltip.TooltipIcons;
-import com.example.legendarytiers.client.tooltip.TooltipLayout;
-import com.example.legendarytiers.client.tooltip.render.IconRenderer;
+import com.example.legendarytiers.client.tooltip.*;
 import com.example.legendarytiers.client.tooltip.render.ProgressBarRenderer;
 import com.example.legendarytiers.client.tooltip.render.TextRenderer;
 import net.minecraft.client.gui.Font;
@@ -17,7 +13,7 @@ public final class DurabilitySection {
     }
 
     public static int getHeight() {
-        return 34;
+        return 30;
     }
 
     public static void render(
@@ -29,99 +25,66 @@ public final class DurabilitySection {
             int width
     ) {
 
-        if (context.maxDurability() <= 0) {
-            return;
-        }
+        int barX =
+                x + TooltipLayout.PADDING;
 
-        int current = context.durability();
-        int max = context.maxDurability();
+        int barY =
+                y + 5;
 
-        float progress = (float) current / (float) max;
+        int barWidth =
+                width
+                        - TooltipLayout.PADDING * 2;
 
-        //----------------------------------------
-        // Иконка
-        //----------------------------------------
+        float progress =
+                context.maxDurability() <= 0
+                        ? 1f
+                        : (float) context.durability()
+                          / context.maxDurability();
 
-        IconRenderer.draw(
-                graphics,
-                x + TooltipLayout.PADDING,
-                y,
-                TooltipIcons.DURABILITY_X,
-                TooltipIcons.DURABILITY_Y
-        );
-
-        //----------------------------------------
-        // Название
-        //----------------------------------------
-
-        TextRenderer.draw(
-                graphics,
-                font,
-                Component.translatable("attribute.name.generic.durability").getString(),
-                x + TooltipLayout.PADDING + TooltipIcons.DRAW_SIZE + 6,
-                y + 5,
-                TooltipColors.TEXT_NORMAL
-        );
-
-        //----------------------------------------
-        // Числа
-        //----------------------------------------
-
-        String durabilityText;
-
-        if (context.durabilityBonus() != 0) {
-
-            int percent = (int) Math.round(context.durabilityBonus() * 100.0);
-
-            String sign = percent > 0 ? "+" : "";
-
-            durabilityText =
-                    current +
-                            " / " +
-                            max +
-                            " (" +
-                            sign +
-                            percent +
-                            "%)";
-
-        } else {
-
-            durabilityText =
-                    current +
-                            " / " +
-                            max;
-
-        }
-
-        int textWidth = font.width(durabilityText);
-
-        TextRenderer.draw(
-                graphics,
-                font,
-                durabilityText,
-                x + width - TooltipLayout.PADDING - textWidth,
-                y + 5,
-                TooltipColors.TEXT_NORMAL
-        );
-
-        //----------------------------------------
-        // Полоса
-        //----------------------------------------
-
-        int barX = x + 20;
-        int barY = y + 20;
-
-        int barWidth = width - 40;
-        int barHeight = 12;
+        TooltipTheme theme =
+                TooltipThemes.get(context.rarity());
 
         ProgressBarRenderer.draw(
                 graphics,
                 barX,
                 barY,
                 barWidth,
-                barHeight,
+                14,
                 progress,
-                ProgressBarRenderer.ProgressBarType.DURABILITY
+                theme
         );
+
+        String text =
+                context.durability()
+                        + " / "
+                        + context.maxDurability();
+
+        if (Math.abs(context.durabilityBonus()) > 0.0001) {
+
+            int percent =
+                    (int) Math.round(
+                            context.durabilityBonus()
+                                    * 100
+                    );
+
+            text += " (+" + percent + "%)";
+        }
+
+        String textEnd = Component.translatable("attribute.name.generic.durability").getString() + " " + text;
+
+        int textWidth =
+                font.width(textEnd);
+
+        TextRenderer.drawShadow(
+                graphics,
+                font,
+                textEnd,
+                barX
+                        + (barWidth - textWidth) / 2,
+                barY + 3,
+                0xFFFFFFFF
+        );
+
     }
+
 }

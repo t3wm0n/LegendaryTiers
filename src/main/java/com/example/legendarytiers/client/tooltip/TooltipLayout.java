@@ -15,7 +15,7 @@ public final class TooltipLayout {
     public static final int PADDING = 16;
 
     // Высота верхней части
-    public static final int HEADER_HEIGHT = 42;
+    public static final int HEADER_HEIGHT = 22;
 
     // Блок редкости
     public static final int RARITY_HEIGHT = 24;
@@ -24,10 +24,10 @@ public final class TooltipLayout {
     public static final int QUALITY_HEIGHT = 32;
 
     // Полоса опыта
-    public static final int EXPERIENCE_HEIGHT = 42;
+    public static final int EXPERIENCE_HEIGHT = 30;
 
     // Прочность
-    public static final int DURABILITY_HEIGHT = 28;
+    public static final int DURABILITY_HEIGHT = 30;
 
     // Одна строка атрибута
     public static final int ATTRIBUTE_LINE_HEIGHT = 22;
@@ -43,6 +43,21 @@ public final class TooltipLayout {
 
     // Зачарования
     public static final int ENCHANTMENT_LINE_HEIGHT = 18;
+
+    // STATUS BAR
+    public static final int BAR_HEIGHT = 14;
+
+    public static final int XP_ICON_SIZE = 24;
+
+    public static final int XP_BAR_X = 34;
+
+    public static final int LEVEL_ICON_SIZE = 24;
+
+    public static final int XP_BAR_HEIGHT = 14;
+
+    public static final int BAR_TEXT_OFFSET_Y = 3;
+
+    public static final int BAR_TOP_MARGIN = 4;
 
     public static int calculateHeight(
             int enchantmentCount,

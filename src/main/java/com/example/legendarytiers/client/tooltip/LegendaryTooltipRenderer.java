@@ -1,5 +1,6 @@
 package com.example.legendarytiers.client.tooltip;
 
+import com.example.legendarytiers.client.tooltip.render.HeaderRenderer;
 import com.example.legendarytiers.client.tooltip.render.TooltipRenderUtil;
 import com.example.legendarytiers.client.tooltip.section.*;
 import net.minecraft.client.gui.Font;
@@ -19,6 +20,11 @@ public final class LegendaryTooltipRenderer {
             int x,
             int y
     ) {
+        TooltipTheme theme =
+                TooltipThemes.get(
+                        context.rarity()
+                );
+
         int width = context.tooltipWidth();
         int attributeCount =
                 AttributeSection.visibleCount(context);
@@ -44,31 +50,34 @@ public final class LegendaryTooltipRenderer {
                 x,
                 y,
                 width,
-                height
+                height,
+                theme
         );
 
-        int currentY = y + TooltipLayout.PADDING;
+        HeaderRenderer.render(
 
-        HeaderSection.render(
                 graphics,
-                font,
-                context,
+
+                context.itemName(),
+
+                context.rarity().name(),
+
+                context.rarity(),
+
                 x,
-                currentY
+
+                y,
+
+                width,
+
+                theme
+
         );
 
-        currentY += HeaderSection.getHeight();
-
-        RaritySection.render(
-                graphics,
-                font,
-                context,
-                x,
-                currentY,
-                width
-        );
-
-        currentY += RaritySection.getHeight();
+        int currentY =
+                y
+                        + HeaderRenderer.HEIGHT
+                        + TooltipLayout.PADDING;
 
         QualitySection.render(
                 graphics,
@@ -100,7 +109,8 @@ public final class LegendaryTooltipRenderer {
                 graphics,
                 x,
                 currentY,
-                width
+                width,
+                theme
         );
 
         currentY += TooltipLayout.DIVIDER_HEIGHT;
@@ -122,7 +132,8 @@ public final class LegendaryTooltipRenderer {
                     graphics,
                     x,
                     currentY,
-                    width
+                    width,
+                    theme
             );
 
             currentY += TooltipLayout.DIVIDER_HEIGHT;
@@ -151,7 +162,8 @@ public final class LegendaryTooltipRenderer {
                     graphics,
                     x,
                     currentY,
-                    width
+                    width,
+                    theme
             );
 
             currentY += 8;
@@ -174,7 +186,8 @@ public final class LegendaryTooltipRenderer {
                     graphics,
                     x,
                     currentY,
-                    width
+                    width,
+                    theme
             );
 
             currentY += TooltipLayout.DIVIDER_HEIGHT;
@@ -196,7 +209,8 @@ public final class LegendaryTooltipRenderer {
                 graphics,
                 x,
                 currentY,
-                width
+                width,
+                theme
         );
 
         currentY += TooltipLayout.DIVIDER_HEIGHT;
@@ -218,7 +232,8 @@ public final class LegendaryTooltipRenderer {
                     graphics,
                     x,
                     currentY,
-                    width
+                    width,
+                    theme
             );
 
             currentY += TooltipLayout.DIVIDER_HEIGHT;
