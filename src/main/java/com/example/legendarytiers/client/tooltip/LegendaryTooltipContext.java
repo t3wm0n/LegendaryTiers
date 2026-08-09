@@ -21,7 +21,7 @@ public record LegendaryTooltipContext(
 
         int level,
 
-        int experience,
+        int experienceCurrentLevel,
 
         int experienceToNextLevel,
 

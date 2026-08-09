@@ -62,6 +62,12 @@ public final class TooltipIcons {
     public static final int ENTITY_INTERACTION_RANGE_X = 448;
     public static final int ENTITY_INTERACTION_RANGE_Y = 64;
 
+    public static final int JUMP_STRENGTH_X = 192;
+    public static final int JUMP_STRENGTH_Y = 256;
+
+    public static final int GRAVITY_X = 256;
+    public static final int GRAVITY_Y = 256;
+
     // ===== Качество =====
 
     public static final int STAR_EMPTY_X = 0;
@@ -117,6 +123,8 @@ public final class TooltipIcons {
             case "attribute.name.player.block_break_speed" -> BLOCK_BREAK_SPEED_X;
             case "attribute.name.player.block_interaction_range" -> BLOCK_INTERACTION_RANGE_X;
             case "attribute.name.player.entity_interaction_range" -> ENTITY_INTERACTION_RANGE_X;
+            case "attribute.name.generic.gravity" -> GRAVITY_X;
+            case "attribute.name.generic.jump_strength" -> JUMP_STRENGTH_X;
 
             case "attribute.name.generic.crit_chance" -> CRIT_CHANCE_X;
             case "attribute.name.generic.crit_damage" -> CRIT_DAMAGE_X;
@@ -142,9 +150,11 @@ public final class TooltipIcons {
             case "attribute.name.generic.luck" -> LUCK_Y;
 
             case "attribute.name.generic.movement_speed" -> MOVEMENT_SPEED_Y;
-            case "attribute.name.generic.block_break_speed" -> BLOCK_BREAK_SPEED_Y;
-            case "attribute.name.generic.block_interaction_range" -> BLOCK_INTERACTION_RANGE_Y;
-            case "attribute.name.generic.entity_interaction_range" -> ENTITY_INTERACTION_RANGE_Y;
+            case "attribute.name.player.block_break_speed" -> BLOCK_BREAK_SPEED_Y;
+            case "attribute.name.player.block_interaction_range" -> BLOCK_INTERACTION_RANGE_Y;
+            case "attribute.name.player.entity_interaction_range" -> ENTITY_INTERACTION_RANGE_Y;
+            case "attribute.name.generic.gravity" -> GRAVITY_Y;
+            case "attribute.name.generic.jump_strength" -> JUMP_STRENGTH_Y;
 
             case "attribute.name.generic.crit_chance" -> CRIT_CHANCE_Y;
             case "attribute.name.generic.crit_damage" -> CRIT_DAMAGE_Y;
@@ -161,12 +171,6 @@ public final class TooltipIcons {
         level = Math.clamp(level, 1, 100);
 
         int page = (level - 1) / 10 + 1;
-
-        System.out.println(
-                "Level = " + level +
-                        " page = " + page +
-                        " u = " + ((level - 1) % 10) * 64
-        );
 
         return ResourceLocation.fromNamespaceAndPath(
                 LegendaryTiers.MOD_ID,

@@ -16,7 +16,7 @@ public final class ExperienceUtil {
      */
     public static int getLevel(int experience) {
 
-        return Math.max(0, 1 + experience / EXPERIENCE_PER_LEVEL);
+        return Math.max(1, 1 + experience / EXPERIENCE_PER_LEVEL);
 
     }
 
@@ -50,6 +50,16 @@ public final class ExperienceUtil {
 
         return getCurrentLevelExperience(experience) / (float) EXPERIENCE_PER_LEVEL;
 
+    }
+
+    /**
+     * Множитель для атрибутов от уровня
+     */
+    public static double getMultiplier(int experience) {
+
+        int level = getLevel(experience);
+
+        return 1.0 + (level - 1) * 0.01;
     }
 
     public static int getExperienceForLevel(int level) {

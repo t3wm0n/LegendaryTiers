@@ -11,17 +11,26 @@ public final class TooltipColors {
      * Текст
      */
 
-    public static final int TEXT_NORMAL = 0xFFFFFFFF;
-    public static final int TEXT_SECONDARY = 0xFFB8B8B8;
+    public static final int TEXT_NORMAL = 0xFFFFFFFF;       // Белоснежный для итогового значения[cite: 2]
+    public static final int TEXT_MUTED = 0xFFB0A8A0;        // Приглушенный песочно-серый для названий
+    public static final int TEXT_SECONDARY = 0xFF888899;    // Серый для базовых значений
+    public static final int TEXT_DOTS = 0xFF3F3F4E;         // Темный графит для точек-направителей
 
-    public static final int TEXT_POSITIVE = 0xFF65FF65;
-    public static final int TEXT_NEGATIVE = 0xFFFF6565;
+    public static final int TEXT_POSITIVE = 0xFF55FF77;     // Сочный изумрудный для прироста и стрелки ↑[cite: 2]
+    public static final int TEXT_NEGATIVE = 0xFFFF5555;     // Красный для штрафов и стрелки ↓[cite: 2]
 
     public static final int TEXT_TITLE = 0xFFFFFFFF;
-
     public static final int TEXT_DISABLED = 0xFFB8B8B8;
 
     public static final int TEXT_ENCHANTMENT = 0x55FFFF;
+    public static final int TEXT_ENCHANTMENT_BAD = 0x8D0000;
+
+    /*
+     * Слоты и Слои
+     */
+    public static final int SLOT_BG = 0xF00D0D12;           // Темный фон плашки под иконкой
+    public static final int SLOT_BORDER = 0xFF3A3A4A;       // Контурная рамка слота
+
     /*
      * Опыт
      */

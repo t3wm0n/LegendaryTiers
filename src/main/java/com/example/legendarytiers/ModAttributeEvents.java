@@ -23,7 +23,7 @@ public class ModAttributeEvents {
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
         int level = ExperienceUtil.getLevel(exp);
-        double levelMultiplier = 1.0 + (level * 0.01);
+        double levelMultiplier = ExperienceUtil.getMultiplier(exp);
 
         // Определяем группу слотов по типу предмета
         EquipmentSlotGroup slotGroup = getSlotGroupForItem(stack);
@@ -54,7 +54,13 @@ public class ModAttributeEvents {
                     default -> AttributeModifier.Operation.ADD_VALUE;
                 };
 
-                double value = entry.value() * levelMultiplier;
+                double value = entry.value() > 0.0001 ?
+                        entry.value() * levelMultiplier :
+                        entry.value() +
+                        (Math.abs(entry.value()) *
+                         ((levelMultiplier - 1) * 2 + 1) -
+                                Math.abs(entry.value()));
+
                 ResourceLocation modifierId = ResourceLocation.fromNamespaceAndPath(
                         LegendaryTiers.MOD_ID, "tier_mod_" + attrId.getPath());
 

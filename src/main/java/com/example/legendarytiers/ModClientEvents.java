@@ -5,6 +5,9 @@ import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +16,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+
+import java.awt.*;
 
 import static com.example.legendarytiers.util.ExperienceUtil.EXPERIENCE_PER_LEVEL;
 
@@ -23,11 +28,28 @@ public class ModClientEvents {
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
 
-        // Редкость
+        //Тир
         TierData tier = stack.get(ModDataComponents.TIER_DATA);
         if (tier != null) {
             Rarity rarity = tier.rarity();
-            event.getToolTip().add(rarity.getDisplayName());
+            if (rarity == Rarity.DIVINE) {
+
+                float time = (System.currentTimeMillis() % 1_000_000L) / 1000.0F;
+                float hueStart = (time * 0.3F) % 1.0F;
+                float hueEnd = (hueStart + 0.15F) % 1.0F;
+                int rgbStart = Color.HSBtoRGB(hueStart, 0.55F, 1.0F) & 0x00FFFFFF;
+                int rgbEnd = Color.HSBtoRGB(hueEnd, 0.55F, 1.0F) & 0x00FFFFFF;
+
+                String localizedName = Component.translatable(rarity.getTranslationKey()).getString();
+                Component rainbowText = createRainbowComponent(localizedName, 0.3F, 0.55F);
+
+                event.getToolTip().add(rainbowText);
+            } else {
+                // Для обычных редкостей используем стандартное имя
+                event.getToolTip().add(rarity.getDisplayName());
+            }
+
+            // Редкость
             double quality = tier.quality();
             if (quality >= 0) {
                 int stars = (int) Math.round(quality * 5);
@@ -86,5 +108,26 @@ public class ModClientEvents {
             ChatFormatting color = remaining > 0 ? ChatFormatting.YELLOW : ChatFormatting.RED;
             event.getToolTip().add(Component.translatable("tooltip.legendarytiers.reforge_attempts",remaining).withStyle(color));
         }
+    }
+
+    public static Component createRainbowComponent(String text, float speed, float saturation) {
+        MutableComponent result = Component.empty();
+        float time = (System.currentTimeMillis() % 1_000_000L) / 1000.0F;
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            // Расчёт HSB цвета для символа
+            float hue = (time * speed + (i * 0.04F)) % 1.0F;
+            int rgb = java.awt.Color.HSBtoRGB(hue, saturation, 1.0F) & 0x00FFFFFF;
+
+            // Создаем символ со своим цветом
+            Component charComponent = Component.literal(String.valueOf(c))
+                    .withStyle(Style.EMPTY.withColor(TextColor.fromRgb(rgb)));
+
+            result.append(charComponent);
+        }
+
+        return result;
     }
 }

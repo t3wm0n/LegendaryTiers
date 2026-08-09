@@ -78,7 +78,7 @@ public class RunicTableMenu extends AbstractContainerMenu {
         final int slotSpacing = 24;      // расстояние между слотами (можно уменьшить до 17)
         final int slotSpacingY = 21;      // расстояние между слотами (можно уменьшить до 17)
 
-// 3 ряда инвентаря
+        // 3 ряда инвентаря
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
                 if (col > 3) {
@@ -94,7 +94,7 @@ public class RunicTableMenu extends AbstractContainerMenu {
 
             }
         }
-// Горячий ряд (нижний)
+        // Горячий ряд (нижний)
         for (int col = 0; col < 9; ++col) {
             if (col > 3) {
                 addSlot(new Slot(playerInv, col,

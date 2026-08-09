@@ -1,6 +1,7 @@
 package com.example.legendarytiers;
 
 import com.example.legendarytiers.command.LegendaryCommand;
+import com.example.legendarytiers.util.ExperienceUtil;
 import com.example.legendarytiers.util.RepairCostHelper;
 import com.example.legendarytiers.util.RepairEntry;
 import net.minecraft.client.resources.sounds.Sound;
@@ -11,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -58,16 +60,108 @@ public class ModEvents {
 
 
     // Вспомогательный метод: LVL UP, ADD EXP
+//    public static void addExperience(ItemStack stack, int amount, Player player) {
+//        if (!stack.is(ModTags.TIERABLE_ITEMS)) return;
+//        int current = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
+//        int oldLevel = current / 100;
+//        int newExp = current + amount;
+//        int newLevel = newExp / 100;
+//        stack.set(ModDataComponents.EXPERIENCE, newExp);
+//        if (newLevel > oldLevel && player != null) {
+//            player.level().playSound(null, player.blockPosition(),
+//                    SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.5F, 1.5F);
+//        }
+//    }
+
     public static void addExperience(ItemStack stack, int amount, Player player) {
-        if (!stack.is(ModTags.TIERABLE_ITEMS)) return;
-        int current = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int oldLevel = current / 100;
-        int newExp = current + amount;
-        int newLevel = newExp / 100;
+        if (stack.isEmpty() || !stack.is(ModTags.TIERABLE_ITEMS)) return;
+        if (player != null && player.level().isClientSide()) return;
+
+        int currentExp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
+        int oldLevel = ExperienceUtil.getLevel(currentExp);
+
+        int newExp = currentExp + amount;
+        int newLevel = ExperienceUtil.getLevel(newExp);
+
         stack.set(ModDataComponents.EXPERIENCE, newExp);
-        if (newLevel > oldLevel && player != null) {
-            player.level().playSound(null, player.blockPosition(),
-                    SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.5F, 1.5F);
+
+        // Пересчитываем прочность ТОЛЬКО при смене уровня (например, с 1 на 2)
+        if (newLevel > oldLevel) {
+            if (player != null) {
+                player.level().playSound(null, player.blockPosition(),
+                        SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.5F, 1.5F);
+            }
+            recalculateMaxDamage(stack);
+        }
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.containerMenu.broadcastChanges();
+        }
+    }
+
+    public static void recalculateMaxDamage(ItemStack stack) {
+        if (stack.isEmpty()) return;
+
+        // Считываем ЧИСТУЮ базовую прочность предмета (например, 250 для железной кирки)
+        int base = stack.getItem().getDefaultInstance().getMaxDamage();
+        if (base <= 0) return;
+
+        TierData tier = stack.get(ModDataComponents.TIER_DATA);
+        if (tier == null) {
+            stack.remove(DataComponents.MAX_DAMAGE);
+            return;
+        }
+
+        int calculatedMax = calculateMaxDamage(stack, base, tier);
+
+        // Записываем прямо в компонент Minecraft
+        stack.set(DataComponents.MAX_DAMAGE, calculatedMax);
+    }
+
+    public static int calculateMaxDamage(ItemStack stack, int base, TierData tier) {
+        int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
+        double levelMultiplier = ExperienceUtil.getMultiplier(exp);
+
+        double durabilityMult = 1.0;
+        double durabilityAdd = 0.0;
+
+        for (ModifierEntry entry : tier.modifiers()) {
+            if (!entry.target().equals("durability")) continue;
+
+            double scaledVal = getScaledModifierValue(entry, levelMultiplier);
+
+            switch (entry.operation()) {
+                case "multiply_total", "multiply_base" -> durabilityMult *= (1.0 + scaledVal);
+                case "addition" -> durabilityAdd += scaledVal;
+            }
+        }
+
+        return Math.max(1, (int) Math.round((base * durabilityMult) + durabilityAdd));
+    }
+
+    public static double getScaledModifierValue(ModifierEntry entry, double levelMultiplier) {
+        double val = entry.value();
+        String target = entry.target().toLowerCase();
+
+        // Проверяем, является ли атрибут инвертированным (чем меньше, тем лучше)
+        boolean isInverted = target.contains("gravity");
+
+        if (isInverted) {
+            if (val < 0) {
+                // БАФФ (уменьшение гравитации): с уровнем гравитация падает ещё сильнее
+                return val * levelMultiplier;
+            } else {
+                // ШТРАФ (увеличение гравитации): с уровнем штраф уменьшается к 0
+                return Math.max(0.0, val - (val * (levelMultiplier - 1.0) * 2.0));
+            }
+        } else {
+            if (val > 0) {
+                // БАФФ для обычных атрибутов (прочность, урон): растёт с уровнем
+                return val * levelMultiplier;
+            } else {
+                // ШТРАФ для обычных атрибутов: уменьшается к 0
+                return Math.min(0.0, val + (Math.abs(val) * (levelMultiplier - 1.0) * 2.0));
+            }
         }
     }
 

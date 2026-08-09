@@ -30,6 +30,7 @@ public class LegendaryTiers {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         CREATIVE_MODE_TABS.register(modEventBus);
         TierModifierLoader.loadBuiltin();
+
     }
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =

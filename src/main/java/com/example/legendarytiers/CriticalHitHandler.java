@@ -37,17 +37,6 @@ public class CriticalHitHandler {
                 0.5
         );
 
-        System.out.println("========== CRIT ==========");
-        System.out.println("Weapon: " + weapon.getHoverName().getString());
-        System.out.println("Chance: " + critChance);
-        System.out.println("Crit Damage Bonus: " + critDamage);
-
-        if (attacker.getRandom().nextDouble() >= critChance) {
-            System.out.println("No crit");
-            System.out.println("==========================");
-            return;
-        }
-
         float damage = event.getAmount();
 
         // x1.5 + бонус от атрибута
@@ -110,9 +99,5 @@ public class CriticalHitHandler {
                     0.05
             );
         }
-
-        System.out.println("CRITICAL HIT!");
-        System.out.println("Final Damage: " + damage);
-        System.out.println("==========================");
     }
 }

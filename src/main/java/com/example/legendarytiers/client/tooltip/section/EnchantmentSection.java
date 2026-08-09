@@ -9,7 +9,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public final class EnchantmentSection {
@@ -73,13 +75,19 @@ public final class EnchantmentSection {
                             level
                     );
 
+            boolean isBadEnchantment = enchantment.is(EnchantmentTags.CURSE)
+                    || enchantment.is(Enchantments.VANISHING_CURSE)
+                    || enchantment.is(Enchantments.BINDING_CURSE);
+
+            int color = isBadEnchantment ? TooltipColors.TEXT_ENCHANTMENT_BAD : TooltipColors.TEXT_ENCHANTMENT;
+
             TextRenderer.draw(
                     graphics,
                     font,
                     text.getString(),
                     x + TooltipLayout.PADDING,
                     currentY + 4,
-                    TooltipColors.TEXT_ENCHANTMENT
+                    color
             );
 
             currentY += TooltipLayout.ENCHANTMENT_LINE_HEIGHT;

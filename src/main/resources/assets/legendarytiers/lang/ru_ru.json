@@ -24,7 +24,7 @@
 
   "tooltip.legendarytiers.level": "⬆ Уровень: %s",
   "tooltip.legendarytiers.exp": "🔋 Опыт: %s/%s (%s%%)",
-  "tooltip.legendarytiers.broken": "⚠ Сломан ⚠",
+  "tooltip.legendarytiers.broken": "⚠ Требуется починка ⚠",
   "tooltip.legendarytiers.was": "♻ ",
   "tooltip.legendarytiers.repair": "Починка: %s ед. материала",
   "tooltip.legendarytiers.repair_hint": "Почините на наковальне",
@@ -61,6 +61,6 @@
   "attribute.name.generic.crit_chance": "Шанс критического удара",
   "attribute.name.generic.crit_damage": "Критический урон",
 
-  "legendarytiers.tooltip.hold_shift": "Зажмите Shift, чтобы показать бонусы",
-  "legendarytiers.tooltip.hold_ctrl": "Зажмите Ctrl, чтобы показать чары"
+  "legendarytiers.tooltip.show_stats": "Бонусы...",
+  "legendarytiers.tooltip.show_enchants": "Чары..."
 }

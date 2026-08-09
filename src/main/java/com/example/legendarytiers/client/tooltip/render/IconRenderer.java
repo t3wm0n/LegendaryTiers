@@ -27,7 +27,8 @@ public final class IconRenderer {
             int textureX,
             int textureY
     ) {
-
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         graphics.blit(
                 ICONS,
                 x,
@@ -41,6 +42,7 @@ public final class IconRenderer {
                 512,
                 512
         );
+        RenderSystem.defaultBlendFunc();
 
     }
 
@@ -52,7 +54,8 @@ public final class IconRenderer {
             int textureY,
             int size
     ) {
-
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         graphics.blit(
                 ICONS,
                 x,
@@ -66,7 +69,7 @@ public final class IconRenderer {
                 512,
                 512
         );
-
+        RenderSystem.defaultBlendFunc();
     }
 
     public static void drawScaled(
@@ -77,7 +80,8 @@ public final class IconRenderer {
             int v,
             int size
     ) {
-
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         graphics.blit(
                 ICONS,
                 x,
@@ -91,7 +95,7 @@ public final class IconRenderer {
                 256,
                 256
         );
-
+        RenderSystem.defaultBlendFunc();
     }
 
     public static void drawLevelIcon(

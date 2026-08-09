@@ -1,8 +1,10 @@
 package com.example.legendarytiers.client.tooltip;
 
+import com.example.legendarytiers.client.tooltip.render.BackgroundRenderer;
+import com.example.legendarytiers.client.tooltip.render.DividerRenderer;
 import com.example.legendarytiers.client.tooltip.render.HeaderRenderer;
-import com.example.legendarytiers.client.tooltip.render.TooltipRenderUtil;
 import com.example.legendarytiers.client.tooltip.section.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
@@ -42,54 +44,72 @@ public final class LegendaryTooltipRenderer {
                 context.maxDurability() > 0,
                 true,
                 !context.showAdvancedAttributes(),
-                context.showEnchantments()
+                !context.showEnchantments()
         );
+        int screenHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+        int correctedY = y;
+        if (correctedY + height > screenHeight - 5) { // 5px отступ от края
+            correctedY = screenHeight - height - 5;
+        }
 
-        TooltipRenderUtil.drawBackground(
+        if (correctedY < 5) {
+            correctedY = 5;
+        }
+
+        //Задний фон
+        BackgroundRenderer.render(
                 graphics,
-                x,
-                y,
-                width,
-                height,
+                x - TooltipLayout.PADDING,
+                correctedY - TooltipLayout.PADDING,
+                width + (TooltipLayout.PADDING * 2),
+                height + (TooltipLayout.PADDING * 2),
                 theme
         );
 
+        //Заголовок (верх тултипа)
         HeaderRenderer.render(
-
                 graphics,
-
-                context.itemName(),
-
+                context,
                 context.rarity().name(),
-
                 context.rarity(),
-
-                x,
-
-                y,
-
+                context.quality(),
+                x - TooltipLayout.PADDING,
+                correctedY - TooltipLayout.PADDING,
                 width,
-
                 theme
 
         );
 
         int currentY =
-                y
-                        + HeaderRenderer.HEIGHT
-                        + TooltipLayout.PADDING;
+                correctedY + HeaderRenderer.HEADER_HEIGHT - TooltipLayout.PADDING;
 
-        QualitySection.render(
+        //3д моделька предмета
+        int IPS_height = TooltipLayout.calculateHeight(
+                0,
+                0,
+                false,
+                true,
+                true,
+                false,
+                true
+        );;
+
+        ItemPreviewSection.render(
                 graphics,
-                font,
                 context,
                 x,
                 currentY,
-                width
+                width,
+                IPS_height,
+                theme
         );
 
-        currentY += QualitySection.getHeight();
+        int yAfterPreview = currentY + ItemPreviewSection.getHeight();
+        int oldwidth = width;
+        width -= ItemPreviewSection.getWidth();
 
+
+        //Прочность
         if (context.maxDurability() > 0) {
 
             DurabilitySection.render(
@@ -102,19 +122,9 @@ public final class LegendaryTooltipRenderer {
             );
 
             currentY += DurabilitySection.getHeight();
-
         }
 
-        TooltipRenderUtil.drawDivider(
-                graphics,
-                x,
-                currentY,
-                width,
-                theme
-        );
-
-        currentY += TooltipLayout.DIVIDER_HEIGHT;
-
+        //Опыт
         ExperienceSection.render(
                 graphics,
                 font,
@@ -126,86 +136,18 @@ public final class LegendaryTooltipRenderer {
 
         currentY += ExperienceSection.getHeight();
 
-        if (attributeCount > 0) {
+        //Попытка перековки
+        ReforgeSection.render(
+                graphics,
+                font,
+                context,
+                x,
+                currentY,
+                width
+        );
+        currentY += ReforgeSection.getHeight();
 
-            TooltipRenderUtil.drawDivider(
-                    graphics,
-                    x,
-                    currentY,
-                    width,
-                    theme
-            );
-
-            currentY += TooltipLayout.DIVIDER_HEIGHT;
-
-            AttributeSection.render(
-                    graphics,
-                    font,
-                    context,
-                    x,
-                    currentY,
-                    width
-            );
-
-            currentY += AttributeSection.getHeight(attributeCount);
-
-        }
-
-        int enchantHeight =
-                EnchantmentSection.getHeight(context);
-
-        if (enchantHeight > 0) {
-
-            currentY += 6;
-
-            TooltipRenderUtil.drawDivider(
-                    graphics,
-                    x,
-                    currentY,
-                    width,
-                    theme
-            );
-
-            currentY += 8;
-
-            EnchantmentSection.render(
-                    graphics,
-                    font,
-                    context,
-                    x,
-                    currentY,
-                    width
-            );
-
-            currentY += enchantHeight;
-        }
-
-        if (context.broken()) {
-
-            TooltipRenderUtil.drawDivider(
-                    graphics,
-                    x,
-                    currentY,
-                    width,
-                    theme
-            );
-
-            currentY += TooltipLayout.DIVIDER_HEIGHT;
-
-            BrokenSection.render(
-                    graphics,
-                    font,
-                    context,
-                    x,
-                    currentY,
-                    width
-            );
-
-            currentY += BrokenSection.getHeight();
-
-        }
-
-        TooltipRenderUtil.drawDivider(
+        DividerRenderer.drawDivider(
                 graphics,
                 x,
                 currentY,
@@ -215,39 +157,95 @@ public final class LegendaryTooltipRenderer {
 
         currentY += TooltipLayout.DIVIDER_HEIGHT;
 
-        ReforgeSection.render(
-                graphics,
-                font,
-                context,
-                x,
-                currentY,
-                width
-        );
+        //Атрибуты
+        if (attributeCount > 0) {
 
-        currentY += ReforgeSection.getHeight();
-
-        if (!context.showAdvancedAttributes()) {
-
-            TooltipRenderUtil.drawDivider(
+            AttributeSection.render(
                     graphics,
+                    font,
+                    context,
                     x,
-                    currentY,
-                    width,
-                    theme
+                    yAfterPreview,
+                    oldwidth
             );
 
-            currentY += TooltipLayout.DIVIDER_HEIGHT;
+            yAfterPreview += AttributeSection.getHeight(attributeCount);
+
+        }
+
+        //Чары
+        int enchantHeight =
+                EnchantmentSection.getHeight(context);
+
+        if (enchantHeight > 0) {
+
+            if (attributeCount > 0) {
+                DividerRenderer.drawDivider(
+                        graphics,
+                        x,
+                        yAfterPreview,
+                        oldwidth,
+                        theme
+                );
+                yAfterPreview += TooltipLayout.DIVIDER_HEIGHT + 2;
+            }
+
+            EnchantmentSection.render(
+                    graphics,
+                    font,
+                    context,
+                    x,
+                    yAfterPreview,
+                    oldwidth
+            );
+
+            yAfterPreview += enchantHeight;
+        }
+
+        //Блок "Поломки"
+        if (context.broken()) {
+
+            DividerRenderer.drawDivider(
+                    graphics,
+                    x,
+                    yAfterPreview,
+                    oldwidth,
+                    theme
+            );
+            yAfterPreview += TooltipLayout.DIVIDER_HEIGHT + 4;
+
+            BrokenSection.render(
+                    graphics,
+                    font,
+                    context,
+                    x,
+                    yAfterPreview,
+                    oldwidth
+            );
+
+            //yAfterPreview += BrokenSection.getHeight() + 2;
+
+        }
+
+        //Подсказки кнопок
+
+        boolean hasEnchantments = !context.stack()
+                .getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY)
+                .isEmpty();
+
+        boolean hasAnyHint = !context.showAdvancedAttributes()
+                || (!context.showEnchantments() && hasEnchantments);
+
+        if (hasAnyHint) {
 
             HintSection.render(
                     graphics,
                     font,
                     context,
                     x,
-                    currentY,
+                    currentY + 2,
                     width
             );
-
-            //currentY += HintSection.getHeight();
 
         }
 

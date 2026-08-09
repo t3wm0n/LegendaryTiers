@@ -41,13 +41,6 @@ public abstract class ArrowMixin {
 
         float result = damage * (float) multiplier;
 
-        System.out.println("===== Arrow Damage =====");
-        System.out.println("Weapon: " + firedFromWeapon.getHoverName().getString());
-        System.out.println("Multiplier: " + multiplier);
-        System.out.println("Original: " + damage);
-        System.out.println("Final: " + result);
-        System.out.println("========================");
-
         return result;
     }
 }

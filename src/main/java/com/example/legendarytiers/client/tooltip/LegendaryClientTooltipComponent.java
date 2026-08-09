@@ -45,7 +45,7 @@ public final class LegendaryClientTooltipComponent implements ClientTooltipCompo
                 context.maxDurability() > 0,
                 true,
                 !Screen.hasShiftDown(),
-                Screen.hasControlDown()
+                !Screen.hasControlDown()
         );
     }
 
@@ -75,7 +75,6 @@ public final class LegendaryClientTooltipComponent implements ClientTooltipCompo
             org.joml.Matrix4f matrix,
             net.minecraft.client.renderer.MultiBufferSource.BufferSource buffer
     ) {
-        // Весь текст рисуется внутри renderImage().
     }
 
 }

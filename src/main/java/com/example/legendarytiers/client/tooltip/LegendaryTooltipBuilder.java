@@ -72,7 +72,7 @@ public final class LegendaryTooltipBuilder {
         int maxDurability =
                 stack.getMaxDamage();
 
-        boolean showAdvanced =
+        boolean showAttributes =
                 Screen.hasShiftDown();
 
         boolean showEnchantments =
@@ -171,7 +171,7 @@ public final class LegendaryTooltipBuilder {
              */
 
             int lineWidth =
-                    font.width(name)
+                    font.width(name)/2
                             + 90
                             + font.width(bonus);
 
@@ -219,7 +219,7 @@ public final class LegendaryTooltipBuilder {
 
                 reforgeAttempts,
 
-                showAdvanced,
+                showAttributes,
 
                 showEnchantments
         );

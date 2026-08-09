@@ -20,6 +20,9 @@ public class Config {
     private final ModConfigSpec.IntValue mobXpMin;
     private final ModConfigSpec.IntValue armorXpPerDamage;
 
+    // --- Client / UI Settings ---
+    private final ModConfigSpec.BooleanValue enableCustomTooltips;
+
     public Config(ModConfigSpec.Builder builder) {
         builder.push("Experience (Опыт)");
 
@@ -96,6 +99,17 @@ public class Config {
                 .defineInRange("armor.xp_per_damage", 1, 0, 100);
 
         builder.pop();
+
+        builder.push("Client Settings (Клиентские настройки)");
+
+        enableCustomTooltips = builder
+                .comment(
+                        "Enable custom animated tooltips for legendary items (true = custom, false = vanilla)",
+                        "Включить кастомные анимированные тултипы (true = кастомные, false = ванильные)"
+                )
+                .define("tooltips.enable_custom", true);
+
+        builder.pop();
     }
 
     static {
@@ -113,4 +127,7 @@ public class Config {
     public double getMobXpMultiplier() { return mobXpMultiplier.get(); }
     public int getMobXpMin() { return mobXpMin.get(); }
     public int getArmorXpPerDamage() { return armorXpPerDamage.get(); }
+
+    // Client Getters
+    public boolean isCustomTooltipsEnabled() { return enableCustomTooltips.get(); }
 }

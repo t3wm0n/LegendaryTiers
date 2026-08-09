@@ -61,6 +61,6 @@
   "attribute.name.generic.crit_chance": "Critical Chance",
   "attribute.name.generic.crit_damage": "Critical Damage",
 
-  "legendarytiers.tooltip.hold_shift": "Hold Shift to show all attributes",
-  "legendarytiers.tooltip.hold_ctrl": "Hold Ctrl to show enchantments"
+  "legendarytiers.tooltip.show_stats": "Attributes...",
+  "legendarytiers.tooltip.show_enchants": "Enchantments..."
 }

@@ -47,7 +47,7 @@ public final class ExperienceSection {
         float progress =
                 context.experienceToNextLevel() <= 0
                         ? 1f
-                        : (float) context.experience()
+                        : (float) context.experienceCurrentLevel()
                           / context.experienceToNextLevel();
 
         TooltipTheme theme =
@@ -64,7 +64,7 @@ public final class ExperienceSection {
         );
 
         String text =
-                context.experience()
+                context.experienceCurrentLevel()
                         + " / "
                         + context.experienceToNextLevel()
                         + " XP";

@@ -6,13 +6,13 @@ public final class TooltipLayout {
     }
 
     //подсказка на шифт
-    public static final int HINT_HEIGHT = 18;
+    public static final int HINT_HEIGHT = 14;
 
     //мин ширина подсказки
     public static final int MIN_WIDTH = 260;
 
     // Внутренний отступ от рамки
-    public static final int PADDING = 16;
+    public static final int PADDING = 8;
 
     // Высота верхней части
     public static final int HEADER_HEIGHT = 22;
@@ -33,10 +33,10 @@ public final class TooltipLayout {
     public static final int ATTRIBUTE_LINE_HEIGHT = 22;
 
     // Разделитель между секциями
-    public static final int DIVIDER_HEIGHT = 10;
+    public static final int DIVIDER_HEIGHT = 12;
 
     // Блок Broken Item
-    public static final int BROKEN_HEIGHT = 86;
+    public static final int BROKEN_HEIGHT = 60;
 
     // Блок перековки
     public static final int REFORGE_HEIGHT = 24;
@@ -44,71 +44,54 @@ public final class TooltipLayout {
     // Зачарования
     public static final int ENCHANTMENT_LINE_HEIGHT = 18;
 
-    // STATUS BAR
-    public static final int BAR_HEIGHT = 14;
-
-    public static final int XP_ICON_SIZE = 24;
-
-    public static final int XP_BAR_X = 34;
-
-    public static final int LEVEL_ICON_SIZE = 24;
-
-    public static final int XP_BAR_HEIGHT = 14;
-
-    public static final int BAR_TEXT_OFFSET_Y = 3;
-
-    public static final int BAR_TOP_MARGIN = 4;
-
     public static int calculateHeight(
             int enchantmentCount,
             int attributeCount,
             boolean broken,
             boolean durability,
             boolean reforge,
-            boolean showHint,
+            boolean showAttributes,
             boolean showEnchantments
     ) {
 
         int height = 0;
 
-        height += HEADER_HEIGHT;
+        //height += HEADER_HEIGHT;
         height += RARITY_HEIGHT;
-        height += QUALITY_HEIGHT;
 
         if (durability) {
             height += DURABILITY_HEIGHT;
         }
 
-        if (attributeCount > 0) {
-            height += DIVIDER_HEIGHT;
-            height += attributeCount * ATTRIBUTE_LINE_HEIGHT;
+        height += EXPERIENCE_HEIGHT;
+
+        if (reforge) {
+            height += REFORGE_HEIGHT;
+        }
+        height += DIVIDER_HEIGHT;
+
+        height += HINT_HEIGHT + 20;
+        if (showAttributes || showEnchantments) {
+
+            height += HINT_HEIGHT + 20;
+
         }
 
-        if (showEnchantments && enchantmentCount > 0) {
+        if (attributeCount > 0 && !showAttributes) {
+            height += DIVIDER_HEIGHT;
+            height += attributeCount * ATTRIBUTE_LINE_HEIGHT + 10;
+        }
 
-            height += 14;
+        if (enchantmentCount > 0 && !showEnchantments) {
+
+            height += DIVIDER_HEIGHT;
             height += enchantmentCount * ENCHANTMENT_LINE_HEIGHT;
 
         }
 
-        height += DIVIDER_HEIGHT;
-        height += EXPERIENCE_HEIGHT;
-
         if (broken) {
             height += DIVIDER_HEIGHT;
-            height += BROKEN_HEIGHT;
-        }
-
-        if (reforge) {
-            height += DIVIDER_HEIGHT;
-            height += REFORGE_HEIGHT;
-        }
-
-        if (showHint) {
-
-            height += DIVIDER_HEIGHT;
-            height += HINT_HEIGHT;
-
+            height += BROKEN_HEIGHT + 10;
         }
 
         height += PADDING * 2;
@@ -124,14 +107,6 @@ public final class TooltipLayout {
                 MIN_WIDTH,
                 longestLineWidth + PADDING * 2 + 24
         );
-
-    }
-
-    public static int enchantmentHeight(
-            int count
-    ) {
-
-        return count * ENCHANTMENT_LINE_HEIGHT;
 
     }
 }
