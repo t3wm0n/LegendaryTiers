@@ -3,7 +3,6 @@ package com.example.legendarytiers.client.tooltip;
 import com.example.legendarytiers.ModDataComponents;
 import com.example.legendarytiers.ModItems;
 import com.example.legendarytiers.ModifierEntry;
-import com.example.legendarytiers.Rarity;
 import com.example.legendarytiers.TierData;
 import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.client.Minecraft;
