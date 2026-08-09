@@ -171,7 +171,7 @@ public final class LegendaryTooltipBuilder {
              */
 
             int lineWidth =
-                    font.width(name)/2
+                    font.width(name)
                             + 90
                             + font.width(bonus);
 
