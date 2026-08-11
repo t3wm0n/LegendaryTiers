@@ -1,0 +1,25 @@
+{
+  "name": "Rarities & Levels",
+  "category": "legendarytiers:getting_started",
+  "icon": "minecraft:experience_bottle",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Item Levels$()$(br2)All equipment begins its journey at $(thing)Level 1$() (0–99 XP).$(br2)By using weapons, tools, and armor in combat or tasks, you earn experience for them. Leveling up grants stronger base attributes and unlocks additional bonus slots."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Rarity & Quality$()$(br2)An item's rarity determines its maximum potential, reforge limit, and header color (from $(7)Common$() to $(d)Divine$()).$(br2)The stars below the header indicate the item's $(thing)Quality$(). Higher quality directly increases its stat modifiers."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Reforging$()$(br2)An item's stats and quality can be altered at the $(thing)Runic Table$().$(br2)Each item has a limited number of reforge charges. However, you can reset the reforge count using a $(item)Cleansing Cloth$()!"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "legendarytiers:cleansing_cloth",
+      "text": "The $(item)Cleansing Cloth$() resets the item's reforge charges back to maximum."
+    }
+  ]
+}

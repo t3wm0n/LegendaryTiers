@@ -31,19 +31,21 @@ public class ModAttributes {
                             3.0
                     ).setSyncable(true));
 
-    // Шанс критического удара (0.15 = 15%)
-    public static final DeferredHolder<Attribute, Attribute> CRIT_CHANCE = ATTRIBUTES.register(
+    // (0.15 = 15%)
+    public static final DeferredHolder<Attribute, Attribute> CRIT_CHANCE =
+            ATTRIBUTES.register(
             "generic.crit_chance",
             () -> new RangedAttribute(
                     "attribute.name.generic.crit_chance",
-                    0.05,
+                    0.01,
                     0.0,
                     0.95
             ).setSyncable(true)
     );
 
-    // Множитель критического удара (1.5 = x1.5)
-    public static final DeferredHolder<Attribute, Attribute> CRIT_DAMAGE = ATTRIBUTES.register(
+    // (1.5 = x1.5)
+    public static final DeferredHolder<Attribute, Attribute> CRIT_DAMAGE =
+            ATTRIBUTES.register(
             "generic.crit_damage",
             () -> new RangedAttribute(
                     "attribute.name.generic.crit_damage",

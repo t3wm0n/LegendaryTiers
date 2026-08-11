@@ -53,7 +53,6 @@ public class LegendaryTiers {
                         output.accept(ModItems.TOOL_STENCIL.get());
                         output.accept(ModItems.SHIELD_STENCIL.get());
                         output.accept(ModItems.CLEANSING_CLOTH.get());
-                        //output.accept(ModItems.GUIDE_BOOK.get());
                     })
                     .build()
     );

@@ -1,0 +1,26 @@
+{
+  "components": [
+    {
+      "type": "patchouli:header",
+      "text": "#title#",
+      "x": -1,
+      "y": 0
+    },
+    {
+      "type": "patchouli:texture",
+      "texture": "#image#",
+      "x": 0,
+      "y": 18,
+      "width": 116,
+      "height": 109,
+      "texture_width": 256,
+      "texture_height": 310
+    },
+    {
+      "type": "patchouli:text",
+      "text": "#text#",
+      "x": 0,
+      "y": 132
+    }
+  ]
+}

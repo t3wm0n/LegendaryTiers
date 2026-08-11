@@ -85,13 +85,13 @@ public final class TooltipLayout {
         if (enchantmentCount > 0 && !showEnchantments) {
 
             height += DIVIDER_HEIGHT;
-            height += enchantmentCount * ENCHANTMENT_LINE_HEIGHT;
+            height += enchantmentCount * ENCHANTMENT_LINE_HEIGHT + 10;
 
         }
 
         if (broken) {
             height += DIVIDER_HEIGHT;
-            height += BROKEN_HEIGHT + 10;
+            height += BROKEN_HEIGHT + 20;
         }
 
         height += PADDING * 2;

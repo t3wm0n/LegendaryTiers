@@ -8,8 +8,9 @@
       "text": "Рунный стол — мистический блок, позволяющий перековывать инструменты, броню и оружие для повышения их редкости.$(br)Его можно найти в $(thing)домах викингов$(), которые генерируются в заснеженных биомах."
     },
     {
-      "type": "patchouli:image",
-      "images": ["legendarytiers:textures/gui/runic_table.png"],
+      "type": "legendarytiers:gui_preview",
+      "title": "Рунный стол: интерфейс",
+      "image": "legendarytiers:textures/gui/runic_table.png",
       "text": "Интерфейс рунного стола."
     }
   ]

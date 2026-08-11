@@ -58,21 +58,6 @@ public class ModEvents {
 
     }
 
-
-    // Вспомогательный метод: LVL UP, ADD EXP
-//    public static void addExperience(ItemStack stack, int amount, Player player) {
-//        if (!stack.is(ModTags.TIERABLE_ITEMS)) return;
-//        int current = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-//        int oldLevel = current / 100;
-//        int newExp = current + amount;
-//        int newLevel = newExp / 100;
-//        stack.set(ModDataComponents.EXPERIENCE, newExp);
-//        if (newLevel > oldLevel && player != null) {
-//            player.level().playSound(null, player.blockPosition(),
-//                    SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.5F, 1.5F);
-//        }
-//    }
-
     public static void addExperience(ItemStack stack, int amount, Player player) {
         if (stack.isEmpty() || !stack.is(ModTags.TIERABLE_ITEMS)) return;
         if (player != null && player.level().isClientSide()) return;

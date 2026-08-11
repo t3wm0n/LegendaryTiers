@@ -1,11 +1,12 @@
 package com.example.legendarytiers;
 
-import com.example.legendarytiers.util.TierAttributeHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -14,90 +15,164 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 @EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
 public class CriticalHitHandler {
 
-    @SubscribeEvent
-    public static void onDamage(LivingIncomingDamageEvent event) {
+    private static final RandomSource RANDOM = RandomSource.create();
 
-        if (!(event.getSource().getEntity() instanceof LivingEntity attacker))
+    @SubscribeEvent
+    public static void onIncomingDamage(LivingIncomingDamageEvent event) {
+        if (event.isCanceled() || event.getAmount() <= 0) {
             return;
+        }
+
+        LivingEntity target = event.getEntity();
+        if (target.level().isClientSide()) {
+            return;
+        }
+
+        if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) {
+            return;
+        }
+
+        // Исключаем выстрелы из лука/арбалета (у них отдельная логика)
+        if (event.getSource().getDirectEntity() instanceof Projectile) {
+            return;
+        }
 
         ItemStack weapon = attacker.getMainHandItem();
-
-        if (weapon.isEmpty())
+        if (weapon.isEmpty()) {
             return;
+        }
 
-        double critChance = TierAttributeHelper.getAttribute(
-                weapon,
-                "legendarytiers:generic.crit_chance",
-                0.05
-        );
+        // 1. Проверка шанса критического удара
 
-        double critDamage = TierAttributeHelper.getAttribute(
-                weapon,
-                "legendarytiers:generic.crit_damage",
-                0.5
-        );
+        var critAttribute = attacker.getAttribute(ModAttributes.CRIT_CHANCE);
 
-        float damage = event.getAmount();
+        if (critAttribute == null) {
+            return;
+        }
 
-        // x1.5 + бонус от атрибута
-        damage *= (float)(1.5 + critDamage);
+        double critChance = critAttribute.getValue();
 
-        event.setAmount(damage);
+        if (critChance <= 0) {
+            return;
+        }
 
-        attacker.level().playSound(
-                null,
-                attacker.blockPosition(),
-                SoundEvents.PLAYER_ATTACK_STRONG,
-                SoundSource.PLAYERS,
-                1.5F,
-                0.8F
-        );
+        if (RANDOM.nextDouble() >= critChance) {
+            return; // Крит не прошел
+        }
 
-        attacker.level().playSound(
-                null,
-                attacker.blockPosition(),
-                SoundEvents.EXPERIENCE_ORB_PICKUP,
-                SoundSource.PLAYERS,
-                1.45F,
-                1.9F
-        );
+        // 2. Расчет урона
+        var critDamageAttr = attacker.getAttribute(ModAttributes.CRIT_DAMAGE);
+        double critBonus = (critDamageAttr != null) ? critDamageAttr.getValue() : 0.5;
+        float baseDamage = event.getAmount();
+        float finalDamage = baseDamage * (float) (1.0 + critBonus);
+        event.setAmount(finalDamage);
 
-        if (attacker.level() instanceof ServerLevel level) {
-            level.sendParticles(
-                    ParticleTypes.ELECTRIC_SPARK,
-                    attacker.getX(),
-                    attacker.getY() + attacker.getBbHeight() * 0.5,
-                    attacker.getZ(),
-                    18,
-                    0.25,
-                    0.35,
-                    0.25,
-                    0.02
-            );
+        // 4. Запуск звуков и частиц
+        if (target.level() instanceof ServerLevel serverLevel) {
+            playTierCritEffects(serverLevel, target, weapon);
+        }
+    }
 
-            level.sendParticles(
-                    ParticleTypes.ENCHANTED_HIT,
-                    attacker.getX(),
-                    attacker.getY() + attacker.getBbHeight() * 0.5,
-                    attacker.getZ(),
-                    25,
-                    0.15,
-                    0.2,
-                    0.15,
-                    0.02
-            );
+    private static void playTierCritEffects(ServerLevel level, LivingEntity target, ItemStack weapon) {
+        // Получаем имя редкости безопасным путем
+        String tierName = "common";
+        TierData tier = weapon.get(ModDataComponents.TIER_DATA);
+        if (tier != null && tier.rarity() != null) {
+            tierName = tier.rarity().name().toLowerCase();
+        }
 
-            level.sendParticles(
-                    ParticleTypes.CRIT,
-                    attacker.getX(),
-                    attacker.getY() + attacker.getBbHeight() * 0.5,
-                    attacker.getZ(),
-                    10,
-                    0.2,
-                    0.3,
-                    0.2,
-                    0.05
-            );
+        double x = target.getX();
+        double y = target.getY() + (target.getBbHeight() * 0.5);
+        double z = target.getZ();
+
+        switch (tierName) {
+            case "rare" -> {
+                // --- RARE ---
+                // Звук: Быстрый, сочный, резкий клик
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT,
+                        SoundSource.PLAYERS, 1.2F, 1.1F);
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP,
+                        SoundSource.PLAYERS, 0.9F, 1.2F);
+
+                // Частицы: Синий зачарованный удар + немного электричества
+                level.sendParticles(ParticleTypes.ENCHANTED_HIT, x, y, z, 18, 0.25, 0.25, 0.25, 0.08);
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 8, 0.2, 0.2, 0.2, 0.05);
+            }
+
+            case "epic" -> {
+                // --- EPIC ---
+                // Звук: Тяжелый рассекающий удар + звонкий акцент
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_STRONG,
+                        SoundSource.PLAYERS, 1.2F, 0.9F);
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT,
+                        SoundSource.PLAYERS, 1.3F, 0.8F);
+                level.playSound(null, target.blockPosition(), SoundEvents.TRIDENT_HIT_GROUND,
+                        SoundSource.PLAYERS, 0.5F, 1.4F);
+
+                // Частицы: Двойная волна (Крит + Зачарование + Яркие искры)
+                level.sendParticles(ParticleTypes.CRIT, x, y, z, 20, 0.3, 0.3, 0.3, 0.12);
+                level.sendParticles(ParticleTypes.ENCHANTED_HIT, x, y, z, 15, 0.25, 0.25, 0.25, 0.08);
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 15, 0.25, 0.25, 0.25, 0.08);
+            }
+
+            case "legendary" -> {
+                // --- LEGENDARY ---
+                level.playSound(null, target.blockPosition(), SoundEvents.MACE_SMASH_GROUND_HEAVY,
+                        SoundSource.PLAYERS, 0.8F, 0.9F);
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT,
+                        SoundSource.PLAYERS, 1.4F, 0.75F);
+                level.playSound(null, target.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP,
+                        SoundSource.PLAYERS, 0.7F, 1.7F);
+
+                level.sendParticles(ParticleTypes.FLASH, x, y, z, 1, 0, 0, 0, 0); // Сияющий импульс
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 20, 0.3, 0.3, 0.3, 0.08);
+                level.sendParticles(ParticleTypes.CRIT, x, y, z, 25, 0.3, 0.3, 0.3, 0.15);
+                level.sendParticles(ParticleTypes.SOUL, x, y, z, 12, 0.2, 0.2, 0.2, 0.05); // Огонь душ
+            }
+
+            case "mythic" -> {
+                // --- MYTHIC ---
+                // Звук: Тяжелая булава + Резонирующий гул якоря
+                level.playSound(null, target.blockPosition(), SoundEvents.MACE_SMASH_GROUND_HEAVY,
+                        SoundSource.PLAYERS, 1.0F, 0.75F);
+                level.playSound(null, target.blockPosition(), SoundEvents.RESPAWN_ANCHOR_CHARGE,
+                        SoundSource.PLAYERS, 0.8F, 1.2F);
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT,
+                        SoundSource.PLAYERS, 1.5F, 0.6F);
+
+                // Частицы: Вспышка + Фиолетовая магия + Вход в портал (темная энергия)
+                level.sendParticles(ParticleTypes.FLASH, x, y, z, 1, 0, 0, 0, 0);
+                level.sendParticles(ParticleTypes.WITCH, x, y, z, 25, 0.3, 0.3, 0.3, 0.08);
+                level.sendParticles(ParticleTypes.REVERSE_PORTAL, x, y, z, 20, 0.35, 0.35, 0.35, 0.05);
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 20, 0.3, 0.3, 0.3, 0.08);
+            }
+
+            case "divine" -> {
+                // --- DIVINE (Мифический тир) ---
+                level.playSound(null, target.blockPosition(), SoundEvents.MACE_SMASH_GROUND_HEAVY,
+                        SoundSource.PLAYERS, 1.2F, 0.65F);
+                level.playSound(null, target.blockPosition(), SoundEvents.TRIDENT_THUNDER.value(),
+                        SoundSource.PLAYERS, 0.6F, 1.4F);
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT,
+                        SoundSource.PLAYERS, 1.6F, 0.5F);
+
+                level.sendParticles(ParticleTypes.FLASH, x, y, z, 1, 0, 0, 0, 0);
+                level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, y, z, 25, 0.35, 0.35, 0.35, 0.06);
+                level.sendParticles(ParticleTypes.DRAGON_BREATH, x, y, z, 20, 0.3, 0.3, 0.3, 0.05);
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 25, 0.4, 0.4, 0.4, 0.1);
+            }
+
+            default -> {
+                // --- COMMON / UNCOMMON ---
+                level.playSound(null, target.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT,
+                        SoundSource.PLAYERS, 1.0F, 1.0F);
+
+                level.sendParticles(ParticleTypes.CRIT, x, y, z, 12, 0.2, 0.2, 0.2, 0.08);
+                level.sendParticles(ParticleTypes.ENCHANTED_HIT, x, y, z, 8, 0.15, 0.15, 0.15, 0.05);
+            }
         }
     }
 }
+
+
+
