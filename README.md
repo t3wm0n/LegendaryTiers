@@ -27,3 +27,6 @@ Tools, weapons, and armor get random rarities, gain levels through use, and can 
 
 ## Reporting Issues
 Use the [Issues](https://github.com/t3wm0n/LegendaryTiers/issues) tab.
+
+## Future
+1. SpellsEngine compatibility
