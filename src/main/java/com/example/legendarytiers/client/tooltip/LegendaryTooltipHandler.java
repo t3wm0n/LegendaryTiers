@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
-import com.example.legendarytiers.Config;
+import com.example.legendarytiers.config.RPGITConfig;
 
 @EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
 public final class LegendaryTooltipHandler {
@@ -18,7 +18,7 @@ public final class LegendaryTooltipHandler {
     @SubscribeEvent
     public static void gatherComponents(RenderTooltipEvent.GatherComponents event) {
 
-        if (!Config.INSTANCE.isCustomTooltipsEnabled()) {
+        if (!RPGITConfig.INSTANCE.client.enable_custom_tooltips) {
             return;
         }
 

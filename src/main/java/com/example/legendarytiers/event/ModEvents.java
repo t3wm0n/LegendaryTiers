@@ -1,10 +1,11 @@
-package com.example.legendarytiers;
+package com.example.legendarytiers.event;
 
+import com.example.legendarytiers.*;
 import com.example.legendarytiers.command.LegendaryCommand;
+import com.example.legendarytiers.config.RPGITConfig;
 import com.example.legendarytiers.util.ExperienceUtil;
 import com.example.legendarytiers.util.RepairCostHelper;
 import com.example.legendarytiers.util.RepairEntry;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,9 +20,14 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.trading.ItemCost;
@@ -32,13 +38,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.sound.SoundEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -50,6 +53,8 @@ import java.util.Optional;
 
 @EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
 public class ModEvents {
+
+    private static final String SPAWNER_TAG = "legendarytiers:from_spawner";
 
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
@@ -163,26 +168,74 @@ public class ModEvents {
             if (xp > 0) addExperience(tool, xp, player);
         }
         else if (state.is(BlockTags.LOGS) && tool.isCorrectToolForDrops(state)) {
-            addExperience(tool, Config.INSTANCE.getAxeXp(), player);
+            addExperience(tool, RPGITConfig.INSTANCE.experience.axe_xp.get(), player);
         }
         else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL) && tool.isCorrectToolForDrops(state)) {
-            addExperience(tool, Config.INSTANCE.getShovelXp(), player);
+            addExperience(tool, RPGITConfig.INSTANCE.experience.shovel_xp.get(), player);
         }
     }
 
     // Опыт за убийство мобов
     @SubscribeEvent
+    public static void onFinalizeSpawn(FinalizeSpawnEvent event) {
+        if (event.getSpawnType() == MobSpawnType.SPAWNER) {
+            event.getEntity().getPersistentData().putBoolean(SPAWNER_TAG, true);
+        }
+    }
+
+
+    @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
         DamageSource source = event.getSource();
-        if (source.getEntity() instanceof Player player) {
-            ItemStack weapon = player.getMainHandItem();
-            if (weapon.isEmpty()) return;
 
-            int baseXp = (int) (event.getEntity().getMaxHealth() * Config.INSTANCE.getMobXpMultiplier());
-            if (baseXp < Config.INSTANCE.getMobXpMin()) baseXp = Config.INSTANCE.getMobXpMin();
-            if (weapon.getItem() instanceof AxeItem) baseXp = Math.max(1, baseXp / 2);
-            addExperience(weapon, baseXp, player);
+        // Проверяем, что убийца — игрок
+        if (!(source.getEntity() instanceof Player player)) {
+            return;
         }
+
+        LivingEntity victim = event.getEntity();
+        ItemStack weapon = ItemStack.EMPTY;
+        Entity directEntity = source.getDirectEntity();
+
+        if (directEntity instanceof AbstractArrow arrow) {
+            ItemStack firedWeapon = arrow.getWeaponItem();
+            if (firedWeapon != null) weapon = firedWeapon;
+        } else if (directEntity instanceof ThrowableItemProjectile throwable) {
+            weapon = throwable.getItem();
+        }
+
+        if (weapon == null || weapon.isEmpty()) {
+            weapon = player.getMainHandItem();
+        }
+
+        if (weapon == null || weapon.isEmpty()) {
+            return;
+        }
+
+        // --- Расчет опыта ---
+
+        // 1. Базовый опыт по максимальному здоровью моба
+        float xp = (float) (victim.getMaxHealth() * RPGITConfig.INSTANCE.experience.mob_multiplier.get());
+
+        // 2. Штраф за спавнер (дает только 25% опыта)
+        if (victim.getPersistentData().getBoolean(SPAWNER_TAG)) {
+            xp *= 0.25f;
+        }
+
+        int finalXp = Math.round(xp);
+
+        // 3. Минимальный порог опыта из конфига
+        if (finalXp < RPGITConfig.INSTANCE.experience.mob_min.get()) {
+            finalXp = RPGITConfig.INSTANCE.experience.mob_min.get();
+        }
+
+        // 4. Корректировка для топоров (секир)
+        if (weapon.getItem() instanceof AxeItem) {
+            finalXp = Math.max(1, finalXp / 2);
+        }
+
+        // Начисляем опыт предмету
+        addExperience(weapon, finalXp, player);
     }
 
     // Опыт за вспахивание земли
@@ -195,7 +248,7 @@ public class ModEvents {
             BlockState state = level.getBlockState(pos);
             if (state.is(Blocks.DIRT) || state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT_PATH)
                     || state.is(Blocks.COARSE_DIRT) || state.is(Blocks.ROOTED_DIRT)) {
-                addExperience(stack, Config.INSTANCE.getHoeXp(), event.getEntity());
+                addExperience(stack, RPGITConfig.INSTANCE.experience.hoe_xp.get(), event.getEntity());
             }
         }
     }
@@ -206,7 +259,7 @@ public class ModEvents {
         if (event.getEntity() instanceof Player player) {
             float damage = event.getAmount();
             if (damage <= 0) return;
-            int xpPerPiece = Math.round(damage * Config.INSTANCE.getArmorXpPerDamage() / 2);
+            int xpPerPiece = Math.round(damage * RPGITConfig.INSTANCE.experience.armor_xp_per_damage.get() / 2);
             if (xpPerPiece <= 0) return;
             EquipmentSlot[] armorSlots = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
             for (EquipmentSlot slot : armorSlots) {
@@ -433,7 +486,8 @@ public class ModEvents {
     }
 
     private static int getOreXpFromConfig(BlockState state) {
-        for (String entry : Config.INSTANCE.getOreXpEntries()) {
+        // 1. Получаем список руд напрямую из CONFIG.experience.pickaxe_ores
+        for (String entry : RPGITConfig.INSTANCE.experience.pickaxe_ores) {
             String[] parts = entry.split("@");
             if (parts.length != 2) continue;
             String blockOrTag = parts[0];
@@ -451,13 +505,18 @@ public class ModEvents {
                 if (state.is(block)) return xp;
             }
         }
+
+        // 2. Дефолтный опыт за руды
         if (state.is(TagKey.create(Registries.BLOCK, ResourceLocation.parse("forge:ores"))) ||
                 state.is(TagKey.create(Registries.BLOCK, ResourceLocation.parse("c:ores")))) {
-            return Config.INSTANCE.getDefaultOreXp();
+            return RPGITConfig.INSTANCE.experience.default_ore_xp.get();
         }
+
+        // 3. Опыт за обычный камень / блоки
         if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-            return Config.INSTANCE.getStoneXp();
+            return RPGITConfig.INSTANCE.experience.stone_xp.get();
         }
+
         return 0;
     }
 

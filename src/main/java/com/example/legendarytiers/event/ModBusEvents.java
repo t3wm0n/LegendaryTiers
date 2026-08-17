@@ -1,5 +1,6 @@
-package com.example.legendarytiers;
+package com.example.legendarytiers.event;
 
+import com.example.legendarytiers.LegendaryTiers;
 import com.example.legendarytiers.ModAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.bus.api.SubscribeEvent;

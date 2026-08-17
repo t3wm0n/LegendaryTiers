@@ -1,6 +1,7 @@
 package com.example.legendarytiers.mixin;
 
 import com.example.legendarytiers.*;
+import com.example.legendarytiers.util.TierHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +29,7 @@ public class LootTableFillMixin {
         for (int i = 0; i < container.getContainerSize(); i++) {
             ItemStack stack = container.getItem(i);
             if (stack.isEmpty()) continue;
-            if (stack.is(ModTags.TIERABLE_ITEMS) && !stack.has(ModDataComponents.TIER_DATA)) {
+            if (TierHelper.isTierable(stack) && !stack.has(ModDataComponents.TIER_DATA)) {
                 Rarity rarity = Rarity.getRandomRarity(player, random);
                 TierData data = TierModifierLoader.generate(stack, rarity, random);
                 stack.set(ModDataComponents.TIER_DATA, data);

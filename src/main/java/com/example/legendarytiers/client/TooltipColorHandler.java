@@ -1,6 +1,7 @@
 package com.example.legendarytiers.client;
 
 import com.example.legendarytiers.*;
+import com.example.legendarytiers.config.RPGITConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -19,7 +20,7 @@ public final class TooltipColorHandler {
     @SubscribeEvent
     public static void onTooltipColor(RenderTooltipEvent.Color event) {
 
-        if (Config.INSTANCE.isCustomTooltipsEnabled()) {
+        if (RPGITConfig.INSTANCE.client.enable_custom_tooltips) {
             ItemStack stack = event.getItemStack();
             if (stack.isEmpty() || !stack.has(ModDataComponents.TIER_DATA)) {
                 return;

@@ -1,6 +1,7 @@
 package com.example.legendarytiers.mixin;
 
 import com.example.legendarytiers.*;
+import com.example.legendarytiers.util.TierHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,7 @@ public class CraftingMenuQuickMoveMixin {
         // После перемещения проверяем все слоты инвентаря игрока (слоты 0-35)
         for (int i = 0; i < 36; i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (stack.is(ModTags.TIERABLE_ITEMS) && !stack.has(ModDataComponents.TIER_DATA)) {
+            if (TierHelper.isTierable(stack) && !stack.has(ModDataComponents.TIER_DATA)) {
                 Rarity rarity = Rarity.getRandomRarity(player, player.level().random);
                 TierData data = TierModifierLoader.generate(stack, rarity, player.level().random);
                 stack.set(ModDataComponents.TIER_DATA, data);

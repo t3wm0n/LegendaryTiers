@@ -1,7 +1,7 @@
 package com.example.legendarytiers.client.tooltip.section;
 
 import com.example.legendarytiers.ModDataComponents;
-import com.example.legendarytiers.ModEvents;
+import com.example.legendarytiers.event.ModEvents;
 import com.example.legendarytiers.ModifierEntry;
 import com.example.legendarytiers.TierData;
 import com.example.legendarytiers.client.tooltip.*;

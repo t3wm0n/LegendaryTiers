@@ -1,19 +1,22 @@
 package com.example.legendarytiers;
 
+import com.example.legendarytiers.config.RPGITConfig;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
+import me.fzzyhmstrs.fzzy_config.registry.ClientConfigRegistry;
+import me.fzzyhmstrs.fzzy_config.screen.ConfigScreenProvider;
+import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.AbstractList;
 import java.util.function.Supplier;
 
 @Mod(LegendaryTiers.MOD_ID)
@@ -21,13 +24,14 @@ public class LegendaryTiers {
     public static final String MOD_ID = "legendarytiers";
 
     public LegendaryTiers(IEventBus modEventBus, ModContainer modContainer) {
+
         ModDataComponents.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModMenuTypes.MENU_TYPES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModAttributes.register(modEventBus);
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        RPGITConfig.INSTANCE.getId();
         CREATIVE_MODE_TABS.register(modEventBus);
         TierModifierLoader.loadBuiltin();
 

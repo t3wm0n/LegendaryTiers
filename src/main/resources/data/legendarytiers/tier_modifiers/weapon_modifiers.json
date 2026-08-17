@@ -7,7 +7,7 @@
       { "id": "minecraft:player.entity_interaction_range", "weight": 1, "min": -0.5, "max": 0.15, "operation": "multiply_total" },
       { "id": "minecraft:generic.knockback_resistance", "weight": 1, "min": -0.2, "max": 0.1, "operation": "multiply_total" },
       { "id": "minecraft:generic.luck", "weight": 1, "min": -4, "max": 1, "operation": "addition" },
-      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.01, "max": 0.05, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": -0.05, "max": 0.05, "operation": "addition" },
       { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.05, "max": 0.25, "operation": "addition" }
     ],
     "min_attrs": 1, "max_attrs": 2
@@ -20,7 +20,7 @@
       { "id": "minecraft:generic.luck", "weight": 2, "min": -1, "max": 1, "operation": "addition" },
       { "id": "minecraft:player.entity_interaction_range", "weight": 1, "min": -0.2, "max": 0.4, "operation": "multiply_total" },
       { "id": "minecraft:generic.knockback_resistance", "weight": 1, "min": -0.1, "max": 0.2, "operation": "multiply_total" },
-      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.03, "max": 0.10, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.03, "max": 0.07, "operation": "addition" },
       { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.10, "max": 0.35, "operation": "addition" }
     ],
     "min_attrs": 2, "max_attrs": 3
@@ -33,7 +33,7 @@
       { "id": "minecraft:generic.luck", "weight": 2, "min": 1, "max": 3, "operation": "addition" },
       { "id": "minecraft:player.entity_interaction_range", "weight": 2, "min": 0.05, "max": 0.5, "operation": "multiply_total" },
       { "id": "minecraft:generic.knockback_resistance", "weight": 1, "min": 0.1, "max": 0.3, "operation": "multiply_total" },
-      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.08, "max": 0.15, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.07, "max": 0.15, "operation": "addition" },
       { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.30, "max": 0.50, "operation": "addition" }
     ],
     "min_attrs": 2, "max_attrs": 4
@@ -59,7 +59,7 @@
       { "id": "minecraft:generic.luck", "weight": 2, "min": 2, "max": 4, "operation": "addition" },
       { "id": "minecraft:player.entity_interaction_range", "weight": 2, "min": 0.5, "max": 1.5, "operation": "multiply_total" },
       { "id": "minecraft:generic.knockback_resistance", "weight": 1, "min": 0.25, "max": 0.5, "operation": "multiply_total" },
-      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.25, "max": 0.45, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.25, "max": 0.35, "operation": "addition" },
       { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.70, "max": 0.90, "operation": "addition" }
     ],
     "min_attrs": 3, "max_attrs": 6
@@ -72,7 +72,7 @@
       { "id": "minecraft:generic.luck", "weight": 2, "min": 3, "max": 5, "operation": "addition" },
       { "id": "minecraft:player.entity_interaction_range", "weight": 2, "min": 1.0, "max": 2.0, "operation": "multiply_total" },
       { "id": "minecraft:generic.knockback_resistance", "weight": 1, "min": 0.35, "max": 0.7, "operation": "multiply_total" },
-      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.50, "max": 0.75, "operation": "addition" },
+      { "id": "legendarytiers:generic.crit_chance", "weight": 1, "min": 0.40, "max": 0.75, "operation": "addition" },
       { "id": "legendarytiers:generic.crit_damage", "weight": 1, "min": 0.90, "max": 1.50, "operation": "addition" }
     ],
     "min_attrs": 4, "max_attrs": 7

@@ -15,9 +15,7 @@
     "LootTableFillMixin",
     "AnvilMenuMixin",
     "ItemBreakMixin",
-    "ArrowMixin",
-    "BowItemMixin",
-    "CrossbowItemMixin"
+    "ArrowMixin"
   ],
   "client": [],
   "server": []

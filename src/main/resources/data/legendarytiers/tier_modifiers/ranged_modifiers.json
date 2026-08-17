@@ -21,7 +21,7 @@
   },
   "epic": {
     "attributes": [
-      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.05, "max": 0.15, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.08, "max": 0.15, "operation": "multiply_total" },
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.05, "max": 0.15, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.07, "max": 0.20, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.00, "max": 0.08, "operation": "multiply_total" },
@@ -33,7 +33,7 @@
   },
   "legendary": {
     "attributes": [
-      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.08, "max": 0.20, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.15, "max": 0.30, "operation": "multiply_total" },
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.10, "max": 0.20, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.05, "max": 0.25, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.02, "max": 0.10, "operation": "multiply_total" },
@@ -45,7 +45,7 @@
   },
   "mythic": {
     "attributes": [
-      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.15, "max": 0.25, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.25, "max": 0.45, "operation": "multiply_total" },
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.15, "max": 0.30, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.15, "max": 0.35, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.05, "max": 0.12, "operation": "multiply_total" },
@@ -57,7 +57,7 @@
   },
   "divine": {
     "attributes": [
-      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.25, "max": 0.50, "operation": "multiply_total" },
+      { "id": "legendarytiers:generic.bow_draw_speed", "weight": 3, "min": 0.45, "max": 0.70, "operation": "multiply_total" },
       { "id": "legendarytiers:generic.arrow_damage",   "weight": 3, "min": 0.25, "max": 0.50, "operation": "multiply_total" },
       { "id": "durability",                            "weight": 2, "min": 0.20, "max": 0.50, "operation": "multiply_total" },
       { "id": "minecraft:generic.movement_speed",      "weight": 1, "min": 0.15, "max": 0.25, "operation": "multiply_total" },

@@ -1,16 +1,23 @@
-package com.example.legendarytiers;
+package com.example.legendarytiers.event;
 
+import com.example.legendarytiers.LegendaryTiers;
+import com.example.legendarytiers.ModAttributes;
+import com.example.legendarytiers.ModDataComponents;
+import com.example.legendarytiers.TierData;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
 public class CriticalHitHandler {
@@ -32,31 +39,18 @@ public class CriticalHitHandler {
             return;
         }
 
-        // Исключаем выстрелы из лука/арбалета (у них отдельная логика)
-        if (event.getSource().getDirectEntity() instanceof Projectile) {
-            return;
-        }
-
-        ItemStack weapon = attacker.getMainHandItem();
-        if (weapon.isEmpty()) {
-            return;
-        }
+        Entity directEntity = event.getSource().getDirectEntity();
+        boolean isRanged = directEntity instanceof Projectile;
 
         // 1. Проверка шанса критического удара
 
         var critAttribute = attacker.getAttribute(ModAttributes.CRIT_CHANCE);
-
         if (critAttribute == null) {
             return;
         }
 
         double critChance = critAttribute.getValue();
-
-        if (critChance <= 0) {
-            return;
-        }
-
-        if (RANDOM.nextDouble() >= critChance) {
+        if (critChance <= 0 || RANDOM.nextDouble() >= critChance) {
             return; // Крит не прошел
         }
 
@@ -67,10 +61,30 @@ public class CriticalHitHandler {
         float finalDamage = baseDamage * (float) (1.0 + critBonus);
         event.setAmount(finalDamage);
 
-        // 4. Запуск звуков и частиц
+        // 3. Запуск звуков и частиц
+        ItemStack weapon = getWeapon(attacker, isRanged, directEntity);
+
         if (target.level() instanceof ServerLevel serverLevel) {
             playTierCritEffects(serverLevel, target, weapon);
         }
+    }
+
+    private static @NotNull ItemStack getWeapon(LivingEntity attacker, boolean isRanged, Entity directEntity) {
+        ItemStack weapon = ItemStack.EMPTY;
+
+        if (isRanged && directEntity instanceof AbstractArrow arrow) {
+            // В 1.21.1 у AbstractArrow есть поле/метод получения оружия, из которого выстрелили
+            weapon = arrow.getWeaponItem();
+        }
+
+        // Если оружие не удалось достать из стрелы — берем из руки игрока
+        if (weapon.isEmpty()) {
+            weapon = attacker.getMainHandItem();
+            if (weapon.isEmpty()) {
+                weapon = attacker.getOffhandItem();
+            }
+        }
+        return weapon;
     }
 
     private static void playTierCritEffects(ServerLevel level, LivingEntity target, ItemStack weapon) {

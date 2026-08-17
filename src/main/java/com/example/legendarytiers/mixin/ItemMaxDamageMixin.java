@@ -1,10 +1,9 @@
 package com.example.legendarytiers.mixin;
 
 import com.example.legendarytiers.*;
-import com.example.legendarytiers.util.ExperienceUtil;
+import com.example.legendarytiers.event.ModEvents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

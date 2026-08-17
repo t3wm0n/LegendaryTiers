@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "#minecraft:enchantable/weapon",
+    "#minecraft:enchantable/mace",
     "#minecraft:enchantable/mining",
     "minecraft:trident",
     "#minecraft:enchantable/bow",

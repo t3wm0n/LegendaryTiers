@@ -49,7 +49,7 @@ public final class LegendaryTooltipBuilder {
                 ExperienceUtil.getCurrentLevelExperience(experience);
 
         int experienceToNextLevel =
-                ExperienceUtil.getExperienceToNextLevel();
+                ExperienceUtil.getExperienceToNextLevel(level);
 
         int reforgeAttempts =
                 stack.getOrDefault(

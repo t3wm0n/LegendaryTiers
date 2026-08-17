@@ -1,6 +1,6 @@
-package com.example.legendarytiers;
+package com.example.legendarytiers.event;
 
-import com.example.legendarytiers.screen.RunicTableScreen;
+import com.example.legendarytiers.*;
 import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,12 +14,11 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.awt.*;
 
-import static com.example.legendarytiers.util.ExperienceUtil.EXPERIENCE_PER_LEVEL;
+import static com.example.legendarytiers.util.ExperienceUtil.BASE_EXPERIENCE;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = LegendaryTiers.MOD_ID)
 public class ModClientEvents {
@@ -89,9 +88,15 @@ public class ModClientEvents {
         if (exp != null) {
             int level = ExperienceUtil.getLevel(exp);
             int currentLevelExp = ExperienceUtil.getCurrentLevelExperience(exp);
-            int nextLevelExp = EXPERIENCE_PER_LEVEL;
+
+            // Динамически получаем требуемый опыт для ТЕКУЩЕГО уровня
+            int nextLevelExp = ExperienceUtil.getExperienceToNextLevel(level);
+
+            // Считаем процент прогресса от 0.0 до 100.0%
             double progressPercent = (currentLevelExp / (double) nextLevelExp) * 100.0;
-            String progressStr = String.format("%.1f", progressPercent);
+
+            // Locale.ROOT гарантирует, что разделителем всегда будет точка (например, "45.0%", а не "45,0%")
+            String progressStr = String.format(java.util.Locale.ROOT, "%.1f", progressPercent);
 
             Component levelText = Component.translatable("tooltip.legendarytiers.level", level)
                     .withStyle(ChatFormatting.DARK_AQUA);
@@ -106,7 +111,7 @@ public class ModClientEvents {
         if (attempts != null && attempts > 0) {
             int remaining = Math.max(0, 3 - attempts);
             ChatFormatting color = remaining > 0 ? ChatFormatting.YELLOW : ChatFormatting.RED;
-            event.getToolTip().add(Component.translatable("tooltip.legendarytiers.reforge_attempts",remaining).withStyle(color));
+            event.getToolTip().add(Component.translatable("tooltip.legendarytiers.reforge_attempts",remaining, 3).withStyle(color));
         }
     }
 

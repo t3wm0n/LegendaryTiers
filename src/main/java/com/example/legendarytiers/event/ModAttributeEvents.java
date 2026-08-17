@@ -1,5 +1,6 @@
-package com.example.legendarytiers;
+package com.example.legendarytiers.event;
 
+import com.example.legendarytiers.*;
 import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
