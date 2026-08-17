@@ -1,4 +1,4 @@
-package com.example.legendarytiers.util; // Укажите ваш пакет
+package com.example.legendarytiers.util;
 
 import com.example.legendarytiers.ModTags;
 import com.example.legendarytiers.config.RPGITConfig;
