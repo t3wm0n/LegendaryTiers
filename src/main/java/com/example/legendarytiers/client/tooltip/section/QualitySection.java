@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 public final class QualitySection {
 
     private static final int STAR_SPACING = 2;
-    private static final int STAR_SIZE = 15;
+    public static final int STAR_SIZE = 15;
     private static final int DEFAULT_GLOW_COLOR = 0xFFFFD700; // Золотое свечение по умолчанию
 
     private QualitySection() {

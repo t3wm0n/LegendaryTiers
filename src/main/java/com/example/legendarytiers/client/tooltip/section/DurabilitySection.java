@@ -10,8 +10,11 @@ import com.example.legendarytiers.client.tooltip.render.TextRenderer;
 import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public final class DurabilitySection {
 
@@ -33,31 +36,62 @@ public final class DurabilitySection {
         ItemStack stack = context.stack();
         if (stack == null || stack.isEmpty()) return;
 
-        // 1. Берем истинную базовую прочность ванильного предмета
-        int baseDurability = stack.getItem().getDefaultInstance().getMaxDamage();
-        if (baseDurability <= 0) return;
+        // 1. Проверяем наличие энергии (FE / RF из техно-модов)
+        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
 
-        TierData tier = stack.get(ModDataComponents.TIER_DATA);
+        float progress;
+        String textEnd;
 
-        // 2. Рассчитываем актуальную прочность на лету для тултипа
-        int maxDurability = (tier != null)
-                ? ModEvents.calculateMaxDamage(stack, baseDurability, tier)
-                : stack.getMaxDamage();
-
-        if (maxDurability <= 0) return;
-
-        // Оставшаяся прочность
-        int currentDurability = Math.max(0, maxDurability - stack.getDamageValue());
-
+        TooltipTheme theme = TooltipThemes.get(context.rarity());
         int barX = x + TooltipLayout.PADDING;
         int barY = y + 5;
         int barWidth = width - TooltipLayout.PADDING * 2;
 
-        float progress = (float) currentDurability / maxDurability;
+        if (energy != null && energy.getMaxEnergyStored() > 0) {
+            // --- РЕЖИМ ЭНЕРГИИ (Электроинструменты / Буры) ---
+            int maxEnergy = energy.getMaxEnergyStored();
+            int currentEnergy = energy.getEnergyStored();
 
-        TooltipTheme theme = TooltipThemes.get(context.rarity());
+            progress = Math.clamp((float) currentEnergy / maxEnergy, 0.0f, 1.0f);
 
-        // Рисуем шкалу прочности
+            String formattedCurrent = formatEnergyValue(currentEnergy);
+            String formattedMax = formatEnergyValue(maxEnergy);
+
+            textEnd = Component.translatable("tooltip.legendarytiers.charge").getString() + ": " + formattedCurrent + " / " + formattedMax + " FE";
+        } else {
+            // --- РЕЖИМ ОБЫЧНОЙ ПРОЧНОСТИ ---
+            Integer baseObj = stack.getItem().components().get(DataComponents.MAX_DAMAGE);
+            int baseDurability = (baseObj != null) ? baseObj : stack.getItem().getDefaultInstance().getMaxDamage();
+            if (baseDurability <= 0) return;
+
+            TierData tier = stack.get(ModDataComponents.TIER_DATA);
+
+            int maxDurability = (tier != null)
+                    ? ModEvents.calculateMaxDamage(stack, baseDurability, tier)
+                    : stack.getMaxDamage();
+
+            if (maxDurability <= 0) return;
+
+            int currentDurability = Math.max(0, maxDurability - stack.getDamageValue());
+            progress = Math.clamp((float) currentDurability / maxDurability, 0.0f, 1.0f);
+
+            String text = currentDurability + " / " + maxDurability;
+
+            // Вычисляем процент бонуса
+            double bonusMultiplier = calculateDurabilityBonus(stack);
+            if (Math.abs(bonusMultiplier) > 0.0001) {
+                int percent = (int) Math.round(bonusMultiplier * 100);
+                if (percent > 0) {
+                    text += " (+" + percent + "%)";
+                } else if (percent < 0) {
+                    text += " (" + percent + "%)";
+                }
+            }
+
+            textEnd = Component.translatable("attribute.name.generic.durability").getString() + ": " + text;
+        }
+
+        // 2. Рисуем шкалу прогресса
         ProgressBarRenderer.draw(
                 graphics,
                 barX,
@@ -68,23 +102,7 @@ public final class DurabilitySection {
                 theme
         );
 
-        // 3. Формируем текст (теперь сразу будет "270 / 270")
-        String text = currentDurability + " / " + maxDurability;
-
-        // 4. Вычисляем процент бонуса
-        double bonusMultiplier = calculateDurabilityBonus(stack);
-
-        if (Math.abs(bonusMultiplier) > 0.0001) {
-            int percent = (int) Math.round(bonusMultiplier * 100);
-            if (percent > 0) {
-                text += " (+" + percent + "%)";
-            } else if (percent < 0) {
-                text += " (" + percent + "%)";
-            }
-        }
-
-        String textEnd = Component.translatable("attribute.name.generic.durability").getString() + " " + text;
-
+        // 3. Выводим текст по центру шкалы
         int textWidth = font.width(textEnd);
 
         TextRenderer.drawShadow(
@@ -95,6 +113,18 @@ public final class DurabilitySection {
                 barY + 3,
                 0xFFFFFFFF
         );
+    }
+
+    /**
+     * Форматирует большие числа энергии (150000 -> 150k, 2500000 -> 2.5M)
+     */
+    private static String formatEnergyValue(int value) {
+        if (value >= 1_000_000) {
+            return String.format("%.1fM", value / 1_000_000.0f);
+        } else if (value >= 1_000) {
+            return String.format("%.1fk", value / 1_000.0f);
+        }
+        return String.valueOf(value);
     }
 
     /**

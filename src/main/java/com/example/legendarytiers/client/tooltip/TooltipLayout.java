@@ -1,5 +1,7 @@
 package com.example.legendarytiers.client.tooltip;
 
+import com.example.legendarytiers.client.tooltip.render.HeaderRenderer;
+
 public final class TooltipLayout {
 
     private TooltipLayout() {
@@ -9,7 +11,7 @@ public final class TooltipLayout {
     public static final int HINT_HEIGHT = 14;
 
     //мин ширина подсказки
-    public static final int MIN_WIDTH = 260;
+    public static final int MIN_WIDTH = 290;
 
     // Внутренний отступ от рамки
     public static final int PADDING = 8;
@@ -108,5 +110,12 @@ public final class TooltipLayout {
                 longestLineWidth + PADDING * 2 + 24
         );
 
+    }
+
+    public static int calculatePage2Height(int extraLinesHeight) {
+        int headerHeight = HeaderRenderer.HEADER_HEIGHT;
+        int padding = PADDING * 2;
+        int hintHeight = 14; // Высота подсказки [Tab]
+        return headerHeight + extraLinesHeight + hintHeight + padding;
     }
 }

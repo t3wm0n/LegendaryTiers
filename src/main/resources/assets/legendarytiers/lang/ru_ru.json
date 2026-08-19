@@ -31,6 +31,8 @@
   "tooltip.legendarytiers.reforge_attempts": "Перековка: %s/%s",
   "tooltip.legendarytiers.reforge_button": "Перековать предмет",
   "tooltip.legendarytiers.reroll_button": "Сменить бонусы (случайно)",
+  "tooltip.legendarytiers.durability": "Прочность %s%%",
+  "tooltip.legendarytiers.charge": "Заряд",
 
   "tooltip.legendarytiers.slot_item": "Инструмент / броня / оружие",
   "tooltip.legendarytiers.slot_ink": "Чернила",
@@ -44,6 +46,10 @@
   "tooltip.legendarytiers.catalyst_echo_shard": "Эхо-осколок: 100% успех для оружия",
   "tooltip.legendarytiers.catalyst_cooked_chorus_fruit": "Приготовленный плод хоруса: 100% успех для инструментов",
   "tooltip.legendarytiers.catalyst_nether_star": "Звезда Нижнего мира: +2 уровня редкости при успехе",
+
+  "tooltip.legendarytiers.extrainfo.header": "Доп. информация:",
+  "tooltip.legendarytiers.extrainfo.tab1": "✦ Зажмите [Tab] для описания (1/2)",
+  "tooltip.legendarytiers.extrainfo.tab2": "✦ [Tab] Страница 2/2",
 
   "message.legendarytiers.reforge_success": "Редкость предмета повышена!",
   "message.legendarytiers.reforge_fail": "Неудача! Редкость не изменилась.",

@@ -31,6 +31,8 @@
   "tooltip.legendarytiers.reforge_attempts": "Reforge: %s/%s",
   "tooltip.legendarytiers.reforge_button": "Reforge Item",
   "tooltip.legendarytiers.reroll_button": "Reroll attributes (Random)",
+  "tooltip.legendarytiers.durability": "Durability %s%%",
+  "tooltip.legendarytiers.charge": "Charge",
 
   "tooltip.legendarytiers.slot_item": "Tool / Armor / Weapon",
   "tooltip.legendarytiers.slot_ink": "Ink",
@@ -44,6 +46,10 @@
   "tooltip.legendarytiers.catalyst_echo_shard": "Echo Shard: 100% success for weapons",
   "tooltip.legendarytiers.catalyst_cooked_chorus_fruit": "Cooked Chorus Fruit: 100% success for tools",
   "tooltip.legendarytiers.catalyst_nether_star": "Nether Star: +2 rarity levels on success",
+
+  "tooltip.legendarytiers.extrainfo.header": "Extra info:",
+  "tooltip.legendarytiers.extrainfo.tab1": "✦ Press [Tab] for extra info (1/2)",
+  "tooltip.legendarytiers.extrainfo.tab2": "✦ [Tab] Page 2/2",
 
   "message.legendarytiers.reforge_success": "Item rarity increased!",
   "message.legendarytiers.reforge_fail": "Failure! Rarity unchanged.",
@@ -61,6 +67,6 @@
   "attribute.name.generic.crit_chance": "Critical Chance",
   "attribute.name.generic.crit_damage": "Critical Damage",
 
-  "legendarytiers.tooltip.show_stats": "Attributes...",
-  "legendarytiers.tooltip.show_enchants": "Enchantments..."
+  "legendarytiers.tooltip.show_stats": "Bonuses...",
+  "legendarytiers.tooltip.show_enchants": "Charms..."
 }

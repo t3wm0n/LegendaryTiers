@@ -154,7 +154,7 @@ public final class HintSection {
                 label,
                 drawX + KEY_WIDTH + GAP,
                 textY,
-                TooltipColors.TEXT_DISABLED
+                0xFFFFAA00
         );
     }
 }

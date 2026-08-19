@@ -1,14 +1,22 @@
 package com.example.legendarytiers.client.tooltip;
 
+import com.example.legendarytiers.client.tooltip.helpers.ModTooltipHelper;
 import com.example.legendarytiers.client.tooltip.render.BackgroundRenderer;
 import com.example.legendarytiers.client.tooltip.render.DividerRenderer;
+import com.example.legendarytiers.client.tooltip.render.ExtraInfoRenderer;
 import com.example.legendarytiers.client.tooltip.render.HeaderRenderer;
 import com.example.legendarytiers.client.tooltip.section.*;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 public final class LegendaryTooltipRenderer {
 
@@ -28,6 +36,32 @@ public final class LegendaryTooltipRenderer {
                 );
 
         int width = context.tooltipWidth();
+
+        // 1. Проверяем наличие доп. информации от сторонних модов
+        List<Component> extraLines = ModTooltipHelper.getExtraTooltipLines(context.stack());
+        boolean hasExtraInfo = !extraLines.isEmpty();
+
+        // 2. Отслеживаем зажатие клавиши TAB
+        long windowHandle = Minecraft.getInstance().getWindow().getWindow();
+        boolean isTabPressed = InputConstants.isKeyDown(windowHandle, GLFW.GLFW_KEY_TAB);
+
+        // Экстра информация
+        if (hasExtraInfo && isTabPressed) {
+            ExtraInfoRenderer.render(
+                    graphics,
+                    font,
+                    context,
+                    extraLines,
+                    x,
+                    y,
+                    width,
+                    theme
+            );
+            return; // Завершаем рендер
+        }
+
+
+        //Главная страница
         int attributeCount =
                 AttributeSection.visibleCount(context);
         int enchantmentCount =
@@ -46,6 +80,11 @@ public final class LegendaryTooltipRenderer {
                 !context.showAdvancedAttributes(),
                 !context.showEnchantments()
         );
+
+        if (hasExtraInfo) {
+            height += 12;
+        }
+
         int screenHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
         int correctedY = y;
         if (correctedY + height > screenHeight - 5) { // 5px отступ от края
@@ -223,7 +262,7 @@ public final class LegendaryTooltipRenderer {
                     oldwidth
             );
 
-            //yAfterPreview += BrokenSection.getHeight() + 2;
+            yAfterPreview += BrokenSection.getHeight() + 2;
 
         }
 
@@ -246,8 +285,24 @@ public final class LegendaryTooltipRenderer {
                     currentY + 2,
                     width
             );
+            currentY += TooltipLayout.PADDING;
 
         }
+
+        // Отображение подсказки переключения на Страницу 2 через [TAB]
+        if (hasExtraInfo) {
+            String tabPrompt = Component.translatable("tooltip.legendarytiers.extrainfo.tab1").getString();
+            int promptWidth = font.width(tabPrompt);
+            graphics.drawString(
+                    font,
+                    tabPrompt,
+                    x + (oldwidth - promptWidth) / 2,
+                    yAfterPreview + 2,
+                    0xFFFFAA00,
+                    true
+            );
+        }
+
 
     }
 

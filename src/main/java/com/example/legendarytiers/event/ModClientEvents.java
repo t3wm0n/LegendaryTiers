@@ -61,9 +61,10 @@ public class ModClientEvents {
                 if (entry.target().equals("durability")) {
                     double val = entry.value();
                     String sign = val >= 0 ? "+" : "";
+                    ChatFormatting color = val >= 0 ? ChatFormatting.GREEN : ChatFormatting.RED;
                     int percent = (int) Math.round(val * 100);
                     String resTip = sign + percent;
-                    event.getToolTip().add(Component.translatable("attribute.name.generic.durability", resTip).withStyle(ChatFormatting.GRAY));
+                    event.getToolTip().add(Component.translatable("tooltip.legendarytiers.durability", resTip).withStyle(color));
                     break;
                 }
             }

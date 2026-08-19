@@ -81,9 +81,9 @@ public class ModEvents {
                 player.level().playSound(null, player.blockPosition(),
                         SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.5F, 1.5F);
             }
-            recalculateMaxDamage(stack);
-        }
 
+        }
+        recalculateMaxDamage(stack);
         if (player instanceof ServerPlayer serverPlayer) {
             serverPlayer.containerMenu.broadcastChanges();
         }
@@ -93,7 +93,8 @@ public class ModEvents {
         if (stack.isEmpty()) return;
 
         // Считываем ЧИСТУЮ базовую прочность предмета (например, 250 для железной кирки)
-        int base = stack.getItem().getDefaultInstance().getMaxDamage();
+        Integer baseObj = stack.getItem().components().get(DataComponents.MAX_DAMAGE);
+        int base = (baseObj != null) ? baseObj : 0;
         if (base <= 0) return;
 
         TierData tier = stack.get(ModDataComponents.TIER_DATA);

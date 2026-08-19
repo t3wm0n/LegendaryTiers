@@ -18,6 +18,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import com.example.legendarytiers.util.TextAnimationUtils;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+
+import java.util.List;
 
 public final class HeaderRenderer {
 
@@ -27,7 +30,7 @@ public final class HeaderRenderer {
     private static final int TEXTURE_HEIGHT = 298;
 
     private static final int SIDE_WIDTH = 60;
-    public static final int HEADER_HEIGHT = 70;
+    public static final int HEADER_HEIGHT = 75;
     private static final int CENTER_STEP = 32;
 
     private static final int CENTER_MID_W = 24;
@@ -162,11 +165,40 @@ public final class HeaderRenderer {
         // ---------- ТЕКСТ И ЗВЕЗДЫ ----------
         PoseStack pose = graphics.pose();
 
-        float scaledHeaderHeight = HEADER_HEIGHT / TEXT_SCALE;
-        float baseTextY = (scaledHeaderHeight / 2.0F) - (font.lineHeight / 2.0F);
+        // 1. Фиксированная координата X для текста и звёзд (не зависит от currentScale)
+        float titleX = (effectiveSideWidth * 0.8F) / TEXT_SCALE;
 
+        float maxTitleWidth = width / 2F;
+        float currentScale = TEXT_SCALE;
+        List<String> lines = List.of(displayTitle);
+        int rawWidth = font.width(displayTitle);
+
+        // Если не влезает с увеличенным шрифтом — снижаем до ванильного 1.0F
+        if (rawWidth * TEXT_SCALE > maxTitleWidth) {
+            currentScale = 1.0F;
+            // Если даже при 1.0F не влезает — разбиваем текст на строки
+            if (rawWidth > maxTitleWidth) {
+                lines = font.getSplitter()
+                        .splitLines(displayTitle, (int) maxTitleWidth, net.minecraft.network.chat.Style.EMPTY)
+                        .stream()
+                        .map(net.minecraft.network.chat.FormattedText::getString)
+                        .toList();
+            }
+        }
+
+        // 2. Межстрочный интервал и вычисление Y-координаты текста
+        float lineSpacing = (font.lineHeight + 1) * currentScale;
+
+        float scaledHeaderHeight = lines.size() > 1 ? HEADER_HEIGHT / currentScale : HEADER_HEIGHT / TEXT_SCALE;
+
+        float baseTextY = (scaledHeaderHeight / 2.0F) - (font.lineHeight / 2.0F);
         float mainTextY = baseTextY - 9.0F;
-        float titleX = effectiveSideWidth * 0.8F / TEXT_SCALE;
+
+        // Если строк 2 или больше — центрируем блок текста по вертикали
+        if (lines.size() > 1) {
+            float totalHeight = lines.size() * lineSpacing;
+            mainTextY -= (totalHeight / 4.0F);
+        }
 
         pose.pushPose();
         pose.translate(x, y, 0.0F);
@@ -174,20 +206,25 @@ public final class HeaderRenderer {
         // Цвет названия: светло-красный при поломке, белый в обычном состоянии
         int titleColor = (context != null && context.broken()) ? 0xFFFF5555 : 0xFFFFFF;
 
-        // 1. Название предмета
-        TextAnimationUtils.drawGlitchString(
-                graphics,
-                font,
-                displayTitle,
-                titleX,
-                mainTextY,
-                TEXT_SCALE,
-                titleColor
-        );
+        // 3. Построчная отрисовка текста с эффектом глитча
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            float currentLineY = mainTextY + (i * lineSpacing);
 
-        // 2. Звезды качества
-        int starsY = (int) (mainTextY + (font.lineHeight * TEXT_SCALE));
-        int starsX = (int) ((effectiveSideWidth * 0.8F) / TEXT_SCALE);
+            TextAnimationUtils.drawGlitchString(
+                    graphics,
+                    font,
+                    line,
+                    titleX,
+                    currentLineY,
+                    currentScale,
+                    titleColor
+            );
+        }
+
+        // 4. Звезды качества (располагаются строго под последней строкой текста)
+        int starsY = (int) (mainTextY + (lines.size() * lineSpacing));
+        int starsX = (int) titleX + ADD_PADD; // Точное совпадение по X с названием
 
         QualitySection.render(
                 graphics,
