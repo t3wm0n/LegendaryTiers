@@ -21,7 +21,10 @@ import com.example.legendarytiers.util.TextAnimationUtils;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.List;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class HeaderRenderer {
 
     private static final int TEXTURE_SIDE_WIDTH = 256;

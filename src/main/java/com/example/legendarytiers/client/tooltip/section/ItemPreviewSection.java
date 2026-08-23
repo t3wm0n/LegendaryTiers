@@ -6,7 +6,10 @@ import com.example.legendarytiers.client.tooltip.TooltipTheme;
 import com.example.legendarytiers.client.tooltip.render.ItemPreviewRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ItemPreviewSection {
 
     public static int getHeight() {

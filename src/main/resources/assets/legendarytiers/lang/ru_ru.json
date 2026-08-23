@@ -68,5 +68,7 @@
   "attribute.name.generic.crit_damage": "Критический урон",
 
   "legendarytiers.tooltip.show_stats": "Бонусы...",
-  "legendarytiers.tooltip.show_enchants": "Чары..."
+  "legendarytiers.tooltip.show_enchants": "Чары...",
+
+  "legendarytiers.level.up": "Уровень предмета %s повышен до %s!"
 }

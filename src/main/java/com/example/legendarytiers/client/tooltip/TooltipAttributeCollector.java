@@ -8,7 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import com.example.legendarytiers.client.tooltip.TooltipAttributeCalculator;
 
 import java.util.*;
 
@@ -123,10 +122,10 @@ public final class TooltipAttributeCollector {
             double finalValue =
                     TooltipAttributeCalculator.calculate(accumulator);
 
-            if (attribute.is(net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE)) {
-
-                finalValue *= 10.0;
-            }
+//            if (attribute.is(net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE)) {
+//
+//                finalValue *= 10.0;
+//            }
 
             if (Math.abs(finalValue) > 0.0001) {
 

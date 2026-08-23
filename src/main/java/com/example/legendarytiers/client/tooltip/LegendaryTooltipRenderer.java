@@ -17,7 +17,10 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class LegendaryTooltipRenderer {
 
     private LegendaryTooltipRenderer() {
@@ -75,7 +78,7 @@ public final class LegendaryTooltipRenderer {
                 enchantmentCount,
                 attributeCount,
                 context.broken(),
-                context.maxDurability() > 0,
+                true,
                 true,
                 !context.showAdvancedAttributes(),
                 !context.showEnchantments()
@@ -148,20 +151,16 @@ public final class LegendaryTooltipRenderer {
         width -= ItemPreviewSection.getWidth();
 
 
-        //Прочность
-        if (context.maxDurability() > 0) {
+        DurabilitySection.render(
+                graphics,
+                font,
+                context,
+                x,
+                currentY,
+                width
+        );
 
-            DurabilitySection.render(
-                    graphics,
-                    font,
-                    context,
-                    x,
-                    currentY,
-                    width
-            );
-
-            currentY += DurabilitySection.getHeight();
-        }
+        currentY += DurabilitySection.getHeight();
 
         //Опыт
         ExperienceSection.render(
@@ -285,7 +284,7 @@ public final class LegendaryTooltipRenderer {
                     currentY + 2,
                     width
             );
-            currentY += TooltipLayout.PADDING;
+            //currentY += TooltipLayout.PADDING;
 
         }
 
@@ -297,7 +296,7 @@ public final class LegendaryTooltipRenderer {
                     font,
                     tabPrompt,
                     x + (oldwidth - promptWidth) / 2,
-                    yAfterPreview + 2,
+                    height + correctedY - TooltipLayout.PADDING * 2,
                     0xFFFFAA00,
                     true
             );

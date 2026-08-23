@@ -3,7 +3,6 @@ package com.example.legendarytiers;
 import com.example.legendarytiers.util.ExperienceUtil;
 import com.example.legendarytiers.util.TierHelper;
 import com.google.gson.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,8 +23,8 @@ public class TierModifierLoader {
 
     private record AttributeDef(String id, int weight, double min, double max, String operation) {
         // Автоматически определяем, является ли оператор добавлением абсолютного значения (ADD_VALUE / addition)
-        public boolean isAbsolute() {
-            return "add_value".equalsIgnoreCase(operation) || "addition".equalsIgnoreCase(operation);
+        public boolean isInt() {
+            return id.contains("armor") || id.contains("health") || id.contains("luck") || id.contains("toughness");
         }
     }
 
@@ -102,20 +101,15 @@ public class TierModifierLoader {
             return new TierData(rarity, List.of(), -1f);
         }
 
-        // Берем min/max из кэша мгновенно без повторного прочтения JSON с диска!
         int minAttrs = rarityData.minAttrs();
         int maxAttrs = rarityData.maxAttrs();
         int count = minAttrs == maxAttrs ? minAttrs : minAttrs + random.nextInt(maxAttrs - minAttrs + 1);
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int level = ExperienceUtil.getLevel(exp);
-        double levelBonusPct = level * 0.01; // +1% за уровень
-        double levelBonusAbs = level * 0.1;  // +0.1 за уровень
 
         List<ModifierEntry> modifiers = new ArrayList<>();
         float totalQuality = 0;
 
-        // Копия списка доступных атрибутов для безопасного удаления уже выбранных
         List<AttributeDef> availablePool = new ArrayList<>(rarityData.attributes());
         Set<String> usedIds = new HashSet<>();
 
@@ -123,38 +117,52 @@ public class TierModifierLoader {
             AttributeDef def = getRandomAttributeByWeight(availablePool, random);
             if (def == null) break;
 
-            availablePool.remove(def); // Исключаем повторное выпадение того же атрибута
+            availablePool.remove(def);
 
             if (usedIds.add(def.id())) {
                 double min = def.min();
                 double max = def.max();
 
-                // Автоматический выбор типа бонуса по типу операции
-                if (def.isAbsolute()) {
-                    max += levelBonusAbs;
+                // 1. Выбиваем БАЗОВОЕ значение строго в диапазоне из JSON [min, max]
+                double baseValue = min == max ? min : min + random.nextDouble() * (max - min);
+
+                boolean isGravity = isGravityAttribute(def.id());
+
+                // 2. Рассчитываем итоговое значение с учётом уровня предмета (+1% к значению за уровень)
+                double levelMultiplier = ExperienceUtil.getMultiplier(exp);
+                double value = baseValue * levelMultiplier;
+
+                // 3. Форматируем результат в зависимости от типа атрибута
+                if (def.isInt()) {
+                    value = Math.round(value);
                 } else {
-                    max += levelBonusPct;
+                    double precision = isGravity ? 10000.0 : 100.0;
+                    value = Math.round(value * precision) / precision;
                 }
 
-                double value = min + random.nextDouble() * (max - min);
-                value = Math.round(value * 100.0) / 100.0;
-
-                if (def.isAbsolute()) {
-                    value = Math.round(value); // Округляем целые атрибуты (здоровье, броня...)
+                if (max < 0 && value > 0) {
+                    value = -value;
                 }
 
                 if (value == 0.0) {
                     continue;
                 }
 
-                String target = def.id().equals("durability") ? "durability" : "attribute";
-                Optional<String> attr = target.equals("attribute") ? Optional.of(def.id()) : Optional.empty();
+                String target = "durability".equals(def.id()) ? "durability" : "attribute";
+                Optional<String> attr = "attribute".equals(target) ? Optional.of(def.id()) : Optional.empty();
                 modifiers.add(new ModifierEntry(target, attr, def.operation(), value));
 
-                // Защита от деления на 0 при min == max
-                double range = def.max() - def.min();
-                double normalized = range <= 0 ? 1.0 : (value - def.min()) / range;
-                totalQuality += Math.max(0, Math.min(1, normalized));
+                // 4. Качество рассчитывается относительно исходного барьера из JSON
+                double range = max - min;
+                double normalized;
+                if (range <= 0) {
+                    normalized = 1.0;
+                } else if (isGravity) {
+                    normalized = (max - baseValue) / range; // Инвертированное качество
+                } else {
+                    normalized = (baseValue - min) / range;
+                }
+                totalQuality += (float) Math.clamp(normalized, 0.0, 1.0);
             }
         }
 
@@ -162,8 +170,14 @@ public class TierModifierLoader {
         if (modifiers.isEmpty()) {
             AttributeDef def = rarityData.attributes().get(0);
             double value = def.min() == 0.0 ? 0.01 : def.min();
-            String target = def.id().equals("durability") ? "durability" : "attribute";
-            Optional<String> attr = target.equals("attribute") ? Optional.of(def.id()) : Optional.empty();
+            if (def.isInt()) {
+                value = Math.round(value);
+            } else {
+                value = Math.round(value * 100.0) / 100.0;
+            }
+
+            String target = "durability".equals(def.id()) ? "durability" : "attribute";
+            Optional<String> attr = "attribute".equals(target) ? Optional.of(def.id()) : Optional.empty();
             modifiers.add(new ModifierEntry(target, attr, def.operation(), value));
             totalQuality = 0;
         }
@@ -197,5 +211,12 @@ public class TierModifierLoader {
         }
 
         return pool.get(0);
+    }
+
+    private static boolean isGravityAttribute(String attributeId) {
+        if (attributeId == null) return false;
+        return attributeId.equals("generic.gravity")
+                || attributeId.equals("minecraft:generic.gravity")
+                || attributeId.endsWith(":gravity");
     }
 }

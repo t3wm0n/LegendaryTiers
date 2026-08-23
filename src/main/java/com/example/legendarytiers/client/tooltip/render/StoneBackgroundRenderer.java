@@ -7,7 +7,10 @@ import net.minecraft.util.Mth;
 
 import static com.example.legendarytiers.client.tooltip.TooltipTextures.RARITY_STONE;
 import static com.example.legendarytiers.client.tooltip.TooltipTextures.RARITY_STONE_GLOW;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class StoneBackgroundRenderer {
 
     public static void renderGlowingStone(

@@ -6,7 +6,10 @@ import com.example.legendarytiers.client.tooltip.TooltipTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class IconRenderer {
 
     private IconRenderer() {

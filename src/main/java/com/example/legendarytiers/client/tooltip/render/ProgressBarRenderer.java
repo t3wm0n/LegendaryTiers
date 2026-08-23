@@ -4,7 +4,10 @@ import com.example.legendarytiers.client.tooltip.TooltipTheme;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class ProgressBarRenderer {
 
     private ProgressBarRenderer() {

@@ -68,5 +68,7 @@
   "attribute.name.generic.crit_damage": "Critical Damage",
 
   "legendarytiers.tooltip.show_stats": "Bonuses...",
-  "legendarytiers.tooltip.show_enchants": "Charms..."
+  "legendarytiers.tooltip.show_enchants": "Charms...",
+
+  "legendarytiers.level.up": "Item %s has reached level %s!"
 }

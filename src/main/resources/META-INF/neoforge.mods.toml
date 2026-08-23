@@ -10,7 +10,7 @@ structures = "legendarytiers:runic_house"
 
 [[mods]]
 modId = "legendarytiers"
-version = "3.0.2"
+version = "3.0.3"
 displayName = "RPG Items Tiers (RIT)"
 
 

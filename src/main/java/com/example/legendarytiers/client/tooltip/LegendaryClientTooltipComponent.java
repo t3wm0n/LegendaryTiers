@@ -7,7 +7,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class LegendaryClientTooltipComponent implements ClientTooltipComponent {
 
     private final LegendaryTooltipContext context;
@@ -42,7 +45,7 @@ public final class LegendaryClientTooltipComponent implements ClientTooltipCompo
                 enchantmentCount,
                 attributeCount,
                 context.broken(),
-                context.maxDurability() > 0,
+                true,
                 true,
                 !Screen.hasShiftDown(),
                 !Screen.hasControlDown()

@@ -25,6 +25,10 @@ public class LegendaryTiers {
 
     public LegendaryTiers(IEventBus modEventBus, ModContainer modContainer) {
 
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(LegendaryTiersClient::registerScreens);
+            modEventBus.addListener(LegendaryTiersClient::registerTooltipFactories);
+        }
         ModDataComponents.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);

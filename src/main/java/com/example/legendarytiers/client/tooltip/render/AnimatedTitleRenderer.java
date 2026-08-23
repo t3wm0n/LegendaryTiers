@@ -3,7 +3,10 @@ package com.example.legendarytiers.client.tooltip.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class AnimatedTitleRenderer {
 
     private AnimatedTitleRenderer() {

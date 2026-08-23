@@ -1,21 +1,22 @@
 package com.example.legendarytiers.client.tooltip.section;
 
 import com.example.legendarytiers.ModDataComponents;
-import com.example.legendarytiers.event.ModEvents;
 import com.example.legendarytiers.ModifierEntry;
 import com.example.legendarytiers.TierData;
 import com.example.legendarytiers.client.tooltip.*;
+import com.example.legendarytiers.client.tooltip.helpers.DurabilityEnergyHelper;
 import com.example.legendarytiers.client.tooltip.render.ProgressBarRenderer;
 import com.example.legendarytiers.client.tooltip.render.TextRenderer;
+import com.example.legendarytiers.event.ModEvents;
 import com.example.legendarytiers.util.ExperienceUtil;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class DurabilitySection {
 
     private DurabilitySection() {
@@ -36,75 +37,85 @@ public final class DurabilitySection {
         ItemStack stack = context.stack();
         if (stack == null || stack.isEmpty()) return;
 
-        // 1. Проверяем наличие энергии (FE / RF из техно-модов)
-        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        DurabilityEnergyHelper.Info info = DurabilityEnergyHelper.getDurabilityOrEnergy(stack);
+        TierData tier = stack.get(ModDataComponents.TIER_DATA);
 
-        float progress;
-        String textEnd;
+        // Если у предмета нет энергии/прочности/жидкости и нет тира — пропускаем
+        if (info == null && tier == null) return;
 
         TooltipTheme theme = TooltipThemes.get(context.rarity());
         int barX = x + TooltipLayout.PADDING;
         int barY = y + 5;
         int barWidth = width - TooltipLayout.PADDING * 2;
 
-        if (energy != null && energy.getMaxEnergyStored() > 0) {
-            // --- РЕЖИМ ЭНЕРГИИ (Электроинструменты / Буры) ---
-            int maxEnergy = energy.getMaxEnergyStored();
-            int currentEnergy = energy.getEnergyStored();
+        float progress;
+        String textEnd;
+        boolean forceBrokenRed = false;
 
-            progress = Math.clamp((float) currentEnergy / maxEnergy, 0.0f, 1.0f);
+        if (info != null) {
+            progress = Math.clamp(info.getRatio(), 0.0f, 1.0f);
 
-            String formattedCurrent = formatEnergyValue(currentEnergy);
-            String formattedMax = formatEnergyValue(maxEnergy);
+            switch (info.type()) {
+                case ENERGY -> {
+                    String formattedCurrent = formatEnergyValue(info.current());
+                    String formattedMax = formatEnergyValue(info.max());
+                    textEnd = Component.translatable("tooltip.legendarytiers.charge").getString()
+                            + ": " + formattedCurrent + " / " + formattedMax + " " + info.unit();
+                }
+                case FLUID -> {
+                    String formattedCurrent = formatEnergyValue(info.current());
+                    String formattedMax = formatEnergyValue(info.max());
+                    textEnd = Component.translatable("tooltip.legendarytiers.fuel").getString()
+                            + ": " + formattedCurrent + " / " + formattedMax + " " + info.unit();
+                }
+                case DURABILITY -> {
+                    long currentDurability = info.current();
+                    long maxDurability = info.max();
 
-            textEnd = Component.translatable("tooltip.legendarytiers.charge").getString() + ": " + formattedCurrent + " / " + formattedMax + " FE";
-        } else {
-            // --- РЕЖИМ ОБЫЧНОЙ ПРОЧНОСТИ ---
-            Integer baseObj = stack.getItem().components().get(DataComponents.MAX_DAMAGE);
-            int baseDurability = (baseObj != null) ? baseObj : stack.getItem().getDefaultInstance().getMaxDamage();
-            if (baseDurability <= 0) return;
+                    String text = currentDurability + " / " + maxDurability;
 
-            TierData tier = stack.get(ModDataComponents.TIER_DATA);
+                    double bonusMultiplier = calculateDurabilityBonus(stack);
+                    if (Math.abs(bonusMultiplier) > 0.0001) {
+                        int percent = (int) Math.round(bonusMultiplier * 100);
+                        if (percent > 0) {
+                            text += " (+" + percent + "%)";
+                        } else if (percent < 0) {
+                            text += " (" + percent + "%)";
+                        }
+                    }
 
-            int maxDurability = (tier != null)
-                    ? ModEvents.calculateMaxDamage(stack, baseDurability, tier)
-                    : stack.getMaxDamage();
-
-            if (maxDurability <= 0) return;
-
-            int currentDurability = Math.max(0, maxDurability - stack.getDamageValue());
-            progress = Math.clamp((float) currentDurability / maxDurability, 0.0f, 1.0f);
-
-            String text = currentDurability + " / " + maxDurability;
-
-            // Вычисляем процент бонуса
-            double bonusMultiplier = calculateDurabilityBonus(stack);
-            if (Math.abs(bonusMultiplier) > 0.0001) {
-                int percent = (int) Math.round(bonusMultiplier * 100);
-                if (percent > 0) {
-                    text += " (+" + percent + "%)";
-                } else if (percent < 0) {
-                    text += " (" + percent + "%)";
+                    textEnd = Component.translatable("attribute.name.generic.durability").getString() + ": " + text;
+                }
+                default -> {
+                    forceBrokenRed = true;
+                    progress = 1.0f;
+                    textEnd = Component.translatable("attribute.name.generic.durability").getString() + ": 0 / 0";
                 }
             }
-
-            textEnd = Component.translatable("attribute.name.generic.durability").getString() + ": " + text;
+        } else {
+            // Фолбэк для предмета с TierData, у которого полностью отсутствует прочность/энергия
+            forceBrokenRed = true;
+            progress = 1.0f;
+            textEnd = Component.translatable("attribute.name.generic.durability").getString() + ": N/A";
         }
 
-        // 2. Рисуем шкалу прогресса
-        ProgressBarRenderer.draw(
-                graphics,
-                barX,
-                barY,
-                barWidth,
-                14,
-                progress,
-                theme
-        );
+        // Отрисовка шкалы (если forceBrokenRed = true, рисуем полностью красную шкалу)
+        if (forceBrokenRed) {
+            renderFullRedBar(graphics, barX, barY, barWidth, 14);
+        } else {
+            ProgressBarRenderer.draw(
+                    graphics,
+                    barX,
+                    barY,
+                    barWidth,
+                    14,
+                    progress,
+                    theme
+            );
+        }
 
-        // 3. Выводим текст по центру шкалы
+        // Отрисовка текста по центру
         int textWidth = font.width(textEnd);
-
         TextRenderer.drawShadow(
                 graphics,
                 font,
@@ -116,9 +127,18 @@ public final class DurabilitySection {
     }
 
     /**
-     * Форматирует большие числа энергии (150000 -> 150k, 2500000 -> 2.5M)
+     * Отрисовывает полностью закрашенный красный прогресс-бар для предметов без ресурса прочности.
      */
-    private static String formatEnergyValue(int value) {
+    private static void renderFullRedBar(GuiGraphics graphics, int x, int y, int width, int height) {
+        // Задняя рамка/фон
+        graphics.fill(x, y, x + width, y + height, 0xFF220000);
+        // Заполняющий красный цвет
+        graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, 0xFF8B0000);
+        // Верхний градиент/светлый акцент
+        graphics.fill(x + 1, y + 1, x + width - 1, y + 3, 0xFFFF3333);
+    }
+
+    private static String formatEnergyValue(long value) {
         if (value >= 1_000_000) {
             return String.format("%.1fM", value / 1_000_000.0f);
         } else if (value >= 1_000) {
@@ -127,10 +147,6 @@ public final class DurabilitySection {
         return String.valueOf(value);
     }
 
-    /**
-     * Вычисляет процентный бонус прочности с учётом уровня предмета
-     * и ослабления штрафов.
-     */
     private static double calculateDurabilityBonus(ItemStack stack) {
         TierData tier = stack.get(ModDataComponents.TIER_DATA);
         if (tier == null) return 0.0;

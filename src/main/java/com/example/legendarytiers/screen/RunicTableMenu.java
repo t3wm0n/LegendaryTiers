@@ -2,6 +2,8 @@ package com.example.legendarytiers.screen;
 
 import com.example.legendarytiers.*;
 import com.example.legendarytiers.block.RunicTableBlockEntity;
+import com.example.legendarytiers.util.ExperienceUtil;
+import com.example.legendarytiers.util.TierHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -29,7 +31,7 @@ public class RunicTableMenu extends AbstractContainerMenu {
         addSlot(new Slot(container, 0, 120, 39) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(ModTags.TIERABLE_ITEMS) && stack.has(ModDataComponents.TIER_DATA);
+                return TierHelper.isTierable(stack) && stack.has(ModDataComponents.TIER_DATA);
             }
         });
         // Слот 1: чернила
@@ -61,7 +63,7 @@ public class RunicTableMenu extends AbstractContainerMenu {
         addSlot(new Slot(container, 4, 39, 178) { // Y подобран примерно, подгоните под свою текстуру
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return stack.is(ModTags.TIERABLE_ITEMS) && stack.has(ModDataComponents.TIER_DATA);
+                return TierHelper.isTierable(stack) && stack.has(ModDataComponents.TIER_DATA);
             }
         });
         // Слот 5: чернила для реролла
@@ -145,7 +147,7 @@ public class RunicTableMenu extends AbstractContainerMenu {
         TierData tier = toolStack.get(ModDataComponents.TIER_DATA);
         if (tier == null) return;
 
-        String requiredStencil = getRequiredStencil(toolStack);
+        String requiredStencil = TierHelper.getItemType(toolStack);
         if (!isMatchingStencil(stencilStack, requiredStencil)) return;
 
         int attempts = toolStack.getOrDefault(ModDataComponents.REFORGE_ATTEMPTS, 0);
@@ -203,11 +205,11 @@ public class RunicTableMenu extends AbstractContainerMenu {
     }
 
     private String getRequiredStencil(ItemStack tool) {
-        if (tool.is(ModTags.WEAPON)) return "weapon";
-        if (tool.is(ModTags.RANGED_WEAPON)) return "ranged";
-        if (tool.is(ModTags.ARMOR)) return "armor";
-        if (tool.is(ModTags.TOOL)) return "tool";
-        if (tool.is(ModTags.SHIELD)) return "shield";
+//        if (tool.is(ModTags.WEAPON)) return "weapon";
+//        if (TierHelper.getItemType(tool)) return "ranged";
+//        if (tool.is(ModTags.ARMOR)) return "armor";
+//        if (tool.is(ModTags.TOOL)) return "tool";
+//        if (tool.is(ModTags.SHIELD)) return "shield";
         return "";
     }
 
@@ -293,7 +295,7 @@ public class RunicTableMenu extends AbstractContainerMenu {
         if (!canRerollWithInk(tier.rarity(), inkStack)) return; // не подходящие чернила
 
         int exp = toolStack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int level = exp / 100;
+        int level = ExperienceUtil.getLevel(exp);
 
         TierData newTier = TierModifierLoader.generate(toolStack, tier.rarity(), player.level().random);
         toolStack.set(ModDataComponents.TIER_DATA, newTier);

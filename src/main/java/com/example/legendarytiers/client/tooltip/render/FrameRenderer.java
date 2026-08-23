@@ -4,7 +4,10 @@ import com.example.legendarytiers.client.tooltip.TooltipTextures;
 import com.example.legendarytiers.client.tooltip.TooltipTheme;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class FrameRenderer {
 
     private static final int CORNER_W = 48;

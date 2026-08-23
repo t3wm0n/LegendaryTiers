@@ -14,7 +14,10 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.List;
 import java.util.Locale;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class AttributeSection {
 
     private static final int SLOT_SIZE = 22;
@@ -68,11 +71,10 @@ public final class AttributeSection {
             // ----------------------------------
             // Динамическое определение полезности по ИТОГОВОМУ значению (finalValue)
             // ----------------------------------
-            boolean isGravity = attributeId.contains("gravity");
 
             // Если гравитация: положительно при finalValue < 0
             // Для остальных: положительно, если итоговое значение >= 0
-            boolean isPositive = isGravity
+            boolean isPositive = isGravityAttribute(attributeId)
                     ? entry.finalValue() < 0
                     : entry.finalValue() >= 0;
 
@@ -254,5 +256,12 @@ public final class AttributeSection {
             return context.attributes().size();
         }
         return 0;
+    }
+
+    private static boolean isGravityAttribute(String attributeId) {
+        if (attributeId == null) return false;
+        return attributeId.equals("generic.gravity")
+                || attributeId.equals("minecraft:generic.gravity")
+                || attributeId.endsWith(":gravity");
     }
 }

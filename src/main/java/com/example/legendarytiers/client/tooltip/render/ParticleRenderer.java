@@ -6,7 +6,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.Random;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class ParticleRenderer {
 
     // В атласе 64x16 помещается ровно 4 текстуры по 16x16

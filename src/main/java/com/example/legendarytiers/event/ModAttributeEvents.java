@@ -23,7 +23,6 @@ public class ModAttributeEvents {
         if (tier == null) return;
 
         int exp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
-        int level = ExperienceUtil.getLevel(exp);
         double levelMultiplier = ExperienceUtil.getMultiplier(exp);
 
         // Определяем группу слотов по типу предмета
@@ -55,12 +54,13 @@ public class ModAttributeEvents {
                     default -> AttributeModifier.Operation.ADD_VALUE;
                 };
 
-                double value = entry.value() > 0.0001 ?
-                        entry.value() * levelMultiplier :
-                        entry.value() +
-                        (Math.abs(entry.value()) *
-                         ((levelMultiplier - 1) * 2 + 1) -
-                                Math.abs(entry.value()));
+//                double value = entry.value() > 0.0001 ?
+//                        entry.value() * levelMultiplier :
+//                        entry.value() +
+//                        (Math.abs(entry.value()) *
+//                         ((levelMultiplier - 1) * 2 + 1) -
+//                                Math.abs(entry.value()));
+                double value = entry.value() * levelMultiplier;
 
                 ResourceLocation modifierId = ResourceLocation.fromNamespaceAndPath(
                         LegendaryTiers.MOD_ID, "tier_mod_" + attrId.getPath());

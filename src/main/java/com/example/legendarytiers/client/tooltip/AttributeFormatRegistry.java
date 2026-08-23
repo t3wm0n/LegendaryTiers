@@ -28,7 +28,7 @@ public final class AttributeFormatRegistry {
         register("minecraft:generic.attack_damage", AttributeFormat.DECIMAL);
         register("minecraft:generic.attack_speed", AttributeFormat.DECIMAL);
         register("minecraft:generic.armor", AttributeFormat.DECIMAL);
-        register("minecraft:generic.knockback_resistance", AttributeFormat.DECIMAL);
+
 
         register("minecraft:player.block_interaction_range", AttributeFormat.DECIMAL);
         register("minecraft:player.entity_interaction_range", AttributeFormat.DECIMAL);
@@ -41,10 +41,12 @@ public final class AttributeFormatRegistry {
         register("minecraft:player.block_break_speed", AttributeFormat.PERCENT);
         register("minecraft:generic.jump_strength", AttributeFormat.PERCENT);
         register("minecraft:generic.gravity", AttributeFormat.PERCENT);
+        register("minecraft:generic.knockback_resistance", AttributeFormat.PERCENT);
 
         register("legendarytiers:generic.crit_chance", AttributeFormat.PERCENT);
         register("legendarytiers:generic.crit_damage", AttributeFormat.PERCENT);
         register("legendarytiers:generic.bow_draw_speed", AttributeFormat.PERCENT);
+        register("legendarytiers:generic.arrow_damage", AttributeFormat.PERCENT);
 
         /*
          * Mixin attributes

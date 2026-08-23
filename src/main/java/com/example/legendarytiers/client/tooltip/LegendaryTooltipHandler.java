@@ -4,12 +4,15 @@ import com.example.legendarytiers.LegendaryTiers;
 import com.example.legendarytiers.ModDataComponents;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import com.example.legendarytiers.config.RPGITConfig;
 
-@EventBusSubscriber(modid = LegendaryTiers.MOD_ID)
+@OnlyIn(Dist.CLIENT)
+@EventBusSubscriber(modid = LegendaryTiers.MOD_ID, value = Dist.CLIENT)
 public final class LegendaryTooltipHandler {
 
     private LegendaryTooltipHandler() {

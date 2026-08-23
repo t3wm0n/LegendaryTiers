@@ -64,7 +64,7 @@ public class TierHelper {
     /**
      * Проверяет, подходит ли stack под список строк (#tag или item_id)
      */
-    private static boolean matchesList(ItemStack stack, List<? extends String> entries) {
+    public static boolean matchesList(ItemStack stack, List<? extends String> entries) {
         if (entries == null || entries.isEmpty()) return false;
 
         for (String entry : entries) {

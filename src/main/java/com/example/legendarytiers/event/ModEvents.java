@@ -6,17 +6,22 @@ import com.example.legendarytiers.config.RPGITConfig;
 import com.example.legendarytiers.util.ExperienceUtil;
 import com.example.legendarytiers.util.RepairCostHelper;
 import com.example.legendarytiers.util.RepairEntry;
+import com.example.legendarytiers.util.TierHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,12 +43,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -64,7 +71,7 @@ public class ModEvents {
     }
 
     public static void addExperience(ItemStack stack, int amount, Player player) {
-        if (stack.isEmpty() || !stack.is(ModTags.TIERABLE_ITEMS)) return;
+        if (stack.isEmpty() || !TierHelper.isTierable(stack)) return;
         if (player != null && player.level().isClientSide()) return;
 
         int currentExp = stack.getOrDefault(ModDataComponents.EXPERIENCE, 0);
@@ -78,8 +85,20 @@ public class ModEvents {
         // Пересчитываем прочность ТОЛЬКО при смене уровня (например, с 1 на 2)
         if (newLevel > oldLevel) {
             if (player != null) {
-                player.level().playSound(null, player.blockPosition(),
-                        SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.5F, 1.5F);
+                player.level().playSound(
+                        null,
+                        player.blockPosition(),
+                        SoundEvents.PLAYER_LEVELUP,
+                        SoundSource.PLAYERS,
+                        0.75F,
+                        1.2F
+                );
+                Component message = Component.translatable(
+                        "legendarytiers.level.up",
+                        stack.getHoverName(),
+                        newLevel
+                ).withStyle(ChatFormatting.GREEN);
+                player.sendSystemMessage(message);
             }
 
         }
@@ -159,20 +178,38 @@ public class ModEvents {
     // Опыт за добычу блоков
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        // 1. Опыт за блоки должен начисляться только на сервере
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+
         Player player = event.getPlayer();
+        if (player == null) return;
+
         ItemStack tool = player.getMainHandItem();
         if (tool.isEmpty()) return;
 
         BlockState state = event.getState();
-        if (tool.getItem() instanceof PickaxeItem && tool.isCorrectToolForDrops(state)) {
+
+        // 2. Проверяем, подходит ли инструмент для добычи этого блока (с учётом урона/уровня)
+        if (!tool.isCorrectToolForDrops(state)) return;
+
+        // 3. Проверка через теги блоков вместо instanceof (поддерживает моды)
+        if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
             int xp = getOreXpFromConfig(state);
-            if (xp > 0) addExperience(tool, xp, player);
+            if (xp > 0) {
+                addExperience(tool, xp, player);
+            }
         }
-        else if (state.is(BlockTags.LOGS) && tool.isCorrectToolForDrops(state)) {
-            addExperience(tool, RPGITConfig.INSTANCE.experience.axe_xp.get(), player);
+        else if (state.is(BlockTags.LOGS) || state.is(BlockTags.MINEABLE_WITH_AXE)) {
+            int axeXp = RPGITConfig.INSTANCE.experience.axe_xp.get();
+            if (axeXp > 0) {
+                addExperience(tool, axeXp, player);
+            }
         }
-        else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL) && tool.isCorrectToolForDrops(state)) {
-            addExperience(tool, RPGITConfig.INSTANCE.experience.shovel_xp.get(), player);
+        else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
+            int shovelXp = RPGITConfig.INSTANCE.experience.shovel_xp.get();
+            if (shovelXp > 0) {
+                addExperience(tool, shovelXp, player);
+            }
         }
     }
 
@@ -180,32 +217,45 @@ public class ModEvents {
     @SubscribeEvent
     public static void onFinalizeSpawn(FinalizeSpawnEvent event) {
         if (event.getSpawnType() == MobSpawnType.SPAWNER) {
-            event.getEntity().getPersistentData().putBoolean(SPAWNER_TAG, true);
+            CompoundTag nbt = event.getEntity().getPersistentData();
+            nbt.putBoolean(SPAWNER_TAG, true);
         }
     }
 
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
-        DamageSource source = event.getSource();
+        if (!(event.getEntity().level() instanceof ServerLevel)) return;
 
-        // Проверяем, что убийца — игрок
-        if (!(source.getEntity() instanceof Player player)) {
-            return;
-        }
+        DamageSource source = event.getSource();
+        if (!(source.getEntity() instanceof Player player)) return;
 
         LivingEntity victim = event.getEntity();
         ItemStack weapon = ItemStack.EMPTY;
         Entity directEntity = source.getDirectEntity();
 
-        if (directEntity instanceof AbstractArrow arrow) {
-            ItemStack firedWeapon = arrow.getWeaponItem();
-            if (firedWeapon != null) weapon = firedWeapon;
-        } else if (directEntity instanceof ThrowableItemProjectile throwable) {
+        // 1. Если убийство совершено СТРЕЛОЙ
+        if (directEntity instanceof AbstractArrow) {
+            ItemStack mainHand = player.getMainHandItem();
+            ItemStack offHand = player.getOffhandItem();
+
+            // Ищем лук/арбалет прямо в руках игрока
+            if (isRangedWeapon(mainHand)) {
+                weapon = mainHand;
+            } else if (isRangedWeapon(offHand)) {
+                weapon = offHand;
+            } else {
+                // Если игрок успел переключить хотбар, пробуем достать сохраненный предмет из стрелы
+                AbstractArrow arrow = (AbstractArrow) directEntity;
+                weapon = arrow.getWeaponItem();
+            }
+        }
+        // 2. Метательные снаряды (зелья, трезубцы и т.д.)
+        else if (directEntity instanceof ThrowableItemProjectile throwable) {
             weapon = throwable.getItem();
         }
-
-        if (weapon == null || weapon.isEmpty()) {
+        // 3. Ближний бой (нож, меч, топор, кулак)
+        else {
             weapon = player.getMainHandItem();
         }
 
@@ -214,42 +264,51 @@ public class ModEvents {
         }
 
         // --- Расчет опыта ---
-
-        // 1. Базовый опыт по максимальному здоровью моба
         float xp = (float) (victim.getMaxHealth() * RPGITConfig.INSTANCE.experience.mob_multiplier.get());
 
-        // 2. Штраф за спавнер (дает только 25% опыта)
+        // Штраф за спавнер
         if (victim.getPersistentData().getBoolean(SPAWNER_TAG)) {
             xp *= 0.25f;
         }
 
         int finalXp = Math.round(xp);
-
-        // 3. Минимальный порог опыта из конфига
-        if (finalXp < RPGITConfig.INSTANCE.experience.mob_min.get()) {
-            finalXp = RPGITConfig.INSTANCE.experience.mob_min.get();
+        int minXp = RPGITConfig.INSTANCE.experience.mob_min.get();
+        if (finalXp < minXp) {
+            finalXp = minXp;
         }
 
-        // 4. Корректировка для топоров (секир)
-        if (weapon.getItem() instanceof AxeItem) {
+        // Поддержка топоров через ItemTags вместо instanceof AxeItem
+        if (weapon.is(ItemTags.AXES)) {
             finalXp = Math.max(1, finalXp / 2);
         }
 
-        // Начисляем опыт предмету
         addExperience(weapon, finalXp, player);
     }
 
     // Опыт за вспахивание земли
     @SubscribeEvent
-    public static void onHoeUse(PlayerInteractEvent.RightClickBlock event) {
+    public static void onUseItemOnBlock(UseItemOnBlockEvent event) {
+        Level level = event.getLevel();
+        // Начисляем опыт только на сервере и только для главной руки
+        if (level.isClientSide() || event.getHand() != InteractionHand.MAIN_HAND) return;
+
         ItemStack stack = event.getItemStack();
-        if (stack.getItem() instanceof HoeItem) {
-            Level level = event.getLevel();
+        Player player = event.getPlayer();
+        if (player == null || stack.isEmpty()) return;
+
+        // Проверяем, является ли предмет мотыгой (теги + стандартный класс)
+        if (stack.is(ItemTags.HOES)) {
             BlockPos pos = event.getPos();
             BlockState state = level.getBlockState(pos);
+
+            // Проверяем подходимость блока
             if (state.is(Blocks.DIRT) || state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT_PATH)
                     || state.is(Blocks.COARSE_DIRT) || state.is(Blocks.ROOTED_DIRT)) {
-                addExperience(stack, RPGITConfig.INSTANCE.experience.hoe_xp.get(), event.getEntity());
+
+                int hoeXp = RPGITConfig.INSTANCE.experience.hoe_xp.get();
+                if (hoeXp > 0) {
+                    addExperience(stack, hoeXp, player);
+                }
             }
         }
     }
@@ -257,15 +316,19 @@ public class ModEvents {
     // Опыт для брони
     @SubscribeEvent
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+        if (event.getEntity().level().isClientSide()) return;
+
         if (event.getEntity() instanceof Player player) {
             float damage = event.getAmount();
             if (damage <= 0) return;
-            int xpPerPiece = Math.round(damage * RPGITConfig.INSTANCE.experience.armor_xp_per_damage.get() / 2);
+
+            int xpPerPiece = Math.round(damage * RPGITConfig.INSTANCE.experience.armor_xp_per_damage.get() / 2.0f);
             if (xpPerPiece <= 0) return;
+
             EquipmentSlot[] armorSlots = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
             for (EquipmentSlot slot : armorSlots) {
                 ItemStack armor = player.getItemBySlot(slot);
-                if (!armor.isEmpty() && armor.is(ModTags.TIERABLE_ITEMS)) {
+                if (!armor.isEmpty() && TierHelper.isTierable(armor)) {
                     addExperience(armor, xpPerPiece, player);
                 }
             }
@@ -528,5 +591,16 @@ public class ModEvents {
                 event.getServer().overworld()
         );
 
+    }
+
+    private static boolean isRangedWeapon(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+
+        return stack.is(Tags.Items.TOOLS_BOW)
+                || stack.is(Tags.Items.TOOLS_CROSSBOW)
+                || stack.is(ItemTags.BOW_ENCHANTABLE)
+                || stack.is(ItemTags.CROSSBOW_ENCHANTABLE)
+                || stack.getItem() instanceof BowItem
+                || stack.getItem() instanceof CrossbowItem;
     }
 }
